@@ -21,7 +21,6 @@ var frameLocation = "";
 function Recorder(window) {
     this.window = window;
     this.attached = false;
-    //this.attach();
 }
 
 Recorder.eventHandlers = {};
@@ -72,7 +71,7 @@ Recorder.prototype.detach = function() {
         var eventInfo = this.parseEventKey(eventKey);
         var eventName = eventInfo.eventName;
         var capture = eventInfo.capture;
-        for (let i=0 ; i<this.eventListeners[eventKey] ; i++) {
+        for (let i = 0 ; i < this.eventListeners[eventKey].length ; i++) {
             this.window.document.removeEventListener(eventName, this.eventListeners[eventKey][i], capture)
         }
     }

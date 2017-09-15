@@ -182,7 +182,10 @@ function handleMessage(message, sender, sendResponse) {
     }
 
     if (message.attachRecorderRequest) {
-        browser.tabs.sendMessage(sender.tab.id, {attachRecorder: true});
+        if (isRecording && !isPlaying &&
+            (openedTabIds[sender.tab.id] || getRecordsArray().length == 0)) {
+            browser.tabs.sendMessage(sender.tab.id, {attachRecorder: true});
+        }
         return;
     }
 
@@ -204,6 +207,15 @@ function handleMessage(message, sender, sendResponse) {
         addCommandAuto("open", [
             [sender.tab.url]
         ], "");
+
+        browser.tabs.query({windowId: extCommand.getContentWindowId(), url: "<all_urls>"})
+        .then(function(tabs) {
+            for(let tab of tabs) {
+                if (tab.id != sender.tab.id) {
+                    browser.tabs.sendMessage(tab.id, {detachRecorder: true});
+                }
+            }
+        });
     }
 
     if (!openedTabIds[sender.tab.id])
@@ -323,13 +335,6 @@ browser.runtime.onMessage.addListener(function contentWindowIdListener(message) 
         selfWindowId = message.selfWindowId;
         contentWindowId = message.commWindowId;
         extCommand.setContentWindowId(contentWindowId);
-
-        browser.tabs.query({windowId: contentWindowId, url: "<all_urls>"})
-        .then(function(tabs) {
-            for(let tab of tabs) {
-                browser.tabs.sendMessage(tab.id, {attachRecorder: true});
-            }
-        });
 
         openedWindowIds[message.commWindowId] = true;
         browser.runtime.onMessage.removeListener(contentWindowIdListener);

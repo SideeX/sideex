@@ -601,7 +601,7 @@ Recorder.addEventHandler('editContent', 'blur', function(event) {
 }, true);
 
 try {
-    // Automatically request for attaching recorder
+    // Automatically request permission to attach recorder
     browser.runtime.sendMessage({
         attachRecorderRequest: true
     })
