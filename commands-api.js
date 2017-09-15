@@ -73,6 +73,7 @@ function doCommands(request, sender, sendResponse, type) {
         }
         return true;
     }
+    // TODO: refactoring
     if (request.selectMode) {
         if (request.selecting) {
             targetSelecter = new TargetSelecter(function (element, win) {
@@ -107,6 +108,14 @@ function doCommands(request, sender, sendResponse, type) {
                 return;
             }
         }
+    }
+    // TODO: code refactoring
+    if (request.attachRecorder) {
+        recorder.attach();
+        return;
+    } else if (request.detachRecorder) {
+        recorder.detach();
+        return;
     }
 
 }

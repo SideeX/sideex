@@ -20,7 +20,8 @@ var frameLocation = "";
 
 function Recorder(window) {
     this.window = window;
-    this.attach();
+    this.attached = false;
+    //this.attach();
 }
 
 Recorder.eventHandlers = {};
@@ -43,6 +44,10 @@ Recorder.prototype.parseEventKey = function(eventKey) {
 }
 
 Recorder.prototype.attach = function() {
+    if (this.attached) {
+        return;
+    }
+    this.attached = true;
     this.eventListeners = {};
     for (eventKey in Recorder.eventHandlers) {
         var eventInfo = this.parseEventKey(eventKey);
@@ -59,6 +64,10 @@ Recorder.prototype.attach = function() {
 }
 
 Recorder.prototype.detach = function() {
+    if (!this.attached) {
+        return;
+    }
+    this.attached = false;
     for (eventKey in this.eventListeners) {
         var eventInfo = this.parseEventKey(eventKey);
         var eventName = eventInfo.eventName;

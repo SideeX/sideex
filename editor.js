@@ -181,6 +181,11 @@ function handleMessage(message, sender, sendResponse) {
         return;
     }
 
+    if (message.attachRecorderRequest) {
+        browser.tabs.sendMessage(sender.tab.id, {attachRecorder: true});
+        return;
+    }
+
     if (isPlaying && message.frameLocation) {
         extCommand.setFrame(sender.tab.id, message.frameLocation, sender.frameId);
         return;
@@ -318,6 +323,14 @@ browser.runtime.onMessage.addListener(function contentWindowIdListener(message) 
         selfWindowId = message.selfWindowId;
         contentWindowId = message.commWindowId;
         extCommand.setContentWindowId(contentWindowId);
+
+        browser.tabs.query({windowId: contentWindowId, url: "<all_urls>"})
+        .then(function(tabs) {
+            for(let tab of tabs) {
+                browser.tabs.sendMessage(tab.id, {attachRecorder: true});
+            }
+        });
+
         openedWindowIds[message.commWindowId] = true;
         browser.runtime.onMessage.removeListener(contentWindowIdListener);
     }
