@@ -42,6 +42,7 @@ var implicitTime = "";
 var caseFailed = false;
 var extCommand = new ExtCommand();
 
+// TODO: move to another file
 window.onload = function() {
     var recordButton = document.getElementById("record");
     var playButton = document.getElementById("playback");
@@ -58,9 +59,33 @@ window.onload = function() {
         isRecording = !isRecording;
         if (isRecording) {
             notificationCount = 0;
+            if (getRecordsArray().length) {
+                for (let tabId in openedTabIds) {
+                    browser.tabs.sendMessage(Number(tabId), {attachRecorder: true})
+                }
+            } else {
+                browser.tabs.query({windowId: extCommand.getContentWindowId(), url: "<all_urls>"})
+                .then(function(tabs) {
+                    for(let tab of tabs) {
+                        browser.tabs.sendMessage(tab.id, {attachRecorder: true});
+                    }
+                });
+            }
             recordButton.childNodes[1].textContent = "Stop";
         }
         else {
+            if (getRecordsArray().length) {
+                for (let tabId in openedTabIds) {
+                    browser.tabs.sendMessage(Number(tabId), {detachRecorder: true})
+                }
+            } else {
+                browser.tabs.query({windowId: extCommand.getContentWindowId(), url: "<all_urls>"})
+                .then(function(tabs) {
+                    for(let tab of tabs) {
+                        browser.tabs.sendMessage(tab.id, {detachRecorder: true});
+                    }
+                });
+            }
             recordButton.childNodes[1].textContent = "Record";
         }
     })

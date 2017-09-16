@@ -181,6 +181,14 @@ function handleMessage(message, sender, sendResponse) {
         return;
     }
 
+    if (message.attachRecorderRequest) {
+        if (isRecording && !isPlaying &&
+            (openedTabIds[sender.tab.id] || getRecordsArray().length == 0)) {
+            browser.tabs.sendMessage(sender.tab.id, {attachRecorder: true});
+        }
+        return;
+    }
+
     if (isPlaying && message.frameLocation) {
         extCommand.setFrame(sender.tab.id, message.frameLocation, sender.frameId);
         return;
@@ -199,6 +207,15 @@ function handleMessage(message, sender, sendResponse) {
         addCommandAuto("open", [
             [sender.tab.url]
         ], "");
+
+        browser.tabs.query({windowId: extCommand.getContentWindowId(), url: "<all_urls>"})
+        .then(function(tabs) {
+            for(let tab of tabs) {
+                if (tab.id != sender.tab.id) {
+                    browser.tabs.sendMessage(tab.id, {detachRecorder: true});
+                }
+            }
+        });
     }
 
     if (!openedTabIds[sender.tab.id])
@@ -318,6 +335,7 @@ browser.runtime.onMessage.addListener(function contentWindowIdListener(message) 
         selfWindowId = message.selfWindowId;
         contentWindowId = message.commWindowId;
         extCommand.setContentWindowId(contentWindowId);
+
         openedWindowIds[message.commWindowId] = true;
         browser.runtime.onMessage.removeListener(contentWindowIdListener);
     }
