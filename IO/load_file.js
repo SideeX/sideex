@@ -30,7 +30,10 @@ function fileToPanel(f) {
         for (var i = 0; i < tr.length; ++i) {
             pattern = tr[i].match(/(?:<tr>)([\s]*?)(?:<td>)([\s\S]*?)(?:<\/td>)([\s]*?)(?:<td>)([\s\S]*?)(?:<datalist>)([\s\S]*?)(?:<\/datalist>([\s]*?)<\/td>)([\s]*?)(?:<td>)([\s\S]*?)(?:<\/td>)([\s]*?)(?:<\/tr>)/);
             // remove whitespace
-            pattern[4] = pattern[4].slice(0, -9);
+            var space = pattern[4].indexOf(" ");
+            if (space >= 0) {
+                pattern[4] = pattern[4].slice(0, space);
+            }
 
             var new_tr = '<tr>' + pattern[1] + '<td><div style="display: none;">' + pattern[2] + '</div><div style="overflow:hidden;height:15px;"></div></td>' + pattern[3] + '<td><div style="display: none;">' + pattern[4] +
                 '</div><div style="overflow:hidden;height:15px;"></div>\n        ' + '<datalist>' + pattern[5] + '</datalist>' + pattern[6] + '</td>' +
@@ -87,6 +90,24 @@ function readSuite(f) {
     reader.readAsText(f);
     reader.onload = function() {
         var test_suite = reader.result;
+
+        // check for input file version
+        // if it is not SideeX2, transforming it
+        if (!checkIsVersion2(test_suite)) {
+            if (test_suite.search("<datalist>") < 0) {
+                // confrim user if want to transform input file for loading it
+                let result = window.confirm("The input file is only read by early version of SideeX.\n Would you want to transform and to be loaded?");
+                if (!result) {
+                    return;
+                }
+                test_suite = transformVersion(test_suite);
+                console.log("reader result: ", test_suite);
+            }
+
+            // some early version of SideeX2 without <meta>
+            test_suite = addMeta(test_suite);
+        }
+
         // append on test grid
         var id = "suite" + sideex_testSuite.count;
         sideex_testSuite.count++;
