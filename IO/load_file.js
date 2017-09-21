@@ -88,15 +88,15 @@ function readSuite(f) {
     var reader = new FileReader();
 
     reader.readAsText(f);
-    reader.onload = function() {
+    reader.onload = function(event) {
         var test_suite = reader.result;
-
+        
         // check for input file version
         // if it is not SideeX2, transforming it
         if (!checkIsVersion2(test_suite)) {
             if (test_suite.search("<datalist>") < 0) {
                 // confrim user if want to transform input file for loading it
-                let result = window.confirm("The input file is only read by early version of SideeX.\n Would you want to transform and to be loaded?");
+                let result = window.confirm("The input file \"" + f.name + "\" is only read by early version of SideeX.\n Would you want to transform and to be loaded?");
                 if (!result) {
                     return;
                 }
