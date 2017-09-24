@@ -106,7 +106,11 @@ browser.runtime.onMessage.addListener(startShowElement);
     frameLocation = "root" + frameLocation;
 })();
 
-browser.runtime.sendMessage({ frameLocation: frameLocation });
+browser.runtime.sendMessage({
+    frameLocation: frameLocation
+}).catch(function(reason) {
+    // Failed silently if receiving end does not exist
+});
 
 /* record */
 function record(command, target, value, insertBeforeLastCommand, actualFrameLocation) {
@@ -117,6 +121,9 @@ function record(command, target, value, insertBeforeLastCommand, actualFrameLoca
         insertBeforeLastCommand: insertBeforeLastCommand,
         frameLocation: (actualFrameLocation != undefined ) ? actualFrameLocation : frameLocation,
         commandSideexTabId: contentSideexTabId
+    }).catch (function(reason) {
+        // If receiving end does not exist, detach the recorder
+        recorder.detach();
     });
 }
 
