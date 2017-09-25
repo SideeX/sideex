@@ -600,5 +600,8 @@ Recorder.addEventHandler('editContent', 'blur', function(event) {
     }
 }, true);
 
-
-recorder.attach();
+browser.runtime.sendMessage({
+    attachRecorderRequest: true
+}).catch(function(reason){
+    // Failed silently if receiveing end does not exist
+});

@@ -20,7 +20,7 @@ var frameLocation = "";
 
 function Recorder(window) {
     this.window = window;
-    this.attach();
+    this.attached = false;
 }
 
 Recorder.eventHandlers = {};
@@ -43,6 +43,10 @@ Recorder.prototype.parseEventKey = function(eventKey) {
 }
 
 Recorder.prototype.attach = function() {
+    if (this.attached) {
+        return;
+    }
+    this.attached = true;
     this.eventListeners = {};
     for (eventKey in Recorder.eventHandlers) {
         var eventInfo = this.parseEventKey(eventKey);
@@ -59,11 +63,15 @@ Recorder.prototype.attach = function() {
 }
 
 Recorder.prototype.detach = function() {
+    if (!this.attached) {
+        return;
+    }
+    this.attached = false;
     for (eventKey in this.eventListeners) {
         var eventInfo = this.parseEventKey(eventKey);
         var eventName = eventInfo.eventName;
         var capture = eventInfo.capture;
-        for (let i=0 ; i<this.eventListeners[eventKey] ; i++) {
+        for (let i = 0 ; i < this.eventListeners[eventKey].length ; i++) {
             this.window.document.removeEventListener(eventName, this.eventListeners[eventKey][i], capture)
         }
     }
@@ -98,7 +106,11 @@ browser.runtime.onMessage.addListener(startShowElement);
     frameLocation = "root" + frameLocation;
 })();
 
-browser.runtime.sendMessage({ frameLocation: frameLocation });
+browser.runtime.sendMessage({
+    frameLocation: frameLocation
+}).catch(function(reason) {
+    // Failed silently if receiving end does not exist
+});
 
 /* record */
 function record(command, target, value, insertBeforeLastCommand, actualFrameLocation) {
@@ -109,6 +121,9 @@ function record(command, target, value, insertBeforeLastCommand, actualFrameLoca
         insertBeforeLastCommand: insertBeforeLastCommand,
         frameLocation: (actualFrameLocation != undefined ) ? actualFrameLocation : frameLocation,
         commandSideexTabId: contentSideexTabId
+    }).catch (function(reason) {
+        // If receiving end does not exist, detach the recorder
+        recorder.detach();
     });
 }
 
