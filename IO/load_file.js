@@ -15,6 +15,8 @@
  *
  */
 
+var inputFiles = undefined;
+
 function fileToPanel(f) {
     // set records
     var output = f.match(/<tbody>[\s\S]+?<\/tbody>/);
@@ -87,10 +89,13 @@ function readCase(f) {
 function readSuite(f) {
     var reader = new FileReader();
 
+    console.log("f: ", f);
     reader.readAsText(f);
+    console.log("reader: ", reader);
+
     reader.onload = function(event) {
         var test_suite = reader.result;
-        
+        console.log("event: ", event);
         // check for input file version
         // if it is not SideeX2, transforming it
         if (!checkIsVersion2(test_suite)) {
@@ -100,7 +105,13 @@ function readSuite(f) {
                 if (!result) {
                     return;
                 }
-                test_suite = transformVersion(test_suite);
+                // parse for testCase or testSuite
+                if (checkIsTestSuite(test_suite)) {
+                    // let component = splitTbody(test_suite);
+                    test_suite = loadCaseIntoSuite(test_suite);
+                } else {
+                    test_suite = transformVersion(test_suite);
+                }
                 console.log("reader result: ", test_suite);
             }
 
@@ -136,8 +147,20 @@ function readSuite(f) {
 
 document.getElementById("load-testSuite-hidden").addEventListener("change", function(event) {
     event.stopPropagation();
-    for (var i = 0; i < this.files.length; i++)
+    console.log("input: ", this.files);
+    inputFiles = [];
+    let temp = {};
+    for (let i=0 ; i<this.files.length ; i++) {
+        temp["status"] = 0;
+        temp["object"] = this.files[i];
+        inputFiles[i] = temp;
+    }
+    for (var i = 0; i < this.files.length; i++) {
+        if (inputFiles[i]["status"] != 0) {
+            continue;
+        }
         readSuite(this.files[i]);
+    }
 }, false);
 
 document.getElementById("load-testSuite-show").addEventListener("click", function(event) {
