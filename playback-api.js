@@ -15,10 +15,6 @@
  *
  */
 
-var playingTabIds = {};
-var playingTabNames = {};
-var playingTabCount = 1;
-var currentPlayingFrameLocation = "root";
 var currentPlayingCommandIndex = -1;
 
 var currentTestCaseId = "";
@@ -449,9 +445,6 @@ function executionLoop() {
 
 function finalizePlayingProgress() {
     enableClick();
-    playingTabIds = {};
-    playingTabNames = {};
-    playingTabCount = 1;
     //console.log("success");
     setTimeout(function() {
         isPlaying = false;
@@ -526,10 +519,6 @@ function catchPlayingError(reason) {
         setColor(currentTestCaseId, "fail");
         document.getElementById("result-failures").innerHTML = parseInt(document.getElementById("result-failures").innerHTML) + 1;
         sideex_log.info("Test case failed");
-
-        playingTabIds = {};
-        playingTabNames = {};
-        playingTabCount = 1;
 
         /* Clear the flag, reset to recording phase */
         /* A small delay for preventing recording events triggered in playing phase*/
