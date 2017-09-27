@@ -17,14 +17,18 @@
 
 class ExtCommand {
 
+    // TODO: Add listeners into class
+
     constructor(contentWindowId) {
         this.playingTabNames = {};
         this.playingTabIds = {};
+        this.playingTabStatus = {};
         this.playingFrameLocations = {};
         this.playingTabCount = 1;
         this.currentPlayingTabId = -1;
         this.contentWindowId = contentWindowId ? contentWindowId : -1;
         this.currentPlayingFrameLocation = 'root';
+        // TODO: flexible wait
         this.waitInterval = 500;
         this.waitTimes = 60;
     }
@@ -32,6 +36,7 @@ class ExtCommand {
     init() {
         this.playingTabNames = {};
         this.playingTabIds = {};
+        this.playingTabStatus = {};
         this.playingFrameLocations = {};
         this.playingTabCount = 1;
         this.currentPlayingWindowId = this.contentWindowId;
@@ -46,7 +51,7 @@ class ExtCommand {
                    self.playingFrameLocations[self.currentPlayingTabId]["root"] = 0;
                    // we assume that there has an "open" command
                    // select Frame directly will cause failed
-                   self.playingFrameLocations[self.currentPlayingTabId]["status"] = true;
+                   self.playingTabStatus[self.currentPlayingTabId] = true;
                }).catch(function createNewWindow(e){
                    console.log(e);
                    // : TODO: create a new window if not exist
@@ -82,7 +87,7 @@ class ExtCommand {
     }
 
     getPageStatus() {
-        return this.playingFrameLocations[this.getCurrentPlayingTabId()]["status"];
+        return this.playingTabStatus[this.getCurrentPlayingTabId()];
     }
 
     queryActiveTab(windowId) {
@@ -109,12 +114,12 @@ class ExtCommand {
         // Ans: Yes, but I don't know why
         this.initTabInfo(tabId);
         // this.initTabInfo(tabId, true); (failed)
-        this.playingFrameLocations[tabId]["status"] = false;
+        this.playingTabStatus[tabId] = false;
     }
 
     setComplete(tabId) {
         this.initTabInfo(tabId);
-        this.playingFrameLocations[tabId]["status"] = true;
+        this.playingTabStatus[tabId] = true;
     }
 
     initTabInfo(tabId, forced) {
