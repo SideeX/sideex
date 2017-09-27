@@ -15,7 +15,6 @@
  *
  */
 
-var contentSideexTabId = -1;
 var frameLocation = "";
 
 function Recorder(window) {
@@ -120,13 +119,9 @@ function record(command, target, value, insertBeforeLastCommand, actualFrameLoca
         value: value,
         insertBeforeLastCommand: insertBeforeLastCommand,
         frameLocation: (actualFrameLocation != undefined ) ? actualFrameLocation : frameLocation,
-        commandSideexTabId: contentSideexTabId
     }).catch (function(reason) {
         // If receiving end does not exist, detach the recorder
         recorder.detach();
     });
 }
 
-function onError(error) {
-    alert(`Error: ${error}`);
-};

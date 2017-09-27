@@ -67,10 +67,6 @@ function doCommands(request, sender, sendResponse, type) {
             }
         }
 
-        //do every command need giving sideex id
-        if (contentSideexTabId === -1) {
-            contentSideexTabId = request.mySideexTabId;
-        }
         return true;
     }
     // TODO: refactoring
@@ -118,10 +114,6 @@ function doCommands(request, sender, sendResponse, type) {
         return;
     }
 
-}
-
-function doClick2(element) {
-    console.error("element:" + element);
 }
 
 browser.runtime.onMessage.addListener(doCommands);

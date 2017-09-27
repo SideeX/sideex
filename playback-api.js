@@ -49,8 +49,6 @@ window.onload = function() {
     var playSuitesButton = document.getElementById("playSuites");
     var showElementButton = document.getElementById("showElementButton")
     var selectElementButton = document.getElementById("selectElementButton");
-    /*var recordButton = document.getElementById("record");*/
-    //element.addEventListener("click",play);
     recordButton.addEventListener("click", function(){
         isRecording = !isRecording;
         if (isRecording) {
@@ -167,8 +165,6 @@ window.onload = function() {
             console.error(e);
         }
     });
-    /*recordButton.addEventListener("click", startRecord);*/
-    //console.error(recordButton);
 };
 
 function disableClick() {
@@ -356,10 +352,6 @@ function executeCommand(index) {
     finalizePlayingProgress();
 }
 
-function onError(error) {
-    console.log(error);
-}
-
 function cleanStatus() {
     var commands = getRecordsArray();
     for (var i = 0; i < commands.length; ++i) {
@@ -453,7 +445,6 @@ function finalizePlayingProgress() {
     //console.log("success");
     setTimeout(function() {
         isPlaying = false;
-        //isRecording = true;
         switchPS();
     }, 500);
 }

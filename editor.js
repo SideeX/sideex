@@ -27,24 +27,9 @@ var selfWindowId = -1;
 var contentWindowId;
 var notificationCount = 0;
 
-/* playing */
-var playingFrameLocations = {};
 /* flags */
 var isRecording = false;
 var isPlaying = false;
-var recordEnable = false;
-var windowCreateFlag = false;
-var tabCreateFlag = false;
-
-var newWindowInfo = { tabId: undefined, windowId: undefined };
-
-function onConnectError(error) {
-    console.log(`Error : ${error}`);
-}
-
-function setRecordEnable(vlaue){
-    recordEnable = value;
-}
 
 browser.tabs.onActivated.addListener(function(activeInfo) {
 
