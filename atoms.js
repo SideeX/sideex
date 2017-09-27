@@ -10594,7 +10594,7 @@ core.events.controlKeyDown_ = !1;
 core.events.altKeyDown_ = !1;
 core.events.metaKeyDown_ = !1;
 core.events.shiftKeyDown_ = !1;
-var XPCNativeWrapper = XPCNativeWrapper || function(a) {};
+var xpcNativeWrapper = XPCNativeWrapper || function(a) {}; //Don't assign this to variable XPCNativeWrapper, otherwise TypeError: "XPCNativeWrapper" is read-only
 core.events.getEventFactory_ = function(a) {
     var b = "";
     a && (b = a.toUpperCase());
@@ -10641,7 +10641,7 @@ core.events.replaceText_ = function(a, b) {
     var c = bot.dom.getAttribute(a, "maxlength"),
         d = b;
     null != c && (c = parseInt(c, 0), b.length > c && (d = b.substr(0, c)));
-    bot.dom.isElement(a, goog.dom.TagName.BODY) ? a.ownerDocument && a.ownerDocument.designMode && "on" == (new String(a.ownerDocument.designMode)).toLowerCase() && (a.innerHTML = d) : goog.userAgent.GECKO && bot.userAgent.FIREFOX_EXTENSION && bot.userAgent.isEngineVersion(8) ? XPCNativeWrapper(a).value = d : a.value = d;
+    bot.dom.isElement(a, goog.dom.TagName.BODY) ? a.ownerDocument && a.ownerDocument.designMode && "on" == (new String(a.ownerDocument.designMode)).toLowerCase() && (a.innerHTML = d) : goog.userAgent.GECKO && bot.userAgent.FIREFOX_EXTENSION && bot.userAgent.isEngineVersion(8) ? xpcNativeWrapper(a).value = d : a.value = d;
     try {
         bot.events.fire(a, bot.events.EventType.CHANGE);
     } catch (e) {}
@@ -10657,7 +10657,7 @@ core.events.setValue = function(a, b) {
 core.firefox = {};
 core.firefox.isUsingUnwrapping_ = function() {
     try {
-        var a = Components.classes["@mozilla.org/xre/app-info;1"].getService(Components.interfaces.nsIXULAppInfo);
+        var a = Components.classes["@mozilla.org/xre/app-info;1"].getService(Components.interfaces.nsIXULAppInfo); //@TODO replace Components.classes for new Firefox
         return 0 <= Components.classes["@mozilla.org/xpcom/version-comparator;1"].getService(Components.interfaces.nsIVersionComparator).compare(a.version, "4.0");
     } catch (b) {
         return !1;
@@ -10679,8 +10679,8 @@ core.firefox.unwrap = function(a) {
         return a.wrappedJSObject.__fxdriver_unwrapped = !0, a.wrappedJSObject;
     }
     try {
-        if (a == XPCNativeWrapper(a)) {
-            var c = XPCNativeWrapper.unwrap(a),
+        if (a == xpcNativeWrapper(a)) {
+            var c = xpcNativeWrapper.unwrap(a),
                 c = c ? c : a;
             c.__fxdriver_unwrapped = !0;
             return c;
