@@ -48,7 +48,7 @@ Recorder.prototype.attach = function() {
     }
     this.attached = true;
     this.eventListeners = {};
-    for (eventKey in Recorder.eventHandlers) {
+    for (var eventKey in Recorder.eventHandlers) {
         var eventInfo = this.parseEventKey(eventKey);
         var eventName = eventInfo.eventName;
         var capture = eventInfo.capture;
@@ -56,7 +56,7 @@ Recorder.prototype.attach = function() {
         var handlers = Recorder.eventHandlers[eventKey];
         this.eventListeners[eventKey] = [];
         for (let i=0 ; i<handlers.length ; i++) {
-            this.window.document.addEventListener(eventName, handlers[i], capture);
+            this.window.document.addEventListener(eventName, handlers[i], capture); //Use of Mutation Events is deprecated. Use MutationObserver instead.
             this.eventListeners[eventKey].push(handlers[i]);
         }
     }
@@ -67,7 +67,7 @@ Recorder.prototype.detach = function() {
         return;
     }
     this.attached = false;
-    for (eventKey in this.eventListeners) {
+    for (var eventKey in this.eventListeners) {
         var eventInfo = this.parseEventKey(eventKey);
         var eventName = eventInfo.eventName;
         var capture = eventInfo.capture;
