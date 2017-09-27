@@ -27,24 +27,9 @@ var selfWindowId = -1;
 var contentWindowId;
 var notificationCount = 0;
 
-/* playing */
-var playingFrameLocations = {};
 /* flags */
 var isRecording = false;
 var isPlaying = false;
-var recordEnable = false;
-var windowCreateFlag = false;
-var tabCreateFlag = false;
-
-var newWindowInfo = { tabId: undefined, windowId: undefined };
-
-function onConnectError(error) {
-    console.log(`Error : ${error}`);
-}
-
-function setRecordEnable(vlaue){
-    recordEnable = value;
-}
 
 browser.tabs.onActivated.addListener(function(activeInfo) {
 
@@ -113,13 +98,6 @@ browser.windows.onFocusChanged.addListener( function(windowId) {
 browser.tabs.onUpdated.addListener(function(tabId, changeInfo, tabInfo) {
     if (isRecording && changeInfo.url) {
         currentRecordingFrameLocation = "root";
-    }
-    if (isPlaying && changeInfo.status == "loading") {
-        extCommand.setLoading(tabId);
-    }
-
-    if (isPlaying && changeInfo.status == "complete") {
-        extCommand.setComplete(tabId);
     }
 });
 

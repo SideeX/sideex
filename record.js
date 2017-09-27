@@ -22,30 +22,6 @@ Recorder.addEventHandler('clickAt', 'click', function(event) {
     }
 }, true);
 
-
-/*
-//Record: ClickAt
-var preventClickTwice = false;
-window.addEventListener("click", function(event) {
-    if (event.button == 0 && !preventClick && event.isTrusted) {
-        if (!preventClickTwice) {
-            var top = event.pageY,
-                left = event.pageX;
-            var element = event.target;
-            do {
-                top -= element.offsetTop;
-                left -= element.offsetLeft;
-                element = element.offsetParent;
-            } while (element);
-            var target = event.target;
-            record("clickAt", locatorBuilders.buildAll(event.target), left + ',' + top);
-            var arrayTest = locatorBuilders.buildAll(event.target);
-            preventClickTwice = true;
-        }
-        setTimeout(function() { preventClickTwice = false; }, 30);
-    }
-}, true);
-//*/
 //Record: doubleClickAt
 Recorder.addEventHandler('doubleClickAt', 'dblclick', function(event) {
     var top = event.pageY,
@@ -314,45 +290,12 @@ Recorder.addEventHandler('dragAndDrop', 'mouseup', function(event) {
             if (!!this.mouseoverQ.length && this.mouseoverQ[1].relatedTarget == this.mouseoverQ[0].target && this.mouseoverQ[0].target == event.target) {
                 targetRelateX = event.pageX - this.mouseoverQ[1].target.getBoundingClientRect().left - window.scrollX;
                 targetRelateY = event.pageY - this.mouseoverQ[1].target.getBoundingClientRect().top - window.scrollY;
-                /*
-                browser.runtime.sendMessage({
-                    command: "mouseDownAt",
-                    target: locatorBuilders.buildAll(this.selectMousedown.target),
-                    value: sourceRelateX + ',' + sourceRelateY
-                });
-                browser.runtime.sendMessage({
-                    command: "mouseMoveAt",
-                    target: locatorBuilders.buildAll(this.mouseoverQ[1].target),
-                    value: targetRelateX + ',' + targetRelateY
-                });
-                browser.runtime.sendMessage({
-                    command: "mouseUpAt",
-                    target: locatorBuilders.buildAll(this.mouseoverQ[1].target),
-                    value: targetRelateX + ',' + targetRelateY
-                });*/
                 record("mouseDownAt", locatorBuilders.buildAll(this.selectMousedown.target), sourceRelateX + ',' + sourceRelateY);
                 record("mouseMoveAt", locatorBuilders.buildAll(this.mouseoverQ[1].target), targetRelateX + ',' + targetRelateY);
                 record("mouseUpAt", locatorBuilders.buildAll(this.mouseoverQ[1].target), targetRelateX + ',' + targetRelateY);
             } else {
                 targetRelateX = event.pageX - event.target.getBoundingClientRect().left - window.scrollX;
                 targetRelateY = event.pageY - event.target.getBoundingClientRect().top - window.scrollY;
-                /*
-                browser.runtime.sendMessage({
-                    command: "mouseDownAt",
-                    target: locatorBuilders.buildAll(this.selectMousedown.target),
-                    value: sourceRelateX + ',' + sourceRelateY
-                });
-                browser.runtime.sendMessage({
-                    command: "mouseMoveAt",
-                    target: locatorBuilders.buildAll(event.target),
-                    value: targetRelateX + ',' + targetRelateY
-                });
-                browser.runtime.sendMessage({
-                    command: "mouseUpAt",
-                    target: locatorBuilders.buildAll(event.target),
-                    value: targetRelateX + ',' + targetRelateY
-                });
-                */
                 record("mouseDownAt", locatorBuilders.buildAll(event.target), targetRelateX + ',' + targetRelateY);
                 record("mouseMoveAt", locatorBuilders.buildAll(event.target), targetRelateX + ',' + targetRelateY);
                 record("mouseUpAt", locatorBuilders.buildAll(event.target), targetRelateX + ',' + targetRelateY);
@@ -365,18 +308,6 @@ Recorder.addEventHandler('dragAndDrop', 'mouseup', function(event) {
         var y = event.clientY - this.mousedown.clientY;
 
         if (this.mousedown && this.mousedown.target !== event.target && !(x + y)) {
-            /*
-              browser.runtime.sendMessage({
-                  command: "mouseDown",
-                  target: locatorBuilders.buildAll(this.mousedown.target),
-                  value: ''
-              });
-              browser.runtime.sendMessage({
-                  command: "mouseUp",
-                  target: locatorBuilders.buildAll(event.target),
-                  value: ''
-              });
-              */
             record("mouseDown", locatorBuilders.buildAll(this.mousedown.target), '');
             record("mouseUp", locatorBuilders.buildAll(event.target), '');
         } else if (this.mousedown && this.mousedown.target === event.target) {
@@ -409,13 +340,6 @@ Recorder.addEventHandler('dragAndDropToObject', 'drop', function(event) {
     clearTimeout(this.dropLocator);
     if (this.dragstartLocator && event.button == 0 && this.dragstartLocator.target !== event.target) {
         //value no option
-        /*
-        browser.runtime.sendMessage({
-            command: "dragAndDropToObject",
-            target: locatorBuilders.buildAll(this.dragstartLocator.target),
-            value: locatorBuilders.build(event.target)
-        });
-        */
         record("dragAndDropToObject", locatorBuilders.buildAll(this.dragstartLocator.target), locatorBuilders.build(event.target));
     }
     delete this.dragstartLocator;
@@ -486,13 +410,6 @@ Recorder.addEventHandler('mouseOver', 'mouseover', function(event) {
 // Record: mouseOut
 Recorder.addEventHandler('mouseOut', 'mouseout', function(event) {
     if (this.mouseoutLocator !== null && event.target === this.mouseoutLocator) {
-        /*
-        browser.runtime.sendMessage({
-            command: "mouseOut",
-            target: locatorBuilders.buildAll(event.target),
-            value: ''
-        });
-        */
         record("mouseOut", locatorBuilders.buildAll(event.target), '');
     }
     delete this.mouseoutLocator;
@@ -505,13 +422,6 @@ Recorder.addEventHandler('mouseOver', 'DOMNodeInserted', function(event) {
         var self = this;
         if (this.scrollDetector) {
             //TODO: fix target
-            /*
-            browser.runtime.sendMessage({
-                command: "runScript",
-                target: [["window.scrollTo(0," + window.scrollY + ")",]],
-                value: ''
-            });
-            */
             record("runScript", [
                 [
                     ["window.scrollTo(0," + window.scrollY + ")", ]
@@ -525,13 +435,6 @@ Recorder.addEventHandler('mouseOver', 'DOMNodeInserted', function(event) {
             delete this.nodeInsertedLocator;
         }
         if (this.nodeInsertedLocator) {
-            /*
-            browser.runtime.sendMessage({
-                command: "mouseOver",
-                target: locatorBuilders.buildAll(this.nodeInsertedLocator),
-                value: ''
-            });
-            */
             record("mouseOver", locatorBuilders.buildAll(this.nodeInsertedLocator), '');
             this.mouseoutLocator = this.nodeInsertedLocator;
             delete this.nodeInsertedLocator;
