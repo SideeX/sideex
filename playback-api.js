@@ -234,6 +234,7 @@ function pause() {
     if (isPlaying) {
         sideex_log.info("Pausing");
         isPause = true;
+        extCommand.detach();
         switchPR();
     }
 }
@@ -245,6 +246,7 @@ function resume() {
         sideex_log.info("Resuming");
         isPlaying = true;
         isPause = false;
+        extCommand.attach();
         switchPR();
         disableClick();
         executionLoop()
@@ -445,6 +447,9 @@ function executionLoop() {
 
 function finalizePlayingProgress() {
     enableClick();
+    if (!isPause) {
+        extCommand.clear();
+    }
     //console.log("success");
     setTimeout(function() {
         isPlaying = false;
@@ -509,6 +514,7 @@ function catchPlayingError(reason) {
             playAfterConnectionFailed();
         }, 100);
     } else {
+        extCommand.clear();
         enableClick();
         sideex_log.error(reason);
 

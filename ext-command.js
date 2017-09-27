@@ -17,8 +17,6 @@
 
 class ExtCommand {
 
-    // TODO: Add listeners into class
-
     constructor(contentWindowId) {
         this.playingTabNames = {};
         this.playingTabIds = {};
@@ -31,9 +29,23 @@ class ExtCommand {
         // TODO: flexible wait
         this.waitInterval = 500;
         this.waitTimes = 60;
+
+        this.attached = false;
+
+        // Use ES6 arrow function to bind correct this
+        this.tabsOnUpdatedHandler = (tabId, changeInfo, tabInfo) => {
+            if (changeInfo.status) {
+                if (changeInfo.status == "loading") {
+                    this.setLoading(tabId);
+                } else {
+                    this.setComplete(tabId);
+                }
+            }
+        }
     }
 
     init() {
+        this.attach();
         this.playingTabNames = {};
         this.playingTabIds = {};
         this.playingTabStatus = {};
@@ -56,6 +68,32 @@ class ExtCommand {
                    console.log(e);
                    // : TODO: create a new window if not exist
                });
+    }
+
+    clear() {
+        this.detach();
+        this.playingTabNames = {};
+        this.playingTabIds = {};
+        this.playingTabStatus = {};
+        this.playingFrameLocations = {};
+        this.playingTabCount = 1;
+        this.currentPlayingWindowId = undefined;
+    }
+
+    attach() {
+        if(this.attached) {
+            return;
+        }
+        this.attached = true;
+        browser.tabs.onUpdated.addListener(this.tabsOnUpdatedHandler);
+    }
+
+    detach() {
+        if(!this.attached) {
+            return;
+        }
+        this.attached = false;
+        browser.tabs.onUpdated.removeListener(this.tabsOnUpdatedHandler);
     }
 
     setContentWindowId(contentWindowId) {

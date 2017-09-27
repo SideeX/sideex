@@ -114,13 +114,6 @@ browser.tabs.onUpdated.addListener(function(tabId, changeInfo, tabInfo) {
     if (isRecording && changeInfo.url) {
         currentRecordingFrameLocation = "root";
     }
-    if (isPlaying && changeInfo.status == "loading") {
-        extCommand.setLoading(tabId);
-    }
-
-    if (isPlaying && changeInfo.status == "complete") {
-        extCommand.setComplete(tabId);
-    }
 });
 
 function handleMessage(message, sender, sendResponse) {
