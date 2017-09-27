@@ -69,10 +69,16 @@ class ExtCommand {
         return this.currentPlayingFrameLocation;
     }
 
-    getFrame(tabId) {
-        if (tabId)
+    getFrameId(tabId) {
+        if (tabId >= 0) {
             return this.playingFrameLocations[tabId][this.currentPlayingFrameLocation];
-        return this.playingFrameLocations[this.currentPlayingTabId][this.currentPlayingFrameLocation];
+        } else {
+            return this.playingFrameLocations[this.currentPlayingTabId][this.currentPlayingFrameLocation];
+        }
+    }
+
+    getCurrentPlayingFrameId() {
+        return this.getFrameId(this.currentPlayingTabId);
     }
 
     getPageStatus() {
@@ -88,9 +94,9 @@ class ExtCommand {
            });
     }
 
-    sendMessage(command, target, value, top) {
+    sendCommand(command, target, value, top) {
         let tabId = this.getCurrentPlayingTabId();
-        let frameId = this.getFrame();
+        let frameId = this.getCurrentPlayingFrameId();
         return browser.tabs.sendMessage(tabId, {
             commands: command,
             target: target,

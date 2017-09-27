@@ -340,7 +340,7 @@ function executeCommand(index) {
                 target: commandTarget,
                 value: commandValue
             }, {
-                frameId: extCommand.getFrame(tabs[0].id)
+                frameId: extCommand.getFrameId(tabs[0].id)
             })
         })
         .then(function(result) {
@@ -544,7 +544,7 @@ function catchPlayingError(reason) {
 
 function doPreparation() {
     //console.log("in preparation");
-    return extCommand.sendMessage("waitPreparation", "", "")
+    return extCommand.sendCommand("waitPreparation", "", "")
         .then(function() {
             return true;
         })
@@ -553,7 +553,7 @@ function doPreparation() {
 
 function doPrePageWait() {
     //console.log("in prePageWait");
-    return extCommand.sendMessage("prePageWait", "", "")
+    return extCommand.sendCommand("prePageWait", "", "")
        .then(function(response) {
            if (response && response.new_page) {
                //console.log("prePageWaiting");
@@ -566,7 +566,7 @@ function doPrePageWait() {
 
 function doPageWait() {
     //console.log("in pageWait");
-    return extCommand.sendMessage("pageWait", "", "")
+    return extCommand.sendCommand("pageWait", "", "")
         .then(function(response) {
             if (pageTime && (Date.now() - pageTime) > 30000) {
                 sideex_log.error("Page Wait timed out after 30000ms");
@@ -590,7 +590,7 @@ function doPageWait() {
 
 function doAjaxWait() {
     //console.log("in ajaxWait");
-    return extCommand.sendMessage("ajaxWait", "", "")
+    return extCommand.sendCommand("ajaxWait", "", "")
         .then(function(response) {
             if (ajaxTime && (Date.now() - ajaxTime) > 30000) {
                 sideex_log.error("Ajax Wait timed out after 30000ms");
@@ -614,7 +614,7 @@ function doAjaxWait() {
 
 function doDomWait() {
     //console.log("in domWait");
-    return extCommand.sendMessage("domWait", "", "")
+    return extCommand.sendCommand("domWait", "", "")
         .then(function(response) {
             if (domTime && (Date.now() - domTime) > 30000) {
                 sideex_log.error("DOM Wait timed out after 30000ms");
@@ -675,9 +675,9 @@ function doCommand() {
             }
             if (isWindowMethodCommand(commandName))
             {
-                return extCommand.sendMessage(commandName, commandTarget, commandValue, true);
+                return extCommand.sendCommand(commandName, commandTarget, commandValue, true);
             }
-            return extCommand.sendMessage(commandName, commandTarget, commandValue);
+            return extCommand.sendCommand(commandName, commandTarget, commandValue);
         })
         .then(function(result) {
             if (result.result != "success") {
