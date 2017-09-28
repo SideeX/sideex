@@ -1,6 +1,7 @@
 // coding: utf-8
 var olderTestCaseFiles = undefined;
 
+// for load in testCase
 function transformVersion(input) {
     let component = splitTbody(input);
     component[1] = addDatalistTag(component[1]);
@@ -22,6 +23,7 @@ function checkIsTestSuite(input) {
     return false;
 }
 
+// for load in testSuite
 function transformTestSuiteVersion(str) {
     let component = splitTbody(str);
     caseResult = loadCaseIntoSuite(component[1]);
@@ -30,39 +32,29 @@ function transformTestSuiteVersion(str) {
 
 function loadCaseIntoSuite(str) {
     let href = [];
+    // find what testCase link is in the testSuite
     let anchor = str.match(/<a href=\"([a-z]|[A-Z]|[0-9])*.html\">/g);
     for (let i=0 ; i<anchor.length ; i++) {
         let temp = anchor[i];
         href[i] = temp.substring(temp.indexOf("\"")+1, temp.lastIndexOf("\""));
     }
-    
-    var testCase = [];
+
     let testCaseName = "";
     testCaseName += ("\"" + href[0] + "\"");
     for (let i=1 ; i<href.length ; i++) {
         testCaseName += (", \"" + href[i] + "\"");
     }
+    // ask user to load testCase
     var answer = confirm("Please load " + testCaseName );
     if (answer) {
         document.getElementById('load-older-testSuite').click();
-    } else {
-        ;
     }
-
-    return str;
+    return;
 }
 
 document.getElementById("load-older-testSuite").addEventListener("change", afterLoadOlderTestCase, false);
 function afterLoadOlderTestCase(event) {
     event.stopPropagation();
-    /*
-    var p = new Promise((resolve, reject) => {
-        for (let i=0 ; i<this.files.length ; i++) {
-            console.log("i: ", i);
-            readOlderTestCase(this.files[i], i, this.files.length);
-        }
-    });
-    */
     olderTestCaseFiles = this.files;
     readOlderTestCase(this.files[0], 0, this.files.length);
 }
@@ -72,6 +64,8 @@ function readOlderTestCase(file, index, filesLength) {
     reader.onload = function(event) {
         let result = event.target.result;
 
+        // NOTE: Because append testCase need one by one ,
+        // there write a recursive loop for doing this
         olderTestSuiteResult = appendOlderTestCase(event.target.result);
         if(index == filesLength-1) {
             appendTestSuite(olderTestSuiteFile, olderTestSuiteResult);
@@ -87,7 +81,6 @@ function readOlderTestCase(file, index, filesLength) {
 }
 
 function appendOlderTestCase(str) {
-    let preindex = olderTestSuiteResult.indexOf("<table");
     let postindex = olderTestSuiteResult.indexOf("</body>");
     let fore = olderTestSuiteResult.substring(0, postindex);
     let back = olderTestSuiteResult.substring(postindex);
@@ -121,11 +114,11 @@ function appendTestSuite(suiteFile, suiteResult) {
 function splitTbody(str) {
     let preindex = str.indexOf("<tbody>");
     let postindex = str.indexOf("</tbody>");
-    let tbody = str.substring(0, postindex+8).substring(preindex);
 
     let component = [];
     component[0] = str.substring(0, preindex);
-    component[1] = tbody;
+    // NOTE: 8 is "</tbody>".length
+    component[1] = str.substring(0, postindex+8).substring(preindex);
     component[2] = str.substring(postindex+8);
 
     return component;
@@ -133,9 +126,7 @@ function splitTbody(str) {
 
 function splitForeAndBack(str, tag) {
     let postindex = str.indexOf(tag);
-    let fore = str.substring(0, postindex);
-    let back = str.substring(postindex);
-    return [fore, back];
+    return [str.substring(0, postindex), str.substring(postindex)];
 }
 
 function splitTag(str, tag) {
@@ -145,6 +136,7 @@ function splitTag(str, tag) {
 }
 
 function addDatalistTag(str) {
+    // for some input with table tag
     var tempFore = "";
     if (str.search("<table") >= 0) {
         var tbodyIndex = str.indexOf("<tbody>");
@@ -154,20 +146,19 @@ function addDatalistTag(str) {
 
     let preindex = str.indexOf("<td>");
     let postindex = str.indexOf("</td>");
-    
     let count = 0;
     while (preindex>=0 && postindex>=0) {
+        // NOTE: Because we add datalist tag in second td in every tbody's tr
+        // we do tjis in evey count equals to 1
         if (count == 1) {
-            let fore = str.substring(0, postindex);
-            let back = str.substring(postindex);
             let insert = "<datalist>" + addOption(str.substring(preindex, postindex)) + "</datalist>";
-            str = fore + insert + back;
+            str = str.substring(0, postindex) + insert + str.substring(postindex);
             postindex += insert.length;
         }
 
         preindex = str.indexOf("<td>", preindex+1);
         postindex = str.indexOf("</td>", postindex+1);
-        count = (count+1)%3;
+        count = (count+1) % 3;
     }
     return tempFore + str;
 }

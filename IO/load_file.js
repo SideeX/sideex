@@ -105,11 +105,9 @@ function readSuite(f) {
                 }
                 // parse for testCase or testSuite
                 if (checkIsTestSuite(test_suite)) {
-                    // let component = splitTbody(test_suite);
-                    // olderTestSuiteResult = test_suite;
                     olderTestSuiteResult = test_suite.substring(0, test_suite.indexOf("<table")) + test_suite.substring(test_suite.indexOf("</body>"));
                     olderTestSuiteFile = f;
-                    test_suite = loadCaseIntoSuite(test_suite);
+                    loadCaseIntoSuite(test_suite);
                     return;
                 } else {
                     test_suite = transformVersion(test_suite);
