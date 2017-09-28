@@ -90,13 +90,10 @@ function readCase(f) {
 function readSuite(f) {
     var reader = new FileReader();
 
-    console.log("f: ", f);
     reader.readAsText(f);
-    console.log("reader: ", reader);
 
     reader.onload = function(event) {
         var test_suite = reader.result;
-        console.log("event: ", event);
         // check for input file version
         // if it is not SideeX2, transforming it
         if (!checkIsVersion2(test_suite)) {
@@ -142,6 +139,7 @@ function readSuite(f) {
         setSelectedSuite(id);
         clean_panel();
         // document.getElementById("records-grid").innerHTML = "";
+        // set up some veraible for recording after loading
     };
     reader.onerror = function(e) {
         console.log("Error", e);

@@ -56,7 +56,6 @@ function adjustTooLongStr(str, node) {
 }
 
 function addCommand(command_name, command_target_array, command_value, auto, insertCommand) {
-    console.log("in addCommand");
     // create default test suite and case if necessary
     var s_suite = getSelectedSuite(),
         s_case = getSelectedCase();

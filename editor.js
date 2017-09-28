@@ -25,13 +25,13 @@ var recorder = new BackgroundRecorder();
 /* flags */
 var isRecording = false;
 var isPlaying = false;
+var initialSetFlag = true;
 
 class Editor {
 
 }
 
 function handleMessage(message, sender, sendResponse) {
-    console.log("catch message");
     if (message.selectTarget) {
 
         var target = message.target;
