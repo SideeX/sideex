@@ -15,7 +15,8 @@
  *
  */
 
-var inputFiles = undefined;
+var olderTestSuiteResult = undefined;
+var olderTestSuiteFile = undefined;
 
 function fileToPanel(f) {
     // set records
@@ -101,20 +102,22 @@ function readSuite(f) {
         if (!checkIsVersion2(test_suite)) {
             if (test_suite.search("<datalist>") < 0) {
                 // confrim user if want to transform input file for loading it
-                let result = window.confirm("The input file \"" + f.name + "\" is only read by early version of SideeX.\n Would you want to transform and to be loaded?");
+                let result = window.confirm("\"" + f.name + "\" is of the format of an early version of SideeX.\nDo you still want to open it?");
                 if (!result) {
                     return;
                 }
                 // parse for testCase or testSuite
                 if (checkIsTestSuite(test_suite)) {
                     // let component = splitTbody(test_suite);
+                    // olderTestSuiteResult = test_suite;
+                    olderTestSuiteResult = test_suite.substring(0, test_suite.indexOf("<table")) + test_suite.substring(test_suite.indexOf("</body>"));
+                    olderTestSuiteFile = f;
                     test_suite = loadCaseIntoSuite(test_suite);
+                    return;
                 } else {
                     test_suite = transformVersion(test_suite);
                 }
-                console.log("reader result: ", test_suite);
             }
-
             // some early version of SideeX2 without <meta>
             test_suite = addMeta(test_suite);
         }
@@ -147,18 +150,7 @@ function readSuite(f) {
 
 document.getElementById("load-testSuite-hidden").addEventListener("change", function(event) {
     event.stopPropagation();
-    console.log("input: ", this.files);
-    inputFiles = [];
-    let temp = {};
-    for (let i=0 ; i<this.files.length ; i++) {
-        temp["status"] = 0;
-        temp["object"] = this.files[i];
-        inputFiles[i] = temp;
-    }
     for (var i = 0; i < this.files.length; i++) {
-        if (inputFiles[i]["status"] != 0) {
-            continue;
-        }
         readSuite(this.files[i]);
     }
 }, false);
