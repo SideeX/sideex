@@ -328,10 +328,3 @@ function notification(command, target, value) {
         browser.notifications.clear(tempCount);
     }, 1500);
 }
-
-$.getJSON("manifest.json", function(json) {
-    console.log(json); // access the response object
-    console.log(json.data); // access the array
-    //console.log(json.data[0]); // access the first object of the array
-    //console.log(json.data[0].number); // access the first object proprty of the array
-});
