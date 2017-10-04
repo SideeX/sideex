@@ -42,6 +42,12 @@ class ExtCommand {
                 }
             }
         }
+
+        this.frameLocationMessageHandler = (message, sender) => {
+            if (message.frameLocation) {
+                this.setFrame(sender.tab.id, message.frameLocation, sender.frameId);
+            }
+        }
     }
 
     init() {
@@ -86,6 +92,7 @@ class ExtCommand {
         }
         this.attached = true;
         browser.tabs.onUpdated.addListener(this.tabsOnUpdatedHandler);
+        browser.runtime.onMessage.addListener(this.frameLocationMessageHandler);
     }
 
     detach() {
@@ -94,6 +101,7 @@ class ExtCommand {
         }
         this.attached = false;
         browser.tabs.onUpdated.removeListener(this.tabsOnUpdatedHandler);
+        browser.runtime.onMessage.removeListener(this.frameLocationMessageHandler);
     }
 
     setContentWindowId(contentWindowId) {
