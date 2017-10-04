@@ -1,6 +1,3 @@
-var locatorBuilders = new LocatorBuilders(window);
-
-
 var preventClickTwice = false;
 Recorder.addEventHandler('clickAt', 'click', function(event) {
     if (event.button == 0 && !preventClick && event.isTrusted) {
@@ -14,15 +11,15 @@ Recorder.addEventHandler('clickAt', 'click', function(event) {
                 element = element.offsetParent;
             } while (element);
             var target = event.target;
-            record("clickAt", locatorBuilders.buildAll(event.target), left + ',' + top);
-            var arrayTest = locatorBuilders.buildAll(event.target);
+            this.record("clickAt", this.locatorBuilders.buildAll(event.target), left + ',' + top);
+            var arrayTest = this.locatorBuilders.buildAll(event.target);
             preventClickTwice = true;
         }
         setTimeout(function() { preventClickTwice = false; }, 30);
     }
 }, true);
 
-//Record: doubleClickAt
+// record: doubleClickAt
 Recorder.addEventHandler('doubleClickAt', 'dblclick', function(event) {
     var top = event.pageY,
         left = event.pageX;
@@ -32,10 +29,10 @@ Recorder.addEventHandler('doubleClickAt', 'dblclick', function(event) {
         left -= element.offsetLeft;
         element = element.offsetParent;
     } while (element);
-    record("doubleClickAt", locatorBuilders.buildAll(event.target), left + ',' + top);
+    this.record("doubleClickAt", this.locatorBuilders.buildAll(event.target), left + ',' + top);
 }, true);
 
-//Record: SendKeys
+// record: SendKeys
 var inputTypes = ["text", "password", "file", "datetime", "datetime-local", "date", "month", "time", "week", "number", "range", "email", "url", "search", "tel", "color"];
 var focusTarget = null;
 var focusValue = null;
@@ -75,7 +72,7 @@ Recorder.addEventHandler('sendKeys', 'keydown', function(event) {
                 var formChk = tempTarget.tagName.toLowerCase();
                 //console.log(tempValue + " " + enterTarget.value + " " + tabCheck + " " + enterTarget + " " + focusValue);
                 if (tempValue == enterTarget.value && tabCheck == enterTarget) {
-                    record("sendKeys", locatorBuilders.buildAll(enterTarget), "${KEY_ENTER}");
+                    this.record("sendKeys", this.locatorBuilders.buildAll(enterTarget), "${KEY_ENTER}");
                     enterTarget = null;
                     preventType = true;
                 } else if (focusValue == enterTarget.value) {
@@ -85,11 +82,11 @@ Recorder.addEventHandler('sendKeys', 'keydown', function(event) {
                     }
                     if (formChk == 'form' && (tempTarget.hasAttribute("id") || tempTarget.hasAttribute("name")) && (!tempTarget.hasAttribute("onsubmit"))) {
                         if (tempTarget.hasAttribute("id"))
-                            record("submit", "id=" + tempTarget.id, "");
+                            this.record("submit", "id=" + tempTarget.id, "");
                         else if (tempTarget.hasAttribute("name"))
-                            record("submit", "name=" + tempTarget.name, "");
+                            this.record("submit", "name=" + tempTarget.name, "");
                     } else
-                        record("sendKeys", locatorBuilders.buildAll(enterTarget), "${KEY_ENTER}");
+                        this.record("sendKeys", this.locatorBuilders.buildAll(enterTarget), "${KEY_ENTER}");
                     enterTarget = null;
                 }
                 preventClick = true;
@@ -109,20 +106,20 @@ Recorder.addEventHandler('sendKeys', 'keydown', function(event) {
                     tempValue = focusTarget.value;
                 }
                 if (tempbool) {
-                    record("type", locatorBuilders.buildAll(event.target), tempValue);
+                    this.record("type", this.locatorBuilders.buildAll(event.target), tempValue);
                 }
 
                 setTimeout(function() {
                     tempValue = focusTarget.value;
                 }, 250);
 
-                if (key == 38) record("sendKeys", locatorBuilders.buildAll(event.target), "${KEY_UP}");
-                else record("sendKeys", locatorBuilders.buildAll(event.target), "${KEY_DOWN}");
+                if (key == 38) this.record("sendKeys", this.locatorBuilders.buildAll(event.target), "${KEY_UP}");
+                else this.record("sendKeys", this.locatorBuilders.buildAll(event.target), "${KEY_DOWN}");
                 tabCheck = event.target;
             }
             if (key == 9) {
                 if (tabCheck == event.target) {
-                    record("sendKeys", locatorBuilders.buildAll(event.target), "${KEY_TAB}");
+                    this.record("sendKeys", this.locatorBuilders.buildAll(event.target), "${KEY_TAB}");
                     preventType = true;
                 }
             }
@@ -137,7 +134,7 @@ Recorder.addEventHandler('Type', 'change', function(event) {
         var type = event.target.type;
         if ('input' == tagName && inputTypes.indexOf(type) >= 0) {
             if (event.target.value.length > 0) {
-                record("type", locatorBuilders.buildAll(event.target), event.target.value);
+                this.record("type", this.locatorBuilders.buildAll(event.target), event.target.value);
 
                 //FormSubmitByEnterKeyExt, Chen-Chieh Ping, SELAB, CSIE, NCKU, 2016/10/07
                 if (enterTarget != null) {
@@ -150,22 +147,22 @@ Recorder.addEventHandler('Type', 'change', function(event) {
                     }
                     if (formChk == 'form' && (tempTarget.hasAttribute("id") || tempTarget.hasAttribute("name")) && (!tempTarget.hasAttribute("onsubmit"))) {
                         if (tempTarget.hasAttribute("id"))
-                            record("submit", [
+                            this.record("submit", [
                                 ["id=" + tempTarget.id, "id"]
                             ], "");
                         else if (tempTarget.hasAttribute("name"))
-                            record("submit", [
+                            this.record("submit", [
                                 ["name=" + tempTarget.name, "name"]
                             ], "");
                     } else
-                        record("sendKeys", locatorBuilders.buildAll(enterTarget), "${KEY_ENTER}");
+                        this.record("sendKeys", this.locatorBuilders.buildAll(enterTarget), "${KEY_ENTER}");
                     enterTarget = null;
                 }
             } else {
-                record("type", locatorBuilders.buildAll(event.target), event.target.value);
+                this.record("type", this.locatorBuilders.buildAll(event.target), event.target.value);
             }
         } else if ('textarea' == tagName) {
-            record("type", locatorBuilders.buildAll(event.target), event.target.value);
+            this.record("type", this.locatorBuilders.buildAll(event.target), event.target.value);
         }
     }
 });
@@ -192,7 +189,7 @@ Recorder.addEventHandler('select', 'change', function(event) {
         if ('select' == tagName) {
             if (!event.target.multiple) {
                 var option = event.target.options[event.target.selectedIndex];
-                record("select", locatorBuilders.buildAll(event.target), getOptionLocator(option));
+                this.record("select", this.locatorBuilders.buildAll(event.target), getOptionLocator(option));
             } else {
                 var options = event.target.options;
                 for (var i = 0; i < options.length; i++) {
@@ -200,9 +197,9 @@ Recorder.addEventHandler('select', 'change', function(event) {
                     if (options[i]._wasSelected != options[i].selected) {
                         var value = getOptionLocator(options[i]);
                         if (options[i].selected) {
-                            record("addSelection", locatorBuilders.buildAll(event.target), value);
+                            this.record("addSelection", this.locatorBuilders.buildAll(event.target), value);
                         } else {
-                            record("removeSelection", locatorBuilders.buildAll(event.target), value);
+                            this.record("removeSelection", this.locatorBuilders.buildAll(event.target), value);
                         }
                         options[i]._wasSelected = options[i].selected;
                     }
@@ -290,15 +287,15 @@ Recorder.addEventHandler('dragAndDrop', 'mouseup', function(event) {
             if (!!this.mouseoverQ.length && this.mouseoverQ[1].relatedTarget == this.mouseoverQ[0].target && this.mouseoverQ[0].target == event.target) {
                 targetRelateX = event.pageX - this.mouseoverQ[1].target.getBoundingClientRect().left - window.scrollX;
                 targetRelateY = event.pageY - this.mouseoverQ[1].target.getBoundingClientRect().top - window.scrollY;
-                record("mouseDownAt", locatorBuilders.buildAll(this.selectMousedown.target), sourceRelateX + ',' + sourceRelateY);
-                record("mouseMoveAt", locatorBuilders.buildAll(this.mouseoverQ[1].target), targetRelateX + ',' + targetRelateY);
-                record("mouseUpAt", locatorBuilders.buildAll(this.mouseoverQ[1].target), targetRelateX + ',' + targetRelateY);
+                this.record("mouseDownAt", this.locatorBuilders.buildAll(this.selectMousedown.target), sourceRelateX + ',' + sourceRelateY);
+                this.record("mouseMoveAt", this.locatorBuilders.buildAll(this.mouseoverQ[1].target), targetRelateX + ',' + targetRelateY);
+                this.record("mouseUpAt", this.locatorBuilders.buildAll(this.mouseoverQ[1].target), targetRelateX + ',' + targetRelateY);
             } else {
                 targetRelateX = event.pageX - event.target.getBoundingClientRect().left - window.scrollX;
                 targetRelateY = event.pageY - event.target.getBoundingClientRect().top - window.scrollY;
-                record("mouseDownAt", locatorBuilders.buildAll(event.target), targetRelateX + ',' + targetRelateY);
-                record("mouseMoveAt", locatorBuilders.buildAll(event.target), targetRelateX + ',' + targetRelateY);
-                record("mouseUpAt", locatorBuilders.buildAll(event.target), targetRelateX + ',' + targetRelateY);
+                this.record("mouseDownAt", this.locatorBuilders.buildAll(event.target), targetRelateX + ',' + targetRelateY);
+                this.record("mouseMoveAt", this.locatorBuilders.buildAll(event.target), targetRelateX + ',' + targetRelateY);
+                this.record("mouseUpAt", this.locatorBuilders.buildAll(event.target), targetRelateX + ',' + targetRelateY);
             }
         }
     } else {
@@ -308,14 +305,14 @@ Recorder.addEventHandler('dragAndDrop', 'mouseup', function(event) {
         var y = event.clientY - this.mousedown.clientY;
 
         if (this.mousedown && this.mousedown.target !== event.target && !(x + y)) {
-            record("mouseDown", locatorBuilders.buildAll(this.mousedown.target), '');
-            record("mouseUp", locatorBuilders.buildAll(event.target), '');
+            this.record("mouseDown", this.locatorBuilders.buildAll(this.mousedown.target), '');
+            this.record("mouseUp", this.locatorBuilders.buildAll(event.target), '');
         } else if (this.mousedown && this.mousedown.target === event.target) {
             var self = this;
-            var target = locatorBuilders.buildAll(this.mousedown.target);
+            var target = this.locatorBuilders.buildAll(this.mousedown.target);
             // setTimeout(function() {
             //     if (!self.clickLocator)
-            //         record("click", target, '');
+            //         this.record("click", target, '');
             // }.bind(this), 100);
         }
 
@@ -327,7 +324,7 @@ Recorder.addEventHandler('dragAndDrop', 'mouseup', function(event) {
 }, true);
 
 //DragAndDropExt, Shuo-Heng Shih, SELAB, CSIE, NCKU, 2016/07/19
-// Record: dragAndDropToObject
+// record: dragAndDropToObject
 Recorder.addEventHandler('dragAndDropToObject', 'dragstart', function(event) {
     var self = this;
     this.dropLocator = setTimeout(function() {
@@ -340,7 +337,7 @@ Recorder.addEventHandler('dragAndDropToObject', 'drop', function(event) {
     clearTimeout(this.dropLocator);
     if (this.dragstartLocator && event.button == 0 && this.dragstartLocator.target !== event.target) {
         //value no option
-        record("dragAndDropToObject", locatorBuilders.buildAll(this.dragstartLocator.target), locatorBuilders.build(event.target));
+        this.record("dragAndDropToObject", this.locatorBuilders.buildAll(this.dragstartLocator.target), this.locatorBuilders.build(event.target));
     }
     delete this.dragstartLocator;
     delete this.selectMousedown;
@@ -378,7 +375,7 @@ var findClickableElement = function(e) {
     }
 };
 
-//Record: mouseOver
+// record: mouseOver
 Recorder.addEventHandler('mouseOver', 'mouseover', function(event) {
     if (window.document.documentElement)
         nowNode = window.document.documentElement.getElementsByTagName('*').length;
@@ -391,7 +388,7 @@ Recorder.addEventHandler('mouseOver', 'mouseover', function(event) {
                 delete self.nodeInsertedLocator;
             }.bind(self), 500);
 
-            this.nodeAttrChange = locatorBuilders.buildAll(event.target);
+            this.nodeAttrChange = this.locatorBuilders.buildAll(event.target);
             this.nodeAttrChangeTimeout = setTimeout(function() {
                 delete self.nodeAttrChange;
             }.bind(self), 10);
@@ -407,22 +404,22 @@ Recorder.addEventHandler('mouseOver', 'mouseover', function(event) {
 }, true);
 
 //InfluentialMouseoverExt, Shuo-Heng Shih, SELAB, CSIE, NCKU, 2016/11/08
-// Record: mouseOut
+// record: mouseOut
 Recorder.addEventHandler('mouseOut', 'mouseout', function(event) {
     if (this.mouseoutLocator !== null && event.target === this.mouseoutLocator) {
-        record("mouseOut", locatorBuilders.buildAll(event.target), '');
+        this.record("mouseOut", this.locatorBuilders.buildAll(event.target), '');
     }
     delete this.mouseoutLocator;
 }, true);
 
 // InfluentialMouseoverExt & InfluentialScrollingExt, Shuo-Heng Shih, SELAB, CSIE, NCKU, 2016/11/08
-// Record: mouseOver
+// record: mouseOver
 Recorder.addEventHandler('mouseOver', 'DOMNodeInserted', function(event) {
     if (pageLoaded === true && window.document.documentElement.getElementsByTagName('*').length > nowNode) {
         var self = this;
         if (this.scrollDetector) {
             //TODO: fix target
-            record("runScript", [
+            this.record("runScript", [
                 [
                     ["window.scrollTo(0," + window.scrollY + ")", ]
                 ]
@@ -435,7 +432,7 @@ Recorder.addEventHandler('mouseOver', 'DOMNodeInserted', function(event) {
             delete this.nodeInsertedLocator;
         }
         if (this.nodeInsertedLocator) {
-            record("mouseOver", locatorBuilders.buildAll(this.nodeInsertedLocator), '');
+            this.record("mouseOver", this.locatorBuilders.buildAll(this.nodeInsertedLocator), '');
             this.mouseoutLocator = this.nodeInsertedLocator;
             delete this.nodeInsertedLocator;
             delete this.mouseoverLocator;
@@ -459,28 +456,29 @@ Recorder.addEventHandler('checkPageLoaded', 'readystatechange', function(event) 
     }
 }, true);
 
-// Record: verify/assert text and title
+// TODO: do not use port?
+// record: verify/assert text and title
 Recorder.addEventHandler('contextMenu', 'contextmenu', function(event) {
-    //     //window.console.log(locatorBuilders.buildAll(event.target));
-    //     //browser.runtime.connect().postMessage({T:locatorBuilders.buildAll(event.target),V:event.target.textContent});
-    //     // record("verifyText", locatorBuilders.buildAll(event.target), event.target.textContent);
+    //     //window.console.log(this.locatorBuilders.buildAll(event.target));
+    //     //browser.runtime.connect().postMessage({T:this.locatorBuilders.buildAll(event.target),V:event.target.textContent});
+    //     // this.record("verifyText", this.locatorBuilders.buildAll(event.target), event.target.textContent);
     var myPort = browser.runtime.connect();
-    var tmpText = locatorBuilders.buildAll(event.target);
+    var tmpText = this.locatorBuilders.buildAll(event.target);
     var tmpVal = getText(event.target);
     var tmpTitle = [
         [normalizeSpaces(event.target.ownerDocument.title)]
     ];
-    myPort.onMessage.addListener(function(m) {
+    myPort.onMessage.addListener(function portListener(m) {
         if (m.cmd.includes("Text")) {
             record(m.cmd, tmpText, tmpVal);
         } else if (m.cmd.includes("Title")) {
             record(m.cmd, tmpTitle, '');
         }
-        myPort.onMessage.removeListener(this);
+        myPort.onMessage.removeListener(portListener);
     });
 }, true);
 
-// Record: EditContent
+// record: EditContent
 var getEle;
 var checkFocus = 0;
 Recorder.addEventHandler('editContent', 'focus', function(event) {
@@ -496,7 +494,7 @@ Recorder.addEventHandler('editContent', 'blur', function(event) {
     if (checkFocus == 1) {
         if (event.target == getEle) {
             if (getEle.innerHTML != contentTest) {
-                record("editContent", locatorBuilders.buildAll(event.target), getEle.innerHTML);
+                this.record("editContent", this.locatorBuilders.buildAll(event.target), getEle.innerHTML);
             }
             checkFocus = 0;
         }
