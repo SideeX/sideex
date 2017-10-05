@@ -325,17 +325,26 @@ document.addEventListener("keydown", function(e) {
     var keynum;
     if(window.event) // IE
     {
-        keynum = e.keyCode
+        keynum = e.keyCode;
     }
     else if(e.which) // Netscape/Firefox/Opera
     {
-        keynum = e.which
+        keynum = e.which;
     }
 
     if(keynum === 46){
         deleteCommand(getSelectedRecord());
     } else if (keynum == 17) {
         ctrlKey = true;
+    }
+    if (navigator.appVersion.indexOf("Mac") >= 0) {
+        if (keynum == 17 || keynum == 224 || keynum == 91 || keynum == 93) {
+            ctrlKey = true;
+        }
+    } else {
+        if (keynum == 17) {
+            ctrlKey = true;
+        }
     }
     
     // hot keys: ctrl + [KEY]
@@ -352,13 +361,22 @@ document.addEventListener("keyup", function(event) {
     var keynum;
     if(window.event) // IE
     {
-        keynum = e.keyCode
+        keynum = event.keyCode;
     }
-    else if(e.which) // Netscape/Firefox/Opera
+    else if(event.which) // Netscape/Firefox/Opera
     {
-        keynum = e.which
+        keynum = event.which;
     }
 
+    if (navigator.appVersion.indexOf("Mac") >= 0) {
+        if (keynum == 17 || keynum == 224 || keynum == 91 || keynum == 93) {
+            ctrlKey = false;
+        }
+    } else {
+        if (keynum == 17) {
+            ctrlKey = false;
+        }
+    }
     if (keynum == 17) {
         ctrlKey = false;
     }
@@ -395,7 +413,7 @@ function deleteCommand(selected_ID) {
 }
 
 function copyCommand() {
-    let ref = document.getElementsByClassName("even selectedRecord")[0];
+    let ref = document.getElementsByClassName("selectedRecord")[0];
     let targetOptions = ref.getElementsByTagName("td")[1].getElementsByTagName("datalist")[0].getElementsByTagName("option");
     console.log("ref: ", ref);
     let targetElements = [];
