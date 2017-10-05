@@ -15,6 +15,8 @@
  *
  */
 
+ var tempCommand = undefined;
+
 function getSelectedCase() {
     if (document.getElementById("testCase-grid").getElementsByClassName("selectedCase")) {
         return document.getElementById("testCase-grid").getElementsByClassName("selectedCase")[0];
@@ -289,6 +291,36 @@ document.getElementById("grid-delete").addEventListener("click", function() {
     deleteCommand(getSelectedRecord());
 }, false);
 
+document.getElementById("grid-copy").addEventListener("click", function(event) {
+    /*
+    let ref = document.getElementsByClassName("even selectedRecord")[0];
+    let targetOptions = ref.getElementsByTagName("td")[1].getElementsByTagName("datalist")[0].getElementsByTagName("option");
+    console.log("ref: ", ref);
+    let targetElements = [];
+    for (let i=0 ; i<targetOptions.length ; i++) {
+        targetElements.push([targetOptions[i].text]);
+    }
+    console.log("targetElements: ", targetElements);
+    tempCommand = {
+        "command": getCommandName(ref),
+        "test": getCommandTarget(ref),
+        "target": targetElements,
+        "value": getCommandValue(ref)
+    };
+    */
+    copyCommand();
+    console.log("test: ", tempCommand["test"]);
+}, false);
+
+document.getElementById("grid-paste").addEventListener("click", function() {
+    /*if (tempCommand != undefined) {
+        addCommandManu(tempCommand["command"], tempCommand["target"], tempCommand["value"]);
+        // addCommandManu(tempCommand["command"], [[tempCommand["test"]]], tempCommand["value"]);
+    }*/
+    pasteCommand();
+}, false);
+
+var ctrlKey = false;
 document.addEventListener("keydown", function(e) {
     var keynum;
     if(window.event) // IE
@@ -299,8 +331,36 @@ document.addEventListener("keydown", function(e) {
     {
         keynum = e.which
     }
+
     if(keynum === 46){
         deleteCommand(getSelectedRecord());
+    } else if (keynum == 17) {
+        ctrlKey = true;
+    }
+    
+    // hot keys: ctrl + [KEY]
+    if (ctrlKey) {
+        if (keynum == 67) {
+            copyCommand();
+        } else if (keynum == 86) {
+            pasteCommand();
+        }
+    }
+}, false);
+
+document.addEventListener("keyup", function(event) {
+    var keynum;
+    if(window.event) // IE
+    {
+        keynum = e.keyCode
+    }
+    else if(e.which) // Netscape/Firefox/Opera
+    {
+        keynum = e.which
+    }
+
+    if (keynum == 17) {
+        ctrlKey = false;
     }
 }, false);
 
@@ -331,5 +391,28 @@ function deleteCommand(selected_ID) {
         if (s_case) {
             sideex_testCase[s_case.id].records = document.getElementById("records-grid").innerHTML;
         }
+    }
+}
+
+function copyCommand() {
+    let ref = document.getElementsByClassName("even selectedRecord")[0];
+    let targetOptions = ref.getElementsByTagName("td")[1].getElementsByTagName("datalist")[0].getElementsByTagName("option");
+    console.log("ref: ", ref);
+    let targetElements = [];
+    for (let i=0 ; i<targetOptions.length ; i++) {
+        targetElements.push([targetOptions[i].text]);
+    }
+    tempCommand = {
+        "command": getCommandName(ref),
+        "test": getCommandTarget(ref),
+        "target": targetElements,
+        "value": getCommandValue(ref)
+    };
+}
+
+function pasteCommand() {
+    if (tempCommand != undefined) {
+        addCommandManu(tempCommand["command"], tempCommand["target"], tempCommand["value"]);
+        // addCommandManu(tempCommand["command"], [[tempCommand["test"]]], tempCommand["value"]);
     }
 }
