@@ -298,8 +298,6 @@ browser.webNavigation.onCreatedNavigationTarget.addListener(function(details) {
         openedWindowIds[details.windowId] = true;
         openedTabCount++;
     }
-    if (isPlaying && extCommand.hasTab(details.sourceTabId))
-        extCommand.setNewTab(details.tabId);
 });
 
 browser.runtime.onMessage.addListener(function contentWindowIdListener(message) {
