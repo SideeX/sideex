@@ -134,35 +134,3 @@ function startShowElement(message, sender, sendResponse){
     }
 }
 browser.runtime.onMessage.addListener(startShowElement);
-
-// TODO: delete below and modify port in the end
-
-var frameLocation = "";
-// set frame id
-(function getframeLocation() {
-    let currentWindow = window;
-    let currentParentWindow;
-    while (currentWindow !== window.top) {
-        currentParentWindow = currentWindow.parent;
-        for (let idx = 0; idx < currentParentWindow.frames.length; idx++)
-            if (currentParentWindow.frames[idx] === currentWindow) {
-                frameLocation = ":" + idx + frameLocation;
-                currentWindow = currentParentWindow;
-                break;
-            }
-    }
-    frameLocation = "root" + frameLocation;
-})();
-/* record */
-function record(command, target, value, insertBeforeLastCommand, actualFrameLocation) {
-    browser.runtime.sendMessage({
-        command: command,
-        target: target,
-        value: value,
-        insertBeforeLastCommand: insertBeforeLastCommand,
-        frameLocation: (actualFrameLocation != undefined ) ? actualFrameLocation : frameLocation,
-    }).catch (function(reason) {
-        // If receiving end does not exist, detach the recorder
-        recorder.detach();
-    });
-}

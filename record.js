@@ -456,23 +456,19 @@ Recorder.addEventHandler('checkPageLoaded', 'readystatechange', function(event) 
     }
 }, true);
 
-// TODO: do not use port?
+// Do not use port?
 // record: verify/assert text and title
 Recorder.addEventHandler('contextMenu', 'contextmenu', function(event) {
-    //     //window.console.log(this.locatorBuilders.buildAll(event.target));
-    //     //browser.runtime.connect().postMessage({T:this.locatorBuilders.buildAll(event.target),V:event.target.textContent});
-    //     // this.record("verifyText", this.locatorBuilders.buildAll(event.target), event.target.textContent);
     var myPort = browser.runtime.connect();
     var tmpText = this.locatorBuilders.buildAll(event.target);
     var tmpVal = getText(event.target);
-    var tmpTitle = [
-        [normalizeSpaces(event.target.ownerDocument.title)]
-    ];
+    var tmpTitle = normalizeSpaces(event.target.ownerDocument.title);
+    var self = this;
     myPort.onMessage.addListener(function portListener(m) {
         if (m.cmd.includes("Text")) {
-            record(m.cmd, tmpText, tmpVal);
+            self.record(m.cmd, tmpText, tmpVal);
         } else if (m.cmd.includes("Title")) {
-            record(m.cmd, tmpTitle, '');
+            self.record(m.cmd, [[tmpTitle]], '');
         }
         myPort.onMessage.removeListener(portListener);
     });
