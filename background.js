@@ -72,41 +72,41 @@ function openPage() {
     });
 
     browser.contextMenus.create({
-	    id: "verifyText",
-	    title: "verifyText",
-	    documentUrlPatterns: ["<all_urls>"],
-	    contexts: ["all"]
-	});
-	browser.contextMenus.create({
-	    id: "verifyTitle",
-	    title: "verifyTitle",
-    	documentUrlPatterns: ["<all_urls>"],
-    	contexts: ["all"]
-	});
-	browser.contextMenus.create({
-	    id: "assertText",
-	    title: "assertText",
-	    documentUrlPatterns: ["<all_urls>"],
-	    contexts: ["all"]
-	});
-	browser.contextMenus.create({
-	    id: "assertTitle",
-	    title: "assertTitle",
-	    documentUrlPatterns: ["<all_urls>"],
-	    contexts: ["all"]
-	});
-	browser.contextMenus.create({
-	    id: "storeText",
-	    title: "storeText",
-	    documentUrlPatterns: ["<all_urls>"],
-	    contexts: ["all"]
-	});
-	browser.contextMenus.create({
-	    id: "storeTitle",
-	    title: "storeTitle",
-	    documentUrlPatterns: ["<all_urls>"],
-	    contexts: ["all"]
-	});
+        id: "verifyText",
+        title: "verifyText",
+        documentUrlPatterns: ["<all_urls>"],
+        contexts: ["all"]
+    });
+    browser.contextMenus.create({
+        id: "verifyTitle",
+        title: "verifyTitle",
+        documentUrlPatterns: ["<all_urls>"],
+        contexts: ["all"]
+    });
+    browser.contextMenus.create({
+        id: "assertText",
+        title: "assertText",
+        documentUrlPatterns: ["<all_urls>"],
+        contexts: ["all"]
+    });
+    browser.contextMenus.create({
+        id: "assertTitle",
+        title: "assertTitle",
+        documentUrlPatterns: ["<all_urls>"],
+        contexts: ["all"]
+    });
+    browser.contextMenus.create({
+        id: "storeText",
+        title: "storeText",
+        documentUrlPatterns: ["<all_urls>"],
+        contexts: ["all"]
+    });
+    browser.contextMenus.create({
+        id: "storeTitle",
+        title: "storeTitle",
+        documentUrlPatterns: ["<all_urls>"],
+        contexts: ["all"]
+    });
 
 }
 
