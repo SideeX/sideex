@@ -97,6 +97,7 @@ class Recorder {
     }
 
     record(command, target, value, insertBeforeLastCommand, actualFrameLocation) {
+        let self = this;
         browser.runtime.sendMessage({
             command: command,
             target: target,
@@ -105,7 +106,7 @@ class Recorder {
             frameLocation: (actualFrameLocation != undefined ) ? actualFrameLocation : this.frameLocation,
         }).catch (function(reason) {
             // If receiving end does not exist, detach the recorder
-            this.detach();
+            self.detach();
         });
     }
 }
