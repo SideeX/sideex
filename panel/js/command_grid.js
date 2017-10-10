@@ -158,6 +158,7 @@ function getSelectedCase() {
 }
 
 // attach event on <tr> (records)
+var firstSelectedTrId = undefined;
 function attachEvent(start, end) {
     for (var i = start; i <= end; ++i) {
         var node = document.getElementById("records-" + i);
@@ -166,7 +167,35 @@ function attachEvent(start, end) {
         // click
         node.addEventListener("click", function(event) {
             // use jquery's API to add and remove class property
-            $('#records-grid .selectedRecord').removeClass('selectedRecord');
+            if (firstSelectedTrId == undefined && $(".selectedRecord").length>0) {
+                // console.log("undefined");
+                // console.log("$(): ", $(".selectedRecord"));
+                firstSelectedTrId = parseInt($(".selectedRecord")[0].id.substring(8));
+            }
+
+            if (!event.ctrlKey && !event.shiftKey) {
+                $('#records-grid .selectedRecord').removeClass('selectedRecord');
+                firstSelectedTrId = undefined;
+                // console.log("remove: ", $('#records-grid .selectedRecord'));
+            }
+
+            if (event.shiftKey) {
+                if (firstSelectedTrId != undefined) {
+                    let thisSelectedTrId = parseInt($(this)[0].id.substring(8));
+                    $('#records-grid .selectedRecord').removeClass('selectedRecord');
+                    if (firstSelectedTrId < thisSelectedTrId) {
+                        // console.log("this: ", thisSelectedTrId);
+                        for (let i=firstSelectedTrId ; i<thisSelectedTrId ; i++) {
+                            $("#records-" + i).addClass("selectedRecord");
+                        }
+                    } else {
+                        // console.log("this2: ", thisSelectedTrId);
+                        for (let i=firstSelectedTrId ; i>thisSelectedTrId ; i--) {
+                            $("#records-" + i).addClass("selectedRecord");
+                        }
+                    }
+                }
+            }
             $(".record-bottom").removeClass("active");
             $(this).addClass('selectedRecord');
 

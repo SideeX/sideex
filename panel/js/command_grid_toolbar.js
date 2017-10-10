@@ -15,7 +15,7 @@
  *
  */
 
- var tempCommand = undefined;
+ var tempCommand = [];
 
 function getSelectedCase() {
     if (document.getElementById("testCase-grid").getElementsByClassName("selectedCase")) {
@@ -26,7 +26,8 @@ function getSelectedCase() {
 }
 
 function getSelectedRecord() {
-    var selectedNode = document.getElementById("records-grid").getElementsByClassName("selectedRecord");
+    var selectedNode = document.getElementById("records-grid")
+        .getElementsByClassName("selectedRecord");
     if (selectedNode.length) {
         return selectedNode[0].id;
     } else {
@@ -292,22 +293,6 @@ document.getElementById("grid-delete").addEventListener("click", function() {
 }, false);
 
 document.getElementById("grid-copy").addEventListener("click", function(event) {
-    /*
-    let ref = document.getElementsByClassName("even selectedRecord")[0];
-    let targetOptions = ref.getElementsByTagName("td")[1].getElementsByTagName("datalist")[0].getElementsByTagName("option");
-    console.log("ref: ", ref);
-    let targetElements = [];
-    for (let i=0 ; i<targetOptions.length ; i++) {
-        targetElements.push([targetOptions[i].text]);
-    }
-    console.log("targetElements: ", targetElements);
-    tempCommand = {
-        "command": getCommandName(ref),
-        "test": getCommandTarget(ref),
-        "target": targetElements,
-        "value": getCommandValue(ref)
-    };
-    */
     copyCommand();
     console.log("test: ", tempCommand["test"]);
 }, false);
@@ -320,65 +305,32 @@ document.getElementById("grid-paste").addEventListener("click", function() {
     pasteCommand();
 }, false);
 
-var ctrlKey = false;
-document.addEventListener("keydown", function(e) {
-    var keynum;
-    if(window.event) // IE
-    {
-        keynum = e.keyCode;
-    }
-    else if(e.which) // Netscape/Firefox/Opera
-    {
-        keynum = e.which;
+// Hot key setting
+document.addEventListener("keydown", function(event) {
+    var keyNum;
+    if(window.event) { // IE
+        keyNum = event.keyCode;
+    } else if(event.which) { // Netscape/Firefox/Opera
+        keyNum = event.which;
     }
 
-    if(keynum === 46){
-        deleteCommand(getSelectedRecord());
-    } else if (keynum == 17) {
-        ctrlKey = true;
-    }
-    if (navigator.appVersion.indexOf("Mac") >= 0) {
-        if (keynum == 17 || keynum == 224 || keynum == 91 || keynum == 93) {
-            ctrlKey = true;
-        }
-    } else {
-        if (keynum == 17) {
-            ctrlKey = true;
+    // Hot key: del
+    if(keyNum == 46){
+        let selectedTr = document.getElementsByClassName("selectedRecord");
+        // console.log("selectedTr: ", selectedTr);
+        for (let i=0 ; i<selectedTr.length ; i++) {
+        // console.log("delete i: ", selectedTr[i].id);
+            deleteCommand(selectedTr[i].id);
         }
     }
-    
+
     // hot keys: ctrl + [KEY]
-    if (ctrlKey) {
-        if (keynum == 67) {
+    if (event.ctrlKey) {
+        if (keyNum == 67) {
             copyCommand();
-        } else if (keynum == 86) {
+        } else if (keyNum == 86) {
             pasteCommand();
         }
-    }
-}, false);
-
-document.addEventListener("keyup", function(event) {
-    var keynum;
-    if(window.event) // IE
-    {
-        keynum = event.keyCode;
-    }
-    else if(event.which) // Netscape/Firefox/Opera
-    {
-        keynum = event.which;
-    }
-
-    if (navigator.appVersion.indexOf("Mac") >= 0) {
-        if (keynum == 17 || keynum == 224 || keynum == 91 || keynum == 93) {
-            ctrlKey = false;
-        }
-    } else {
-        if (keynum == 17) {
-            ctrlKey = false;
-        }
-    }
-    if (keynum == 17) {
-        ctrlKey = false;
     }
 }, false);
 
@@ -413,24 +365,30 @@ function deleteCommand(selected_ID) {
 }
 
 function copyCommand() {
-    let ref = document.getElementsByClassName("selectedRecord")[0];
-    let targetOptions = ref.getElementsByTagName("td")[1].getElementsByTagName("datalist")[0].getElementsByTagName("option");
-    console.log("ref: ", ref);
-    let targetElements = [];
-    for (let i=0 ; i<targetOptions.length ; i++) {
-        targetElements.push([targetOptions[i].text]);
+    let ref = document.getElementsByClassName("selectedRecord");
+    let targetOptions;
+    for (let i=0 ; i<ref.length ; i++) {
+        targetOptions = ref[i].getElementsByTagName("td")[1]
+            .getElementsByTagName("datalist")[0]
+            .getElementsByTagName("option");
+        console.log("ref: ", ref[i]);
+        let targetElements = [];
+        for (let j=0 ; j<targetOptions.length ; j++) {
+            targetElements.push([targetOptions[j].text]);
+        }
+        tempCommand[i] = {
+            "command": getCommandName(ref[i]),
+            "test": getCommandTarget(ref[i]),
+            "target": targetElements,
+            "value": getCommandValue(ref[i])
+        };
     }
-    tempCommand = {
-        "command": getCommandName(ref),
-        "test": getCommandTarget(ref),
-        "target": targetElements,
-        "value": getCommandValue(ref)
-    };
+    console.log("tempCommand: ", tempCommand);
 }
 
 function pasteCommand() {
-    if (tempCommand != undefined) {
-        addCommandManu(tempCommand["command"], tempCommand["target"], tempCommand["value"]);
+    for (let i=tempCommand.length-1 ; i>=0 ; i--) {
+        addCommandManu(tempCommand[i]["command"], tempCommand[i]["target"], tempCommand[i]["value"]);
         // addCommandManu(tempCommand["command"], [[tempCommand["test"]]], tempCommand["value"]);
     }
 }
