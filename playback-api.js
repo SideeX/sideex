@@ -52,9 +52,10 @@ window.onload = function() {
     recordButton.addEventListener("click", function(){
         isRecording = !isRecording;
         if (isRecording) {
+            recorder.attach();
             notificationCount = 0;
             if (getRecordsArray().length) {
-                for (let tabId in openedTabIds) {
+                for (let tabId in recorder.openedTabIds) {
                     browser.tabs.sendMessage(Number(tabId), {attachRecorder: true})
                 }
             } else {
@@ -68,8 +69,9 @@ window.onload = function() {
             recordButton.childNodes[1].textContent = "Stop";
         }
         else {
+            recorder.detach();
             if (getRecordsArray().length) {
-                for (let tabId in openedTabIds) {
+                for (let tabId in recorder.openedTabIds) {
                     browser.tabs.sendMessage(Number(tabId), {detachRecorder: true})
                 }
             } else {
@@ -86,6 +88,7 @@ window.onload = function() {
     playButton.addEventListener("click", function() {
         document.getElementById("result-runs").innerHTML = "0";
         document.getElementById("result-failures").innerHTML = "0";
+        recorder.detach();
         initAllSuite();
         setCaseScrollTop(getSelectedCase());
         play();
@@ -99,12 +102,14 @@ window.onload = function() {
     playSuiteButton.addEventListener("click", function() {
         document.getElementById("result-runs").innerHTML = "0";
         document.getElementById("result-failures").innerHTML = "0";
+        recorder.detach();
         initAllSuite();
         playSuite(0);
     });
     playSuitesButton.addEventListener("click", function() {
         document.getElementById("result-runs").innerHTML = "0";
         document.getElementById("result-failures").innerHTML = "0";
+        recorder.detach();
         initAllSuite();
         playSuites(0);
     });
