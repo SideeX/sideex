@@ -42,7 +42,7 @@ class BackgroundRecorder {
             return;
         // Ignore all unknown tabs, the activated tab may not derived from
         // other opened tabs, or it may managed by other SideeX panels
-        if (!this.openedTabIds[activeInfo.tabId])
+        if (this.openedTabIds[activeInfo.tabId] == undefined)
             return;
         // Tab information has existed, add selectWindow command
         this.currentRecordingTabId = activeInfo.tabId;
@@ -90,7 +90,7 @@ class BackgroundRecorder {
 
                 // Ignore all unknown tabs, the activated tab may not derived from
                 // other opened tabs, or it may managed by other SideeX panels
-                if (!self.openedTabIds[tabs[0].id])
+                if (self.openedTabIds[tabs[0].id] == undefined)
                     return;
 
                 // Tab information has existed, add selectWindow command
@@ -103,7 +103,7 @@ class BackgroundRecorder {
     }
 
     tabsOnRemovedHandler(tabId, removeInfo) {
-        if (this.openedTabIds[tabId]) {
+        if (this.openedTabIds[tabId] != undefined) {
             if (this.currentRecordingTabId !== tabId) {
                 addCommandAuto("selectWindow", [
                     [this.openedTabIds[tabId]]
@@ -126,7 +126,7 @@ class BackgroundRecorder {
     }
 
     webNavigationOnCreatedNavigationTargetHandler(details) {
-        if (this.openedTabIds[details.sourceTabId]) {
+        if (this.openedTabIds[details.sourceTabId] != undefined) {
             this.openedTabNames["win_ser_" + this.openedTabCount] = details.tabId;
             this.openedTabIds[details.tabId] = "win_ser_" + this.openedTabCount;
             this.setOpenedWindow(details.windowId);
@@ -135,7 +135,7 @@ class BackgroundRecorder {
     };
 
     addCommandMessageHandler(message, sender, sendRequest) {
-        if (!message.command || !this.openedWindowIds[sender.tab.windowId])
+        if (!message.command || this.openedWindowIds[sender.tab.windowId] == undefined)
             return;
 
         if (getRecordsArray().length === 0) {
@@ -157,7 +157,7 @@ class BackgroundRecorder {
             });
         }
 
-        if (!this.openedTabIds[sender.tab.id])
+        if (this.openedTabIds[sender.tab.id] == undefined)
             return;
 
         if (message.frameLocation !== this.currentRecordingFrameLocation) {
