@@ -15,29 +15,34 @@
  *
  */
 
-function onError(error) {
-    console.log(`Error: ${error}`);
-}
+var master = {};
+var clickEnabled = true;
 
-function openPage() {
+function openPanel(tab) {
 
-    var getContentWindowInfo = browser.windows.getLastFocused();
-    var getSideexWindowInfo = browser.windows.create({
-        url: browser.extension.getURL("panel.html"),
+    let contentWindowId = tab.windowId;
+    if (master[contentWindowId] != undefined) {
+        browser.windows.update(master[contentWindowId], {
+            focused: true
+        }).catch(function(e) {
+            console.log(e);
+        });
+        return;
+    } else if (!clickEnabled) {
+        return;
+    }
+
+    clickEnabled = false;
+    setTimeout(function() {
+        clickEnabled = true;
+    }, 1000);
+
+    browser.windows.create({
+        url: browser.runtime.getURL("panel.html"),
         type: "popup",
         height: 730,
         width: 750
-    });
-
-    Promise.all([getContentWindowInfo, getSideexWindowInfo])
-    .then(function(windowInfo) {
-        console.log("get the window info")
-        let contentWindowInfo = windowInfo[0];
-        let sideexWindowInfo = windowInfo[1];
-        console.log("contentWindowInfo Id:" + contentWindowInfo.id);
-        console.log("contentWindowInfo:", contentWindowInfo);
-        console.log("sideexWindowInfo Id:" + sideexWindowInfo.id);
-        console.log("sideexWindowInfo:", sideexWindowInfo);
+    }).then(function waitForPanelLoaded(panelWindowInfo) {
         return new Promise(function(resolve, reject) {
             let count = 0;
             let interval = setInterval(function() {
@@ -48,29 +53,50 @@ function openPage() {
 
                 browser.tabs.query({
                     active: true,
-                    windowId: sideexWindowInfo.id
+                    windowId: panelWindowInfo.id,
+                    status: "complete"
                 }).then(function(tabs) {
                     if (tabs.length != 1) {
                         count++;
                         return;
-                    }
-                    let sideexTabInfo = tabs[0];
-                    if (sideexTabInfo.status == "loading") {
-                        count++;
-                        return;
                     } else {
-                        console.log("SideeX has been fully loaded")
-                        resolve(windowInfo);
+                        master[contentWindowId] = panelWindowInfo.id;
+                        if (Object.keys(master).length === 1) {
+                            createMenus();
+                        }
+                        resolve(panelWindowInfo);
                         clearInterval(interval);
                     }
                 })
             }, 200);
         });
-    }).then(passWindowId)
-    .catch(function(e) {
+    }).then(function bridge(panelWindowInfo){
+        return browser.tabs.sendMessage(panelWindowInfo.tabs[0].id, {
+            selfWindowId: panelWindowInfo.id,
+            commWindowId: contentWindowId
+        });
+    }).catch(function(e) {
         console.log(e);
     });
 
+}
+
+browser.browserAction.onClicked.addListener(openPanel);
+
+browser.windows.onRemoved.addListener(function(windowId) {
+    let keys = Object.keys(master);
+    for (let key of keys) {
+        if (master[key] === windowId) {
+            delete master[key];
+            if (keys.length === 1) {
+                browser.contextMenus.removeAll();
+            }
+            break;
+        }
+    }
+});
+
+function createMenus() {
     browser.contextMenus.create({
         id: "verifyText",
         title: "verifyText",
@@ -107,44 +133,7 @@ function openPage() {
         documentUrlPatterns: ["<all_urls>"],
         contexts: ["all"]
     });
-
 }
-
-browser.browserAction.onClicked.addListener(openPage);
-
-function disconnectAllTabs(tabs) {
-    for (let tab of tabs) {
-        browser.tabs.sendMessage(tab.id, { active: false });
-    }
-}
-
-function queryError(error) {
-    console.log(`Error: ${error}`);
-}
-
-browser.windows.onRemoved.addListener(function(windowId) {
-    if (windowId === panelId) {
-        console.log("Editor has closed");
-        var querying = browser.tabs.query({ url: "<all_urls>" });
-        querying.then(disconnectAllTabs, queryError);
-        panelId = undefined;
-    }
-
-    browser.contextMenus.removeAll();
-});
-
-function passWindowId(windowInfo){
-    let contentWindowInfo = windowInfo[0];
-    let sideexWindowInfo = windowInfo[1];
-    let contentWindowId = contentWindowInfo.id;
-    let sideexTabId = sideexWindowInfo.tabs[0].id;
-    let sideexWindowId = sideexWindowInfo.id;
-
-    return browser.tabs.sendMessage(sideexTabId, {
-        selfWindowId: sideexWindowId,
-        commWindowId: contentWindowId
-    });
-};
 
 var port;
 browser.contextMenus.onClicked.addListener(function(info, tab) {
