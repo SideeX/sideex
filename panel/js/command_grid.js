@@ -168,15 +168,12 @@ function attachEvent(start, end) {
         node.addEventListener("click", function(event) {
             // use jquery's API to add and remove class property
             if (firstSelectedTrId == undefined && $(".selectedRecord").length>0) {
-                // console.log("undefined");
-                // console.log("$(): ", $(".selectedRecord"));
                 firstSelectedTrId = parseInt($(".selectedRecord")[0].id.substring(8));
             }
 
             if (!event.ctrlKey && !event.shiftKey) {
                 $('#records-grid .selectedRecord').removeClass('selectedRecord');
                 firstSelectedTrId = undefined;
-                // console.log("remove: ", $('#records-grid .selectedRecord'));
             }
 
             if (event.shiftKey) {
@@ -188,6 +185,7 @@ function attachEvent(start, end) {
                         for (let i=firstSelectedTrId ; i<thisSelectedTrId ; i++) {
                             $("#records-" + i).addClass("selectedRecord");
                         }
+
                     } else {
                         // console.log("this2: ", thisSelectedTrId);
                         for (let i=firstSelectedTrId ; i>thisSelectedTrId ; i--) {
@@ -200,8 +198,12 @@ function attachEvent(start, end) {
             $(this).addClass('selectedRecord');
 
             // show on grid toolbar
-            var ref = event.target.parentNode;
-            if (ref.tagName != "TR") {
+            // var ref = event.target.parentNode;
+            // if (ref.tagName != "TR") {
+            //     ref = ref.parentNode;
+            // }
+            var ref = event.target;
+            while (ref.tagName.toLowerCase() != "tr") {
                 ref = ref.parentNode;
             }
 

@@ -35,6 +35,16 @@ function getSelectedRecord() {
     }
 }
 
+function getSelectedRecords() {
+    var selectedNode = document.getElementById("records-grid").getElementsByClassName("selectedRecord");
+    if (selectedNode.length) {
+        return selectedNode;
+    } else {
+        return "";
+    }
+    
+}
+
 function getStringLengthInPx(str) {
     var d = document.createElement("div");
     d.appendChild(document.createTextNode(str));
@@ -113,7 +123,14 @@ function addCommand(command_name, command_target_array, command_value, auto, ins
     }
     new_record.getElementsByTagName("td")[1].appendChild(targets);
 
-    var selected_ID = getSelectedRecord();
+    // var selected_ID = getSelectedRecord();
+    // NOTE: change new API for get selected records
+    var selectedRecords = getSelectedRecords();
+    var selected_ID;
+    if (selectedRecords.length > 0) {
+         selected_ID = selectedRecords[selectedRecords.length-1].id;
+    }
+
     var count = parseInt(getRecordsNum()) + 1;
     document.getElementById("records-count").value = count;
     if (count != 1) {
@@ -314,14 +331,16 @@ document.addEventListener("keydown", function(event) {
         keyNum = event.which;
     }
 
-    // Hot key: del
-    if(keyNum == 46){
-        let selectedTr = document.getElementsByClassName("selectedRecord");
-        // console.log("selectedTr: ", selectedTr);
-        for (let i=0 ; i<selectedTr.length ; i++) {
-        // console.log("delete i: ", selectedTr[i].id);
+    // Hot key
+    if(keyNum == 46){ // Hot key: del
+        let selectedTr = getSelectedRecords();
+        for (let i=selectedTr.length-1 ; i>=0 ; i--) {
             deleteCommand(selectedTr[i].id);
         }
+    } else if (keyNum == 38) { // Hot key: up arrow
+        selectForeRecord();
+    } else if (keyNum == 40) { // Hot key: down arrow
+        selectNextRecord();
     }
 
     // hot keys: ctrl + [KEY]
@@ -330,6 +349,8 @@ document.addEventListener("keydown", function(event) {
             copyCommand();
         } else if (keyNum == 86) {
             pasteCommand();
+        } else if (keyNum == 83) {
+
         }
     }
 }, false);
@@ -365,7 +386,7 @@ function deleteCommand(selected_ID) {
 }
 
 function copyCommand() {
-    let ref = document.getElementsByClassName("selectedRecord");
+    let ref = getSelectedRecords();
     let targetOptions;
     for (let i=0 ; i<ref.length ; i++) {
         targetOptions = ref[i].getElementsByTagName("td")[1]
@@ -390,5 +411,40 @@ function pasteCommand() {
     for (let i=tempCommand.length-1 ; i>=0 ; i--) {
         addCommandManu(tempCommand[i]["command"], tempCommand[i]["target"], tempCommand[i]["value"]);
         // addCommandManu(tempCommand["command"], [[tempCommand["test"]]], tempCommand["value"]);
+    }
+}
+
+function selectForeRecord() {
+    pressArrowKey(38);
+}
+
+function selectNextRecord() {
+    pressArrowKey(40);
+}
+
+function pressArrowKey(direction) {
+    let selectedRecords = getSelectedRecords();
+    if (selectedRecords.length == 0) {
+        return;
+    }
+    let lastRecordId = selectedRecords[selectedRecords.length - 1].id;
+    let recordNum = parseInt(lastRecordId.substring(lastRecordId.indexOf("-") + 1));
+    $("#records-grid .selectedRecord").removeClass("selectedRecord");
+    if (direction == 38) { // press up arrow
+        if (recordNum == 1) {
+            $("#records-1").addClass("selectedRecord");
+            $("#records-1").click();
+        } else {
+            $("#records-" + (recordNum - 1)).addClass("selectedRecord");
+            $("#records-" + (recordNum - 1)).click();
+        }
+    } else if (direction == 40) { // press down arrow
+        if (recordNum == getRecordsNum()) {
+            $("#records-" + recordNum).addClass("selectedRecord");
+            $("#records-" + recordNum).click();
+        } else {
+            $("#records-" + (recordNum + 1)).addClass("selectedRecord");
+            $("#records-" + (recordNum + 1)).click();
+        }
     }
 }
