@@ -33,7 +33,8 @@ function transformTestSuiteVersion(str) {
 function loadCaseIntoSuite(str) {
     let href = [];
     // find what testCase link is in the testSuite
-    let anchor = str.match(/<a href=\"([a-z]|[A-Z]|[0-9])*.html\">/g);
+    // let anchor = str.match(/<a href=\"([a-z]|[A-Z]|[0-9])*.html\">/g);
+    let anchor = str.match(/<a href=\"[^\"]*\">/g);
     for (let i=0 ; i<anchor.length ; i++) {
         let temp = anchor[i];
         href[i] = temp.substring(temp.indexOf("\"")+1, temp.lastIndexOf("\""));
@@ -67,6 +68,7 @@ function readOlderTestCase(file, index, filesLength) {
         // NOTE: Because append testCase need one by one ,
         // there write a recursive loop for doing this
         olderTestSuiteResult = appendOlderTestCase(event.target.result);
+        console.log("result: ", olderTestSuiteResult);
         if(index == filesLength-1) {
             appendTestSuite(olderTestSuiteFile, olderTestSuiteResult);
         } else {
@@ -93,11 +95,18 @@ function appendTestSuite(suiteFile, suiteResult) {
     // append on test grid
     var id = "suite" + sideex_testSuite.count;
     sideex_testSuite.count++;
-    addTestSuite(suiteFile.name.substring(0, suiteFile.name.lastIndexOf(".")), id);
+    var suiteFileName;
+    if (suiteFile.name.lastIndexOf(".") >= 0) {
+        suiteFileName = suiteFile.name.substring(0, suiteFile.name.lastIndexOf("."));
+    } else {
+        suiteFileName = suiteFile.name;
+    }
+
+    addTestSuite(suiteFileName, id);
     // name is used for download
     sideex_testSuite[id] = {
         file_name: suiteFile.name,
-        title: suiteFile.name.substring(0, suiteFile.name.lastIndexOf("."))
+        title: suiteFileName
     };
 
     test_case = suiteResult.match(/<table[\s\S]*?<\/table>/gi);

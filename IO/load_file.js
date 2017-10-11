@@ -120,11 +120,17 @@ function readSuite(f) {
         // append on test grid
         var id = "suite" + sideex_testSuite.count;
         sideex_testSuite.count++;
-        addTestSuite(f.name.substring(0, f.name.lastIndexOf(".")), id);
+        var suiteFileName;
+        if (f.name.lastIndexOf(".") >= 0) {
+            suiteFileName = f.name.substring(0, f.name.lastIndexOf("."));
+        } else {
+            suiteFileName = f.name;
+        }
+        addTestSuite(suiteFileName, id);
         // name is used for download
         sideex_testSuite[id] = {
             file_name: f.name,
-            title: f.name.substring(0, f.name.lastIndexOf("."))
+            title: suiteFileName
         };
 
         test_case = test_suite.match(/<table[\s\S]*?<\/table>/gi);
