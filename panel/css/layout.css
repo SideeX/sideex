@@ -1340,3 +1340,9 @@ button.active {
     float: right;
     margin-right: 30px;
 }
+
+span.hotKey {
+    padding-left: 20px;
+    float: right;
+    color: gray;
+}
