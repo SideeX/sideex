@@ -144,7 +144,7 @@ class BackgroundRecorder {
             this.currentRecordingWindowId = sender.tab.windowId;
             this.openedTabNames["win_ser_local"] = sender.tab.id;
             this.openedTabIds[sender.tab.id] = "win_ser_local";
-            initialSetFlag = false;
+            this.initialSetFlag = false;
         }
 
         if (getRecordsArray().length === 0) {
