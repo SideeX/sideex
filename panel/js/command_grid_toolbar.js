@@ -15,6 +15,8 @@
  *
  */
 
+ var tempCommand = [];
+
 function getSelectedCase() {
     if (document.getElementById("testCase-grid").getElementsByClassName("selectedCase")) {
         return document.getElementById("testCase-grid").getElementsByClassName("selectedCase")[0];
@@ -24,12 +26,23 @@ function getSelectedCase() {
 }
 
 function getSelectedRecord() {
-    var selectedNode = document.getElementById("records-grid").getElementsByClassName("selectedRecord");
+    var selectedNode = document.getElementById("records-grid")
+        .getElementsByClassName("selectedRecord");
     if (selectedNode.length) {
         return selectedNode[0].id;
     } else {
         return "";
     }
+}
+
+function getSelectedRecords() {
+    var selectedNode = document.getElementById("records-grid").getElementsByClassName("selectedRecord");
+    if (selectedNode.length) {
+        return selectedNode;
+    } else {
+        return "";
+    }
+    
 }
 
 function getStringLengthInPx(str) {
@@ -110,7 +123,14 @@ function addCommand(command_name, command_target_array, command_value, auto, ins
     }
     new_record.getElementsByTagName("td")[1].appendChild(targets);
 
-    var selected_ID = getSelectedRecord();
+    // var selected_ID = getSelectedRecord();
+    // NOTE: change new API for get selected records
+    var selectedRecords = getSelectedRecords();
+    var selected_ID;
+    if (selectedRecords.length > 0) {
+         selected_ID = selectedRecords[selectedRecords.length-1].id;
+    }
+
     var count = parseInt(getRecordsNum()) + 1;
     document.getElementById("records-count").value = count;
     if (count != 1) {
@@ -289,18 +309,75 @@ document.getElementById("grid-delete").addEventListener("click", function() {
     deleteCommand(getSelectedRecord());
 }, false);
 
-document.addEventListener("keydown", function(e) {
-    var keynum;
-    if(window.event) // IE
-    {
-        keynum = e.keyCode
+document.getElementById("grid-copy").addEventListener("click", function(event) {
+    copyCommand();
+}, false);
+
+document.getElementById("grid-paste").addEventListener("click", function() {
+    /*if (tempCommand != undefined) {
+        addCommandManu(tempCommand["command"], tempCommand["target"], tempCommand["value"]);
+        // addCommandManu(tempCommand["command"], [[tempCommand["test"]]], tempCommand["value"]);
+    }*/
+    pasteCommand();
+}, false);
+
+// Hot key setting
+document.addEventListener("keydown", function(event) {
+    var keyNum;
+    if(window.event) { // IE
+        keyNum = event.keyCode;
+    } else if(event.which) { // Netscape/Firefox/Opera
+        keyNum = event.which;
     }
-    else if(e.which) // Netscape/Firefox/Opera
-    {
-        keynum = e.which
+
+    if (keyNum == 123) {
+        return;
+    } else if (event.target.tagName.toLowerCase() == "input") {
+        // to avoid typing in input
+        if (event.ctrlKey || keyNum == 116) {
+            if (keyNum == 65 || keyNum == 67 || keyNum == 86 || keyNum == 88) {
+                return;
+            }
+        // NOTE: lock the browser default shortcuts
+        // and this should be careful
+        event.preventDefault();
+        event.stopPropagation();
+        }
+    } else {
+        // NOTE: lock the browser default shortcuts
+        // and this should be careful
+        event.preventDefault();
+        event.stopPropagation();
     }
-    if(keynum === 46){
-        deleteCommand(getSelectedRecord());
+
+    // Hot key
+    if(keyNum == 46){ // Hot key: del
+        let selectedTr = getSelectedRecords();
+        for (let i=selectedTr.length-1 ; i>=0 ; i--) {
+            deleteCommand(selectedTr[i].id);
+        }
+    } else if (keyNum == 38) { // Hot key: up arrow
+        selectForeRecord();
+    } else if (keyNum == 40) { // Hot key: down arrow
+        selectNextRecord();
+    }
+
+    // hot keys: Ctrl + [KEY]
+    if (event.ctrlKey) {
+        if (keyNum == 67) { // Ctrl + C
+            copyCommand();
+        } else if (keyNum == 86) { // Ctrl + V
+            pasteCommand();
+        } else if (keyNum == 83) { // Ctrl + S
+            $("#save-testSuite").click();
+        } else if (keyNum == 65) { // Ctrl + A
+            var recordNode = document.getElementById("records-grid").getElementsByTagName("TR");
+            for (let i=0 ; i<recordNode.length ; i++) {
+                recordNode[i].classList.add("selectedRecord");
+            }
+        } else if (keyNum == 80) { // Ctrl + P
+            $("#playback").click();
+        }
     }
 }, false);
 
@@ -330,6 +407,68 @@ function deleteCommand(selected_ID) {
         var s_case = getSelectedCase();
         if (s_case) {
             sideex_testCase[s_case.id].records = document.getElementById("records-grid").innerHTML;
+        }
+    }
+}
+
+function copyCommand() {
+    let ref = getSelectedRecords();
+    let targetOptions;
+    for (let i=0 ; i<ref.length ; i++) {
+        targetOptions = ref[i].getElementsByTagName("td")[1]
+            .getElementsByTagName("datalist")[0]
+            .getElementsByTagName("option");
+        let targetElements = [];
+        for (let j=0 ; j<targetOptions.length ; j++) {
+            targetElements.push([targetOptions[j].text]);
+        }
+        tempCommand[i] = {
+            "command": getCommandName(ref[i]),
+            "test": getCommandTarget(ref[i]),
+            "target": targetElements,
+            "value": getCommandValue(ref[i])
+        };
+    }
+}
+
+function pasteCommand() {
+    for (let i=tempCommand.length-1 ; i>=0 ; i--) {
+        addCommandManu(tempCommand[i]["command"], tempCommand[i]["target"], tempCommand[i]["value"]);
+        // addCommandManu(tempCommand["command"], [[tempCommand["test"]]], tempCommand["value"]);
+    }
+}
+
+function selectForeRecord() {
+    pressArrowKey(38);
+}
+
+function selectNextRecord() {
+    pressArrowKey(40);
+}
+
+function pressArrowKey(direction) {
+    let selectedRecords = getSelectedRecords();
+    if (selectedRecords.length == 0) {
+        return;
+    }
+    let lastRecordId = selectedRecords[selectedRecords.length - 1].id;
+    let recordNum = parseInt(lastRecordId.substring(lastRecordId.indexOf("-") + 1));
+    $("#records-grid .selectedRecord").removeClass("selectedRecord");
+    if (direction == 38) { // press up arrow
+        if (recordNum == 1) {
+            $("#records-1").addClass("selectedRecord");
+            $("#records-1").click();
+        } else {
+            $("#records-" + (recordNum - 1)).addClass("selectedRecord");
+            $("#records-" + (recordNum - 1)).click();
+        }
+    } else if (direction == 40) { // press down arrow
+        if (recordNum == getRecordsNum()) {
+            $("#records-" + recordNum).addClass("selectedRecord");
+            $("#records-" + recordNum).click();
+        } else {
+            $("#records-" + (recordNum + 1)).addClass("selectedRecord");
+            $("#records-" + (recordNum + 1)).click();
         }
     }
 }
