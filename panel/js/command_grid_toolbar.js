@@ -311,7 +311,6 @@ document.getElementById("grid-delete").addEventListener("click", function() {
 
 document.getElementById("grid-copy").addEventListener("click", function(event) {
     copyCommand();
-    console.log("test: ", tempCommand["test"]);
 }, false);
 
 document.getElementById("grid-paste").addEventListener("click", function() {
@@ -331,6 +330,26 @@ document.addEventListener("keydown", function(event) {
         keyNum = event.which;
     }
 
+    if (keyNum == 123) {
+        return;
+    } else if (event.target.tagName.toLowerCase() == "input") {
+        // to avoid typing in input
+        if (event.ctrlKey || keyNum == 116) {
+            if (keyNum == 65 || keyNum == 67 || keyNum == 86 || keyNum == 88) {
+                return;
+            }
+        // NOTE: lock the browser default shortcuts
+        // and this should be careful
+        event.preventDefault();
+        event.stopPropagation();
+        }
+    } else {
+        // NOTE: lock the browser default shortcuts
+        // and this should be careful
+        event.preventDefault();
+        event.stopPropagation();
+    }
+
     // Hot key
     if(keyNum == 46){ // Hot key: del
         let selectedTr = getSelectedRecords();
@@ -343,14 +362,21 @@ document.addEventListener("keydown", function(event) {
         selectNextRecord();
     }
 
-    // hot keys: ctrl + [KEY]
+    // hot keys: Ctrl + [KEY]
     if (event.ctrlKey) {
-        if (keyNum == 67) {
+        if (keyNum == 67) { // Ctrl + C
             copyCommand();
-        } else if (keyNum == 86) {
+        } else if (keyNum == 86) { // Ctrl + V
             pasteCommand();
-        } else if (keyNum == 83) {
-
+        } else if (keyNum == 83) { // Ctrl + S
+            $("#save-testSuite").click();
+        } else if (keyNum == 65) { // Ctrl + A
+            var recordNode = document.getElementById("records-grid").getElementsByTagName("TR");
+            for (let i=0 ; i<recordNode.length ; i++) {
+                recordNode[i].classList.add("selectedRecord");
+            }
+        } else if (keyNum == 80) { // Ctrl + P
+            $("#playback").click();
         }
     }
 }, false);
@@ -392,7 +418,6 @@ function copyCommand() {
         targetOptions = ref[i].getElementsByTagName("td")[1]
             .getElementsByTagName("datalist")[0]
             .getElementsByTagName("option");
-        console.log("ref: ", ref[i]);
         let targetElements = [];
         for (let j=0 ; j<targetOptions.length ; j++) {
             targetElements.push([targetOptions[j].text]);
@@ -404,7 +429,6 @@ function copyCommand() {
             "value": getCommandValue(ref[i])
         };
     }
-    console.log("tempCommand: ", tempCommand);
 }
 
 function pasteCommand() {
