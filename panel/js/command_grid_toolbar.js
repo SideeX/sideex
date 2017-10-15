@@ -377,6 +377,8 @@ document.addEventListener("keydown", function(event) {
             }
         } else if (keyNum == 80) { // Ctrl + P
             $("#playback").click();
+        } else if (keyNum === 84) { // Ctrl + T
+            setBreakpoint(getSelectedRecord());
         }
     }
 }, false);
@@ -469,6 +471,21 @@ function pressArrowKey(direction) {
         } else {
             $("#records-" + (recordNum + 1)).addClass("selectedRecord");
             $("#records-" + (recordNum + 1)).click();
+        }
+    }
+}
+
+document.getElementById("grid-breakpoint").addEventListener("click",function() {
+    setBreakpoint(getSelectedRecord());
+}, false)
+
+function setBreakpoint(selected_ID) {
+    if (selected_ID) {
+        var current_node = document.getElementById(selected_ID).getElementsByTagName("td")[0];
+        if (!current_node.classList.contains("break")) {
+            current_node.classList.add("break");
+        } else {
+            current_node.classList.remove("break");
         }
     }
 }

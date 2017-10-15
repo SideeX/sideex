@@ -110,6 +110,13 @@ $(document).ready(function() {
         $(this).addClass("active");
         $('#records-grid .selectedRecord').removeClass('selectedRecord'); 
     });
+
+    $("#slider").slider({
+        min: 0,
+        max: 2000,
+        value: 0,
+        step: 400
+    }).slider("pips");
 });
 
 var dropdown = function(node) {

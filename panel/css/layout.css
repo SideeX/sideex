@@ -473,8 +473,9 @@ section#main {
 }
 
 #middle-container {
+    margin-top:30px;
     margin-bottom: 8px;
-    height: calc(100% - 80px);
+    height: calc(100% - 121px);
 }
 
 #result-container {
@@ -659,6 +660,10 @@ section#main {
 
 .tablesorter tbody tr.fail {
     background-color: #ffe5e5;
+}
+
+.tablesorter tbody tr td.break {
+    background-color:  #5CB9FF;
 }
 
 .tablesorter td {
