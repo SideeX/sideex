@@ -394,26 +394,9 @@ function initializePlayingProgress(isDbclick) {
 }
 
 function executionLoop() {
-    if (!isPlaying) {
-        cleanStatus();
-        return false;
-    }
-
-    if (isPause) {
-        return true;
-    }
-
-    currentPlayingCommandIndex++;
     let commands = getRecordsArray();
 
-    if (typeof commands[currentPlayingCommandIndex + 1] !== "undefined"){
-        if (commands[currentPlayingCommandIndex + 1].getElementsByTagName("td")[0].classList.contains("break")) {
-            sideex_log.info("Breakpoint: Stop.");
-            pause();
-        }
-    }
-
-    if (currentPlayingCommandIndex >= commands.length) {
+    if (currentPlayingCommandIndex + 1 >= commands.length) {
         if (!caseFailed) {
              setColor(currentTestCaseId, "success");
             document.getElementById("result-runs").innerHTML = parseInt(document.getElementById("result-runs").innerHTML) + 1;
@@ -425,10 +408,31 @@ function executionLoop() {
         return true;
     }
 
+    if (commands[currentPlayingCommandIndex + 1].getElementsByTagName("td")[0].classList.contains("break")
+        && !commands[currentPlayingCommandIndex + 1].getElementsByTagName("td")[0].classList.contains("stopping")) {
+        commands[currentPlayingCommandIndex + 1].getElementsByTagName("td")[0].classList.add("stopping");
+        sideex_log.info("Breakpoint: Stop.");
+        pause();
+    }
+    
+    if (!isPlaying) {
+        cleanStatus();
+        return false;
+    }
+
+    if (isPause) {
+        return true;
+    }
+
+    currentPlayingCommandIndex++;
+
+    if (commands[currentPlayingCommandIndex].getElementsByTagName("td")[0].classList.contains("stopping")) {
+        commands[currentPlayingCommandIndex].getElementsByTagName("td")[0].classList.remove("stopping");
+    }
+
     let commandName = getCommandName(commands[currentPlayingCommandIndex]);
     let commandTarget = getCommandTarget(commands[currentPlayingCommandIndex]);
     let commandValue = getCommandValue(commands[currentPlayingCommandIndex]);
-
 
     setColor(currentPlayingCommandIndex + 1, "executing");
 

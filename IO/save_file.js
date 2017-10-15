@@ -67,7 +67,7 @@ function panelToFile(str) {
 
         var option = pattern[5].match(/<option>[\s\S]*?<\/option>/gi);
         
-        str = str + "<tr>" + pattern[1] + "<td>" + pattern[2] + "</td>" + pattern[3] + "<td>" + pattern[4] + "<datalist>";
+        str = str + "<tr>" + pattern[1] + "<td>" + pattern[2] + "</td>" + pattern[3] + "<td>" + pattern[4].replace(/\n/g, "") + "<datalist>";
         for (var j = 0; j < option.length; ++j) {
             option[j] = option[j].replace(/<option>/, "").replace(/<\/option>/, "");
             str = str + "<option>" + option[j] + "</option>";
