@@ -25,6 +25,7 @@
     <!-- TODO: Change the title bar text -->
     <title>SideeX</title>
     <link rel="stylesheet" href="panel/css/jquery-ui.min.css">
+    <link rel="stylesheet" href="panel/css/jquery-ui-slider-pips.css">
     <link rel="stylesheet" href="panel/css/layout.css" type="text/css" media="screen" />
     <link rel="stylesheet" href="panel/css/font-awesome.min.css">
     <!-- to hide right button feature -->
@@ -34,6 +35,7 @@
     <![endif]-->
     <script type="text/javascript" src="panel/js/jquery-3.2.1.min.js"></script>
     <script type="text/javascript" src="panel/js/jquery-ui.min.js"></script>
+    <script type="text/javascript" src="panel/js/jquery-ui-slider-pips.js"></script>
     <script type="text/javascript" src="panel/js/hideshow.js"></script>
     <script type="text/javascript" src="panel/js/jquery.tablesorter.min.js"></script>
     <script type="text/javascript" src="panel/js/jquery.equalHeight.js"></script>
@@ -68,6 +70,7 @@
             <li id="grid-deleteAll"><a href="#">Delete All Commands</a></li>
             <li id="grid-copy"><a href="#">Copy Command <span class="hotKey">Ctrl+C</span></a></li>
             <li id="grid-paste"><a href="#">Paste Command <span class="hotKey">Ctrl+V</span></a></li>
+            <li id="grid-breakpoint"><a href="#">Toggle Breakpoint </a><span class="hotKey">Ctrl+T</span></li>
         </ul>
     </div>
     <section id="main" class="column">
@@ -98,6 +101,7 @@
         </div>-->
         <div class="module_all">
             <article class="width_quarter module_right">
+                <div id="slider"></div>
                 <div id="middle-container" class="module">
                     <header>
                         <h3>Test case</h3>

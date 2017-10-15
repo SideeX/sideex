@@ -405,9 +405,17 @@ function executionLoop() {
 
     currentPlayingCommandIndex++;
     let commands = getRecordsArray();
+
+    if (typeof commands[currentPlayingCommandIndex + 1] !== "undefined"){
+        if (commands[currentPlayingCommandIndex + 1].getElementsByTagName("td")[0].classList.contains("break")) {
+            sideex_log.info("Breakpoint: Stop.");
+            pause();
+        }
+    }
+
     if (currentPlayingCommandIndex >= commands.length) {
         if (!caseFailed) {
-            setColor(currentTestCaseId, "success");
+             setColor(currentTestCaseId, "success");
             document.getElementById("result-runs").innerHTML = parseInt(document.getElementById("result-runs").innerHTML) + 1;
             declaredVars = {};
             sideex_log.info("Test case passed");
@@ -424,23 +432,31 @@ function executionLoop() {
 
     setColor(currentPlayingCommandIndex + 1, "executing");
 
-    if (isExtCommand(commandName)) {
-        sideex_log.info("Executing: | " + commandName + " | " + commandTarget + " | " + commandValue + " |");
-        let upperCase = commandName.charAt(0).toUpperCase() + commandName.slice(1);
-        return (extCommand["do" + upperCase](commandTarget, commandValue))
-           .then(function() {
-               setColor(currentPlayingCommandIndex + 1, "success");
-           }).then(executionLoop); 
-    } else {
-        return doPreparation()
-           .then(doPrePageWait)
-           .then(doPageWait)
-           .then(doAjaxWait)
-           .then(doDomWait)
-           .then(doCommand)
-           .then(executionLoop)
-    }
+    return delay($('#slider').slider("option", "value")).then(function () {
+        if (isExtCommand(commandName)) {
+            sideex_log.info("Executing: | " + commandName + " | " + commandTarget + " | " + commandValue + " |");
+            let upperCase = commandName.charAt(0).toUpperCase() + commandName.slice(1);
+            return (extCommand["do" + upperCase](commandTarget, commandValue))
+               .then(function() {
+                    setColor(currentPlayingCommandIndex + 1, "success");
+               }).then(executionLoop); 
+        } else {
+            return doPreparation()
+               .then(doPrePageWait)
+               .then(doPageWait)
+               .then(doAjaxWait)
+               .then(doDomWait)
+               .then(doCommand)
+               .then(executionLoop)
+        }
+    });
 }
+
+function delay(t) {
+    return new Promise(function(resolve) { 
+        setTimeout(resolve, t)
+    });
+ }
 
 function finalizePlayingProgress() {
     enableClick();
