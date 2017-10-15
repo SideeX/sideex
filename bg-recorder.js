@@ -29,6 +29,7 @@ class BackgroundRecorder {
         this.contentWindowId = -1;
         this.selfWindowId = -1;
         this.attached = false;
+        this.initialSetFlag = true;
         this.rebind();
     }
 
@@ -138,11 +139,15 @@ class BackgroundRecorder {
         if (!message.command || this.openedWindowIds[sender.tab.windowId] == undefined)
             return;
 
-        if (getRecordsArray().length === 0) {
+        if (this.initialSetFlag) {
             this.currentRecordingTabId = sender.tab.id;
             this.currentRecordingWindowId = sender.tab.windowId;
             this.openedTabNames["win_ser_local"] = sender.tab.id;
             this.openedTabIds[sender.tab.id] = "win_ser_local";
+            initialSetFlag = false;
+        }
+
+        if (getRecordsArray().length === 0) {
             addCommandAuto("open", [
                 [sender.tab.url]
             ], "");

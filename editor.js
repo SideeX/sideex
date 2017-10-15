@@ -25,7 +25,6 @@ var recorder = new BackgroundRecorder();
 /* flags */
 var isRecording = false;
 var isPlaying = false;
-var initialSetFlag = true;
 
 class Editor {
 
