@@ -28,7 +28,9 @@ $(document).bind("contextmenu", function(event) {
     }
 
     var child = document.getElementById("tempChild");
-    if (child) document.getElementById("command-grid-menu").childNodes[1].removeChild(child);
+    if (child) {
+        document.getElementById("command-grid-menu").childNodes[1].removeChild(child);
+    } 
 
     var temp = event.target;
     var inCommandGrid = false;
@@ -47,10 +49,12 @@ $(document).bind("contextmenu", function(event) {
 
             document.getElementById("command-grid-menu").childNodes[1].appendChild(exe);
         }
-        if (temp.id == "command-grid") {
+        if (temp.id == "command-grid" || temp.className.search("record-bottom") >= 0) {
             inCommandGrid = true;
             break;
-        } else temp = temp.parentElement;
+        } else {
+            temp = temp.parentElement;
+        }
     }
     if (inCommandGrid) {
         event.preventDefault();
