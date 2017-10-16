@@ -97,7 +97,6 @@ window.onload = function() {
         stop();
     });
     pauseButton.addEventListener("click", pause);
-    pauseButton.disabled = true;
     resumeButton.addEventListener("click", resume);
     playSuiteButton.addEventListener("click", function() {
         document.getElementById("result-runs").innerHTML = "0";
@@ -749,4 +748,12 @@ function isWindowMethodCommand(command) {
         || command == "assertAlert")
         return true;
     return false;
+}
+
+function enableButton(buttonId) {
+    document.getElementById(buttonId).disabled = false;
+}
+
+function disableButton(buttonId) {
+    document.getElementById(buttonId).disabled = true;
 }
