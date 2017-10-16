@@ -188,6 +188,11 @@ function addCommand(command_name, command_target_array, command_value, auto, ins
     if (s_case) {
         sideex_testCase[s_case.id].records = document.getElementById("records-grid").innerHTML;
     }
+
+    // enable play button 
+    enableButton("playback");
+    enableButton("playSuite");
+    enableButton("playSuites");
 }
 
 // add command manually (append downward)
@@ -338,10 +343,10 @@ document.addEventListener("keydown", function(event) {
             if (keyNum == 65 || keyNum == 67 || keyNum == 86 || keyNum == 88) {
                 return;
             }
-        // NOTE: lock the browser default shortcuts
-        // and this should be careful
-        event.preventDefault();
-        event.stopPropagation();
+            // NOTE: lock the browser default shortcuts
+            // and this should be careful
+            event.preventDefault();
+            event.stopPropagation();
         }
     } else {
         // NOTE: lock the browser default shortcuts

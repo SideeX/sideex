@@ -55,6 +55,18 @@ function getSelectedCase() {
     }
 }
 
+function getSuiteNum() {
+    return document.getElementById("testCase-grid").getElementsByTagName("DIV").length;
+}
+
+function getCaseNumInSuite() {
+    let selectedSuite = getSelectedSuite();
+    if (selectedSuite != null) {
+        return selectedSuite.getElementsByTagName("P").length;
+    }
+    return 0;
+}
+
 function saveOldCase() {
     var old_case = getSelectedCase();
     if (old_case) {
@@ -333,6 +345,10 @@ document.getElementById("add-testSuite").addEventListener("click", function(even
             title: title
         };
         addTestSuite(title, id);
+
+        // enable play button
+        enableButton("playSuites");
+        enableButton("playSuite");
     }
 }, false);
 
@@ -388,9 +404,22 @@ document.getElementById("close-testSuite").addEventListener('click', function(ev
                     downloadSuite(s_suite, remove_testSuite);
                 else
                     remove_testSuite(s_suite);
+
+                // disable play button when there is no suite
+                if (getSuiteNum() == 0) {
+                    disableButton("playback");
+                    disableButton("playSuite");
+                    disableButton("playSuites");
+                }
             });
         } else {
             remove_testSuite(s_suite);
+            // disable play button when there is no suite
+            if (getSuiteNum() == 0) {
+                disableButton("playback");
+                disableButton("playSuite");
+                disableButton("playSuites");
+            }    
         }
         // document.getElementById("records-grid").innerHTML = "";
     }
@@ -402,6 +431,9 @@ document.getElementById("add-testCase").addEventListener("click", function(event
         var id = "case" + sideex_testCase.count;
         sideex_testCase.count++;
         addTestCase(title, id);
+
+        // enable play button
+        enableButton("playback");
     }
 }, false);
 
@@ -421,9 +453,18 @@ document.getElementById("delete-testCase").addEventListener('click', function() 
                     downloadSuite(getSelectedSuite(), remove_testCase);
                 else
                     remove_testCase();
+
+                // disable play button when there is no test case
+                if (getCaseNumInSuite() == 0) {
+                    disableButton("playback");
+                }
             });
         } else {
             remove_testCase();
+            // disable play button when there is no test case
+            if (getCaseNumInSuite() == 0) {
+                disableButton("playback");
+            }
         }
         // document.getElementById("records-grid").innerHTML = "";
     }
