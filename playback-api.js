@@ -462,8 +462,8 @@ function delay(t) {
  }
 
 function finalizePlayingProgress() {
-    enableClick();
     if (!isPause) {
+        enableClick();
         extCommand.clear();
     }
     //console.log("success");
