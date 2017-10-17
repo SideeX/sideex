@@ -51,6 +51,7 @@ function getCommandValue(tr, for_show) {
 
 function getRecordsNum() {
     return document.getElementById("records-count").value;
+    
 }
 
 function setColor(index, state) {
@@ -209,6 +210,7 @@ function attachEvent(start, end) {
 
             // notice that "textNode" also is a node
             document.getElementById("command-command").value = getCommandName(ref);
+            scrape(document.getElementById("command-command").value);
             document.getElementById("command-target").value = getCommandTarget(ref);
             document.getElementById("target-dropdown").innerHTML = escapeHTML(ref.getElementsByTagName("td")[1].getElementsByTagName("datalist")[0].innerHTML);
             document.getElementById("command-target-list").innerHTML = escapeHTML(ref.getElementsByTagName("td")[1].getElementsByTagName("datalist")[0].innerHTML);
@@ -230,6 +232,7 @@ function attachEvent(start, end) {
 
             // notice that "textNode" also is a node
             document.getElementById("command-command").value = getCommandName(ref);
+            scrape(document.getElementById("command-command").value);
             document.getElementById("command-target").value = getCommandTarget(ref);
             document.getElementById("command-target-list").innerHTML = escapeHTML(ref.getElementsByTagName("td")[1].getElementsByTagName("datalist")[0].innerHTML);
             document.getElementById("command-value").value = getCommandValue(ref);

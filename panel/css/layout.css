@@ -687,7 +687,18 @@ section#main {
     border-top: 1px solid #ccc;;
     background-color: #f8f8f8;
 }
-
+ul.tabs2 {
+float:left;
+ margin: 3px 10px 0 0;
+padding: 0;
+list-style: none;
+height: 24px;
+    /*--Set height of tabs--*/
+-webkit-border-radius: 5px;
+-moz-border-radius: 5px;
+border-radius: 5px;
+font-weight: bold;
+}
 ul.tabs {
     margin: 3px 10px 0 0;
     padding: 0;
@@ -700,20 +711,21 @@ ul.tabs {
     border-radius: 5px;
     -webkit-box-shadow: 0 1px 0 #fff;
     -moz-box-shadow: 0 1px 0 #fff;
-    box-shadow: 0 1px 0 #fff;
-    border: 1px solid #ccc;
-    font-weight: bold;
     text-shadow: 0 1px 0 #fff;
+    border: 1px solid #ccc;
+    box-shadow: 0 1px 0 #fff;  
+    font-weight: bold;
 }
-
-ul.tabs li {
+ul.tabs2 li {
+    cursor: pointer;
     float: left;
     margin: 0;
     padding: 0;
     line-height: 24px;
 }
 
-ul.tabs li a {
+ul.tabs2 li a {
+    cursor: pointer;
     text-decoration: none;
     color: #333333;
     display: block;
@@ -721,8 +733,36 @@ ul.tabs li a {
     height: 24px;
 }
 
-html ul.tabs li:first-child,
-html ul.tabs li:first-child a {
+ul.tabs li {
+    cursor: pointer;
+    float: left;
+    margin: 0;
+    padding: 0;
+    line-height: 24px;
+}
+
+ul.tabs li a {
+    cursor: pointer;
+    text-decoration: none;
+    color: #333333;
+    display: block;
+    padding: 0 10px;
+    height: 24px;
+}
+
+html ul.tabs2 #history-log,
+html ul.tabs2 #history-log a {
+ 
+    -webkit-border-top-left-radius: 5px;
+    -webkit-border-bottom-left-radius: 5px;
+    -moz-border-radius-topleft: 5px;
+    -moz-border-radius-bottomleft: 5px;
+    border-top-left-radius: 5px;
+    border-bottom-left-radius: 5px;
+}
+
+html ul.tabs2:nth-child(2),
+html ul.tabs2:nth-child(2) a {
     -webkit-border-top-left-radius: 5px;
     -webkit-border-bottom-left-radius: 5px;
     -moz-border-radius-topleft: 5px;
@@ -741,15 +781,24 @@ html ul.tabs li:last-child a {
     border-top-right-radius: 5px;
     border-bottom-right-radius: 5px;
 }
-
-html ul.tabs li:last-child:active {
+html ul.tabs2 li:active {
     background: #F1F2F4;
     -webkit-box-shadow: inset 0 2px 3px #818181;
     -moz-box-shadow: inset 0 2px 3px #818181;
     box-shadow: inset 0 2px 3px #818181;
 }
 
-ul.tabs li:last-child:hover a {
+ul.tabs2 li:hover a {
+    color: #000000;
+}
+html ul.tabs li:active {
+    background: #F1F2F4;
+    -webkit-box-shadow: inset 0 2px 3px #818181;
+    -moz-box-shadow: inset 0 2px 3px #818181;
+    box-shadow: inset 0 2px 3px #818181;
+}
+
+ul.tabs li:hover a {
     color: #000000;
 }
 

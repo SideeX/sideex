@@ -10,7 +10,15 @@ sideex_log.info = function(str) {
         scrollTop: ($("#logcontainer")[0].scrollHeight)
     }, 200);
 };
-
+sideex_log.help=function(str){
+    var div = document.createElement('h2');
+    div.setAttribute("class", "log-info");
+    div.innerHTML = escapeHTML(str);
+    document.getElementById("refercontainer").appendChild(div);
+    $("#tab4").animate({
+        scrollTop: ($("#refercontainer")[0].scrollHeight)
+    }, 200);
+}
 sideex_log.error = function(str) {
     var div = document.createElement('h4');
     div.setAttribute("class", "log-error");
