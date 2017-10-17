@@ -156,7 +156,9 @@
                             </thead>
                             <tbody id="records-grid">
                                 <!-- TODO: Make only tbody scoll -->
-                                <input id="records-count" type="hidden" value="0"></input>
+                                <input id="records-count" type="hidden" value="0">
+                                </input>
+                                
                                 <!-- set input and /tbody in same line to avoid textNode -->
                                 <!--<tr>
                                     <td>time</td>
@@ -256,13 +258,20 @@
             <div class="clear"></div>
             <article class="module width_full">
                 <header class="tabs_involved">
-                    <ul class="tabs">
+                    <ul class="tabs2"> 
+                    <li id="history-log"><a>Log</a></li>
+                    <li id="reference-log"><a>Reference</a></li>
+                    </ul>
+                    <ul class="tabs">                       
                         <li id="clear-log"><a>Clear</a></li>
                     </ul>
+                    
                 </header>
                 <div id="tab4" class="tab_content case_roll">
                     <div class="module_content">
                         <div id="logcontainer">
+                        </div>
+                        <div id="refercontainer">
                         </div>
                     </div>
                 </div>
