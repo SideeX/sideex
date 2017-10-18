@@ -183,6 +183,7 @@ function appendContextMenu(node, isCase) {
             // get text node
             s_suite.childNodes[0].textContent = n_title;
             sideex_testSuite[s_suite.id].title = n_title;
+            sideex_testSuite[s_suite.id].file_name = n_title;
             $(s_suite).find("strong").addClass("modified");
             closeConfirm(true);
         }, false);
