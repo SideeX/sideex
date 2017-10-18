@@ -35,26 +35,28 @@ class BackgroundRecorder {
 
     // TODO: rename method
     tabsOnActivatedHandler(activeInfo) {
-        if (this.currentRecordingTabId === activeInfo.tabId && this.currentRecordingWindowId === activeInfo.windowId)
-            return;
-        // If no command has been recorded, ignore selectWindow command
-        // until the user has select a starting page to record the commands
-        if (getRecordsArray().length === 0)
-            return;
-        // Ignore all unknown tabs, the activated tab may not derived from
-        // other opened tabs, or it may managed by other SideeX panels
-        if (this.openedTabIds[activeInfo.tabId] == undefined)
-            return;
-        // Tab information has existed, add selectWindow command
-        this.currentRecordingTabId = activeInfo.tabId;
-        this.currentRecordingWindowId = activeInfo.windowId;
-        this.currentRecordingFrameLocation = "root";
-
+        var self = this;
         // Because event listener is so fast that selectWindow command is added
         // before other commands like clicking a link to browse in new tab.
         // Delay a little time to add command in order.
-        setTimeout(addCommandAuto, 150,
-            "selectWindow", [[this.openedTabIds[activeInfo.tabId]]], "");
+        setTimeout(function() {
+            if (self.currentRecordingTabId === activeInfo.tabId && self.currentRecordingWindowId === activeInfo.windowId)
+                return;
+            // If no command has been recorded, ignore selectWindow command
+            // until the user has select a starting page to record the commands
+            if (getRecordsArray().length === 0)
+                return;
+            // Ignore all unknown tabs, the activated tab may not derived from
+            // other opened tabs, or it may managed by other SideeX panels
+            if (self.openedTabIds[activeInfo.tabId] == undefined)
+                return;
+            // Tab information has existed, add selectWindow command
+            self.currentRecordingTabId = activeInfo.tabId;
+            self.currentRecordingWindowId = activeInfo.windowId;
+            self.currentRecordingFrameLocation = "root";
+
+            addCommandAuto("selectWindow", [[self.openedTabIds[activeInfo.tabId]]], "");
+        }, 150);
     }
 
     windowsOnFocusChangedHandler(windowId) {
@@ -127,6 +129,7 @@ class BackgroundRecorder {
     }
 
     webNavigationOnCreatedNavigationTargetHandler(details) {
+        console.log(details);
         if (this.openedTabIds[details.sourceTabId] != undefined) {
             this.openedTabNames["win_ser_" + this.openedTabCount] = details.tabId;
             this.openedTabIds[details.tabId] = "win_ser_" + this.openedTabCount;
