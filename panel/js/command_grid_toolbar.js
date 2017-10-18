@@ -188,11 +188,6 @@ function addCommand(command_name, command_target_array, command_value, auto, ins
     if (s_case) {
         sideex_testCase[s_case.id].records = document.getElementById("records-grid").innerHTML;
     }
-
-    // enable play button 
-    enableButton("playback");
-    enableButton("playSuite");
-    enableButton("playSuites");
 }
 
 // add command manually (append downward)

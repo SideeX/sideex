@@ -280,6 +280,9 @@ function addTestCase(title, id) {
     }, false);
 
     closeConfirm(true);
+    
+    // enable play button
+    enableButton("playback");
 }
 
 function addTestSuite(title, id) {
@@ -333,6 +336,10 @@ function addTestSuite(title, id) {
     }, false);
 
     makeCaseSortable(div);
+
+    // enable play button
+    enableButton("playSuites");
+    enableButton("playSuite");
 }
 
 document.getElementById("add-testSuite").addEventListener("click", function(event) {
@@ -346,10 +353,6 @@ document.getElementById("add-testSuite").addEventListener("click", function(even
             title: title
         };
         addTestSuite(title, id);
-
-        // enable play button
-        enableButton("playSuites");
-        enableButton("playSuite");
     }
 }, false);
 
@@ -432,9 +435,6 @@ document.getElementById("add-testCase").addEventListener("click", function(event
         var id = "case" + sideex_testCase.count;
         sideex_testCase.count++;
         addTestCase(title, id);
-
-        // enable play button
-        enableButton("playback");
     }
 }, false);
 
