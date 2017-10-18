@@ -250,8 +250,10 @@ function play() {
 }
 
 function stop() {
+
     if (isPause){
-        resume();
+        isPause = false;
+        switchPR();
     }
     isPlaying = false;
     isPlayingSuite = false;
@@ -265,10 +267,12 @@ function stop() {
 }
 
 function playAfterConnectionFailed() {
-    initializeAfterConnectionFailed()
-        .then(executionLoop)
-        .then(finalizePlayingProgress)
-        .catch(catchPlayingError);
+    if (isPlaying) {
+        initializeAfterConnectionFailed()
+            .then(executionLoop)
+            .then(finalizePlayingProgress)
+            .catch(catchPlayingError);
+    }
 }
 
 function initializeAfterConnectionFailed() {
@@ -587,6 +591,8 @@ function catchPlayingError(reason) {
             currentPlayingCommandIndex--;
             playAfterConnectionFailed();
         }, 100);
+    } else if (!isPlaying) {
+        return;
     } else {
         extCommand.clear();
         enableClick();
