@@ -116,7 +116,9 @@ $(document).ready(function() {
         max: 2000,
         value: 0,
         step: 400
-    }).slider("pips");
+    }).slider("pips", {
+        rest: "label", labels: ["Fast", "", "", "", "", "Slow"]
+    });
 });
 
 var dropdown = function(node) {
