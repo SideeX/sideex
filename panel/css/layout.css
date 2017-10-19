@@ -1430,7 +1430,7 @@ span.hotKey {
 }
 
 #slider .ui-slider-handle:focus {
-    outline: -webkit-focus-ring-color auto 0px;
+    outline: none;
  }
 
 #slider .ui-slider-pip {
