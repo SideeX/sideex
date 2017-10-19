@@ -111,34 +111,22 @@ window.onload = function() {
         if (isRecording) {
             recorder.attach();
             notificationCount = 0;
-            if (getRecordsArray().length) {
-                for (let tabId in recorder.openedTabIds) {
-                    browser.tabs.sendMessage(Number(tabId), {attachRecorder: true})
+            browser.tabs.query({windowId: extCommand.getContentWindowId(), url: "<all_urls>"})
+            .then(function(tabs) {
+                for(let tab of tabs) {
+                    browser.tabs.sendMessage(tab.id, {attachRecorder: true});
                 }
-            } else {
-                browser.tabs.query({windowId: extCommand.getContentWindowId(), url: "<all_urls>"})
-                .then(function(tabs) {
-                    for(let tab of tabs) {
-                        browser.tabs.sendMessage(tab.id, {attachRecorder: true});
-                    }
-                });
-            }
+            });
             recordButton.childNodes[1].textContent = "Stop";
         }
         else {
             recorder.detach();
-            if (getRecordsArray().length) {
-                for (let tabId in recorder.openedTabIds) {
-                    browser.tabs.sendMessage(Number(tabId), {detachRecorder: true})
+            browser.tabs.query({windowId: extCommand.getContentWindowId(), url: "<all_urls>"})
+            .then(function(tabs) {
+                for(let tab of tabs) {
+                    browser.tabs.sendMessage(tab.id, {detachRecorder: true});
                 }
-            } else {
-                browser.tabs.query({windowId: extCommand.getContentWindowId(), url: "<all_urls>"})
-                .then(function(tabs) {
-                    for(let tab of tabs) {
-                        browser.tabs.sendMessage(tab.id, {detachRecorder: true});
-                    }
-                });
-            }
+            });
             recordButton.childNodes[1].textContent = "Record";
         }
     })
