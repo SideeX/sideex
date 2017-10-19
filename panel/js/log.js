@@ -11,7 +11,7 @@ sideex_log.info = function(str) {
     }, 200);
 };
 sideex_log.help=function(str){
-    var div = document.createElement('h2');
+    var div = document.createElement('h4');
     div.setAttribute("class", "log-info");
     div.innerHTML = escapeHTML(str);
     document.getElementById("refercontainer").appendChild(div);

@@ -15,7 +15,7 @@ var valueTd=["An option locator of the element to be added. For example: \"label
 "x,y position of the mouse event relative to the target element. For example: \"10,10\"","X","X","x,y position of the mouse event relative to the target element. For example: \"10,10\"",
 "X","The amount of time to sleep in millisecond. For example: \"5000\" means sleep for 5 seconds.","An option locator of the element to be removed. For example: \"label=Option1\"","X",
 "An option locator. For example: \"label=Option1\"","X","X","A character. For example: \"${KEY_DOWN}\"",
-"The name of the variable storing the string. For example: \"var_usr\"","The name of the variable storing the text of the target element. For example: \"var_ele_txt\"","The name of the variable storing the title. For example: \"var_title\"","The string to be set to an input field.","The expected string of the target element (Exact matching). The next command will still be run even if the text verification fails.Variable declared in the storeXXX commands can be used in the string. For example: \"Hello ${var_usr}\"",""];
+"The name of the variable storing the string. For example: \"var_usr\"","The name of the variable storing the text of the target element. For example: \"var_ele_txt\"","The name of the variable storing the title. For example: \"var_title\"","The string to be set to an input field.","The expected string of the target element (Exact matching). The next command will still be run even if the text verification fails.Variable declared in the storeXXX commands can be used in the string. For example: \"Hello ${var_usr}\"","X"];
 
 
 
