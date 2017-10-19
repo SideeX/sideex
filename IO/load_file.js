@@ -99,7 +99,7 @@ function readSuite(f) {
         if (!checkIsVersion2(test_suite)) {
             if (test_suite.search("<datalist>") < 0) {
                 // confrim user if want to transform input file for loading it
-                let result = window.confirm("\"" + f.name + "\" is of the format of an early version of SideeX.\nDo you still want to open it?");
+                let result = window.confirm("\"" + f.name + "\" is of the format of an early version of Selenium IDE.\nSome commands may not work.\nDo you still want to open it?");
                 if (!result) {
                     return;
                 }
