@@ -475,7 +475,7 @@ section#main {
 #middle-container {
     margin-top:30px;
     margin-bottom: 8px;
-    height: calc(100% - 121px);
+    height: calc(100% - 111px);
 }
 
 #result-container {
@@ -1399,4 +1399,85 @@ span.hotKey {
     padding-left: 20px;
     float: right;
     color: gray;
+}
+
+#slider.ui-slider {
+    border-radius: 20px;
+    background: #BEC0C3;
+    border: none;
+    height: 10px;
+    margin: 0.5em 2.4em -1.5em 2.4em;
+    padding-bottom: -3em;
+}
+
+#slider .ui-state-active {
+    background: #E6E6E6;
+    border-color: #B7B7B7; 
+}
+
+#slider .ui-widget-content {
+    background: #E6E6E6; 
+}
+
+#slider .ui-slider-pip-initial {
+    color: #979797;
+    font-weight: normal;
+}
+
+#slider .ui-slider-handle:active {
+   background-color: #E6E6E6;
+   border-color: #B7B7B7;
+}
+
+#slider .ui-slider-handle:focus {
+    outline: -webkit-focus-ring-color auto 0px;
+ }
+
+#slider .ui-slider-pip {
+    top: 3px;
+}
+                    
+#slider .ui-slider-pip .ui-slider-line {
+    width: 4px;
+    height: 4px;
+    border-radius: 4px;
+    background: #fffaf7;
+}
+                    
+#slider .ui-slider-pip.ui-slider-pip-last,
+#slider .ui-slider-pip.ui-slider-pip-first {
+    top: -7px; 
+}
+                    
+#slider .ui-slider-pip.ui-slider-pip-last .ui-slider-line,
+#slider .ui-slider-pip.ui-slider-pip-first .ui-slider-line {
+    display: none;
+}
+                    
+#slider .ui-slider-pip.ui-slider-pip-last .ui-slider-label,
+#slider .ui-slider-pip.ui-slider-pip-first .ui-slider-label {
+    margin: 0.2em 0em 0em 0em;
+}
+                    
+#slider .ui-slider-pip.ui-slider-pip-first .ui-slider-label {
+    left: -2em;
+    text-align: right;
+}
+                    
+#slider .ui-slider-pip.ui-slider-pip-last .ui-slider-label {
+    left: 2em;
+    text-align: left;
+}
+                    
+#slider .ui-slider-pip.ui-slider-pip-selected-initial {
+    font-weight: normal;
+}
+                    
+#slider .ui-slider-pip.ui-slider-pip-selected {
+    font-weight: bold;
+}
+                    
+#slider .ui-slider-pip.ui-slider-pip-selected,
+#slider .ui-slider-pip.ui-slider-pip-selected-initial {
+    color: #434d5a; 
 }
