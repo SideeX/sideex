@@ -467,7 +467,7 @@ function executionLoop() {
         pause();
         return Promise.reject("shutdown");
     }
-    
+
     if (!isPlaying) {
         cleanStatus();
         return Promise.reject("shutdown");
@@ -486,6 +486,10 @@ function executionLoop() {
     let commandName = getCommandName(commands[currentPlayingCommandIndex]);
     let commandTarget = getCommandTarget(commands[currentPlayingCommandIndex]);
     let commandValue = getCommandValue(commands[currentPlayingCommandIndex]);
+
+    if (commandName == "") {
+        return Promise.reject("no command name");
+    }
 
     setColor(currentPlayingCommandIndex + 1, "executing");
 

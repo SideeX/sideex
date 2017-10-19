@@ -117,7 +117,7 @@ function notification(command, target, value) {
     browser.notifications.create(tempCount, {
         "type": "basic",
         "iconUrl": "/icons/icons-48.png",
-        "title": "Record command!",
+        "title": "Command Recorded",
         "message": "command: " + String(command) + "\ntarget: " + String(target[0][0]) + "\nvalue: " + String(value) 
     });
 

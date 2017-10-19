@@ -97,9 +97,9 @@ function readSuite(f) {
         // check for input file version
         // if it is not SideeX2, transforming it
         if (!checkIsVersion2(test_suite)) {
-            if (test_suite.search("<datalist>") < 0) {
+            if (test_suite.search("<table") > 0 && test_suite.search("<datalist>") < 0) {
                 // confrim user if want to transform input file for loading it
-                let result = window.confirm("\"" + f.name + "\" is of the format of an early version of Selenium IDE.\nSome commands may not work.\nDo you still want to open it?");
+                let result = window.confirm("\"" + f.name + "\" is of the format of an early version of Selenium IDE. Some commands may not work. Do you still want to open it?");
                 if (!result) {
                     return;
                 }

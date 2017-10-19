@@ -109,7 +109,7 @@ function appendContextMenu(node, isCase) {
         rename_case.addEventListener("click", function(event) {
             event.stopPropagation();
             var s_case = getSelectedCase();
-            var n_title = prompt("Please enter the Test Case's title", sideex_testCase[s_case.id].title);
+            var n_title = prompt("Please enter the Test Case's name", sideex_testCase[s_case.id].title);
             // get text node
             s_case.childNodes[0].textContent = n_title;
             sideex_testCase[s_case.id].title = n_title;
@@ -179,11 +179,11 @@ function appendContextMenu(node, isCase) {
         rename_suite.addEventListener("click", function(event) {
             event.stopPropagation();
             var s_suite = getSelectedSuite();
-            var n_title = prompt("Please enter the Test Suite's title", sideex_testSuite[s_suite.id].title);
+            var n_title = prompt("Please enter the Test Suite's name", sideex_testSuite[s_suite.id].title);
             // get text node
             s_suite.childNodes[0].textContent = n_title;
             sideex_testSuite[s_suite.id].title = n_title;
-            sideex_testSuite[s_suite.id].file_name = n_title;
+            sideex_testSuite[s_suite.id].file_name = n_title + ".html";
             $(s_suite).find("strong").addClass("modified");
             closeConfirm(true);
         }, false);
@@ -344,7 +344,7 @@ function addTestSuite(title, id) {
 
 document.getElementById("add-testSuite").addEventListener("click", function(event) {
     event.stopPropagation();
-    var title = prompt("Please enter the Test Suite's title", "Untitled Test Suite");
+    var title = prompt("Please enter the Test Suite's name", "Untitled Test Suite");
     if (title) {
         var id = "suite" + sideex_testSuite.count;
         sideex_testSuite.count++;
@@ -430,7 +430,7 @@ document.getElementById("close-testSuite").addEventListener('click', function(ev
 }, false);
 
 document.getElementById("add-testCase").addEventListener("click", function(event) {
-    var title = prompt("Please enter the Test Case's title", "Untitled Test Case");
+    var title = prompt("Please enter the Test Case's name", "Untitled Test Case");
     if (title) {
         var id = "case" + sideex_testCase.count;
         sideex_testCase.count++;
