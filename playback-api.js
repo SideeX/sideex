@@ -57,9 +57,7 @@ window.onload = function() {
     $('#command-command').on('input change', function() {
         scrape(document.getElementById("command-command").value);
     });
-   /* $("#command-command").on("change keyup paste", function(){
-        alert("Hello");
-    });*/
+   
     
     
     var logLi=document.getElementById("history-log");
@@ -855,64 +853,4 @@ function enableButton(buttonId) {
 
 function disableButton(buttonId) {
     document.getElementById(buttonId).disabled = true;
-}
-function searchCommand(word,command){
-   var index=0; 
-    for(index;index<command.length;index++){
-        if(word==command[index]){
-            return index;
-        }
-    }
-    //Not found
-    return -1;
-}
-function scrape(word){
-    var commandTd=[];
-            var targetTd=[];
-            var valueTd=[];
-            var indexTr=0;
-            var indexTd=0;
-            var proxy="https://cors-anywhere.herokuapp.com/";
-            $.ajax({
-                 url : proxy+"http://sideex.org/",
-                 async: false,
-                 success : function(response){                
-                    $(response).find('tr').children().each(function(index){
-                        if(indexTd==0){
-                            //do nothing
-                            //alert($(this).text());
-                        }
-                        else {
-                            if(indexTd%3==1) { 
-                                commandTd[indexTr]=$(this).text().trim().replace(/ +(?= )/g,'');
-                            }
-                            else if(indexTd%3==2)
-                                targetTd[indexTr]=$(this).text().trim().replace(/ +(?= )/g,'');
-                            else if(indexTd%3==0){   
-                                 valueTd[indexTr]=$(this).text().trim().replace(/ +(?= )/g,'');
-                                 indexTr++;
-                            }
-                        }
-                        indexTd++;
-                    });
-                }                
-            })
-
-    wordPosition=searchCommand(word,commandTd);
-        document.getElementById("refercontainer").innerHTML = "";
-       
-        if(wordPosition!=-1){
-            if(targetTd[wordPosition]=="X")
-                targetTd[wordPosition]="Left blank";
-            if(valueTd[wordPosition]=="X")
-                valueTd[wordPosition]="Left blank";
-            sideex_log.help("Command: "+word);
-            sideex_log.help("Target: "+targetTd[wordPosition]);
-            sideex_log.help("Value: " +valueTd[wordPosition]);
-        }
-        else{
-            sideex_log.help("Command not found");
-        }        
-
-
 }
