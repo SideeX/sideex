@@ -230,6 +230,7 @@ window.onload = function() {
     });
 };
 
+// TODO: rename it, should be enableClick()
 function disableClick() {
     document.getElementById("pause").disabled = false;
     document.getElementById('testCase-grid').style.pointerEvents = 'none';
@@ -250,8 +251,10 @@ function play() {
 }
 
 function stop() {
+
     if (isPause){
-        resume();
+        isPause = false;
+        switchPR();
     }
     isPlaying = false;
     isPlayingSuite = false;
@@ -265,10 +268,12 @@ function stop() {
 }
 
 function playAfterConnectionFailed() {
-    initializeAfterConnectionFailed()
-        .then(executionLoop)
-        .then(finalizePlayingProgress)
-        .catch(catchPlayingError);
+    if (isPlaying) {
+        initializeAfterConnectionFailed()
+            .then(executionLoop)
+            .then(finalizePlayingProgress)
+            .catch(catchPlayingError);
+    }
 }
 
 function initializeAfterConnectionFailed() {
@@ -293,7 +298,10 @@ function pause() {
     if (isPlaying) {
         sideex_log.info("Pausing");
         isPause = true;
-        extCommand.detach();
+        isPlaying = false;
+        // No need to detach
+        // prevent from missing status info
+        //extCommand.detach();
         switchPR();
     }
 }
@@ -475,11 +483,11 @@ function executionLoop() {
     
     if (!isPlaying) {
         cleanStatus();
-        return false;
+        return Promise.reject("shutdown");
     }
 
     if (isPause) {
-        return true;
+        return Promise.reject("shutdown");
     }
 
     currentPlayingCommandIndex++;
@@ -587,6 +595,8 @@ function catchPlayingError(reason) {
             currentPlayingCommandIndex--;
             playAfterConnectionFailed();
         }, 100);
+    } else if (reason == "shutdown") {
+        return;
     } else {
         extCommand.clear();
         enableClick();
@@ -612,6 +622,10 @@ function catchPlayingError(reason) {
 }
 
 function doPreparation() {
+    if (!isPlaying) {
+        currentPlayingCommandIndex--;
+        return Promise.reject("shutdown");
+    }
     //console.log("in preparation");
     return extCommand.sendCommand("waitPreparation", "", "")
         .then(function() {
@@ -621,6 +635,10 @@ function doPreparation() {
 
 
 function doPrePageWait() {
+    if (!isPlaying) {
+        currentPlayingCommandIndex--;
+        return Promise.reject("shutdown");
+    }
     //console.log("in prePageWait");
     return extCommand.sendCommand("prePageWait", "", "")
        .then(function(response) {
@@ -634,6 +652,10 @@ function doPrePageWait() {
 }
 
 function doPageWait() {
+    if (!isPlaying) {
+        currentPlayingCommandIndex--;
+        return Promise.reject("shutdown");
+    }
     //console.log("in pageWait");
     return extCommand.sendCommand("pageWait", "", "")
         .then(function(response) {
@@ -659,6 +681,10 @@ function doPageWait() {
 
 function doAjaxWait() {
     //console.log("in ajaxWait");
+    if (!isPlaying) {
+        currentPlayingCommandIndex--;
+        return Promise.reject("shutdown");
+    }
     return extCommand.sendCommand("ajaxWait", "", "")
         .then(function(response) {
             if (ajaxTime && (Date.now() - ajaxTime) > 30000) {
@@ -682,6 +708,10 @@ function doAjaxWait() {
 }
 
 function doDomWait() {
+    if (!isPlaying) {
+        currentPlayingCommandIndex--;
+        return Promise.reject("shutdown");
+    }
     //console.log("in domWait");
     return extCommand.sendCommand("domWait", "", "")
         .then(function(response) {
@@ -716,9 +746,19 @@ function doCommand() {
         sideex_log.info("Executing: | " + commandName + " | " + commandTarget + " | " + commandValue + " |");
     }
 
+    if (!isPlaying) {
+        currentPlayingCommandIndex--;
+        return Promise.reject("shutdown");
+    }
+
     let p = new Promise(function(resolve, reject) {
         let count = 0;
         let interval = setInterval(function() {
+            if (!isPlaying) {
+                currentPlayingCommandIndex--;
+                reject("shutdown");
+                clearInterval(interval);
+            }
             if (count > 60) {
                 sideex_log.error("Timed out after 30000ms");
                 reject("Window not Found");
