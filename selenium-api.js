@@ -395,7 +395,7 @@ Selenium.prototype.doVerifyText = function(locator, value) {
 
 Selenium.prototype.doVerifyTitle = function(value) {
     if (normalizeSpaces(this.getTitle()) !== value) {
-        throw new Error("Actual value '" + normalizeSapces(this.getTitle()) + "' did not match '" + value + "'");
+        throw new Error("Actual value '" + normalizeSpaces(this.getTitle()) + "' did not match '" + value + "'");
     }
 };
 
