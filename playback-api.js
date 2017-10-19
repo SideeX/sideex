@@ -465,6 +465,7 @@ function executionLoop() {
         commands[currentPlayingCommandIndex + 1].getElementsByTagName("td")[0].classList.add("stopping");
         sideex_log.info("Breakpoint: Stop.");
         pause();
+        return Promise.reject("shutdown");
     }
     
     if (!isPlaying) {
