@@ -142,27 +142,17 @@ class BackgroundRecorder {
         if (!message.command || this.openedWindowIds[sender.tab.windowId] == undefined)
             return;
 
-        if (this.initialSetFlag) {
+        if (Object.keys(this.openedTabIds).length === 0) {
             this.currentRecordingTabId = sender.tab.id;
             this.currentRecordingWindowId = sender.tab.windowId;
             this.openedTabNames["win_ser_local"] = sender.tab.id;
             this.openedTabIds[sender.tab.id] = "win_ser_local";
-            this.initialSetFlag = false;
         }
 
         if (getRecordsArray().length === 0) {
             addCommandAuto("open", [
                 [sender.tab.url]
             ], "");
-
-            browser.tabs.query({windowId: sender.tab.windowId, url: "<all_urls>"})
-            .then(function(tabs) {
-                for(let tab of tabs) {
-                    if (tab.id != sender.tab.id) {
-                        browser.tabs.sendMessage(tab.id, {detachRecorder: true});
-                    }
-                }
-            });
         }
 
         if (this.openedTabIds[sender.tab.id] == undefined)

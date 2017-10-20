@@ -33,10 +33,12 @@ function fileToPanel(f) {
         for (var i = 0; i < tr.length; ++i) {
             pattern = tr[i].match(/(?:<tr>)([\s]*?)(?:<td>)([\s\S]*?)(?:<\/td>)([\s]*?)(?:<td>)([\s\S]*?)(?:<datalist>)([\s\S]*?)(?:<\/datalist>([\s]*?)<\/td>)([\s]*?)(?:<td>)([\s\S]*?)(?:<\/td>)([\s]*?)(?:<\/tr>)/);
             // remove whitespace
+            /*
             var space = pattern[4].indexOf(" ");
             if (space >= 0) {
                 pattern[4] = pattern[4].slice(0, space);
             }
+            */
 
             var new_tr = '<tr>' + pattern[1] + '<td><div style="display: none;">' + pattern[2] + '</div><div style="overflow:hidden;height:15px;"></div></td>' + pattern[3] + '<td><div style="display: none;">' + pattern[4] +
                 '</div><div style="overflow:hidden;height:15px;"></div>\n        ' + '<datalist>' + pattern[5] + '</datalist>' + pattern[6] + '</td>' +
@@ -97,17 +99,20 @@ function readSuite(f) {
         // check for input file version
         // if it is not SideeX2, transforming it
         if (!checkIsVersion2(test_suite)) {
-            if (test_suite.search("<datalist>") < 0) {
+            if (test_suite.search("<table") > 0 && test_suite.search("<datalist>") < 0) {
                 // confrim user if want to transform input file for loading it
-                let result = window.confirm("\"" + f.name + "\" is of the format of an early version of Selenium IDE.\nSome commands may not work.\nDo you still want to open it?");
+                let result = window.confirm("\"" + f.name + "\" is of the format of an early version of Selenium IDE. Some commands may not work. Do you still want to open it?");
                 if (!result) {
                     return;
                 }
                 // parse for testCase or testSuite
                 if (checkIsTestSuite(test_suite)) {
+                    alert("Sorry, we do not support test suite of the format of an early version of Selenium IDE now.");
+                    /*
                     olderTestSuiteResult = test_suite.substring(0, test_suite.indexOf("<table")) + test_suite.substring(test_suite.indexOf("</body>"));
                     olderTestSuiteFile = f;
                     loadCaseIntoSuite(test_suite);
+                    */
                     return;
                 } else {
                     test_suite = transformVersion(test_suite);

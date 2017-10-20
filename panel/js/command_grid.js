@@ -182,13 +182,11 @@ function attachEvent(start, end) {
                     let thisSelectedTrId = parseInt($(this)[0].id.substring(8));
                     $('#records-grid .selectedRecord').removeClass('selectedRecord');
                     if (firstSelectedTrId < thisSelectedTrId) {
-                        // console.log("this: ", thisSelectedTrId);
                         for (let i=firstSelectedTrId ; i<thisSelectedTrId ; i++) {
                             $("#records-" + i).addClass("selectedRecord");
                         }
 
                     } else {
-                        // console.log("this2: ", thisSelectedTrId);
                         for (let i=firstSelectedTrId ; i>thisSelectedTrId ; i--) {
                             $("#records-" + i).addClass("selectedRecord");
                         }

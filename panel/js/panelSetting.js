@@ -82,7 +82,8 @@ $(document).ready(function() {
                     if (offset < tableOffsetTop || offset > tableOffsetBottom) {
                         $t_fixed.hide();
                     } else if (offset >= tableOffsetTop && offset <= tableOffsetBottom && $t_fixed.is(":hidden")) {
-                        $t_fixed.show();
+                        // Temporarily remove to prevent from floating command header
+                        // $t_fixed.show();
                     }
                     var tboffBottom = (parseInt(tableOffsetBottom));
                     var tboffTop = (parseInt(tableOffsetTop));

@@ -48,13 +48,32 @@ function loadCaseIntoSuite(str) {
     // ask user to load testCase
     var answer = confirm("Please load " + testCaseName );
     if (answer) {
-        document.getElementById('load-older-testSuite').click();
+        document.getElementById("load-older-testSuite").click();
+        // document.getElementById("load-older-testSuite").dispatchEvent(new Event('click'));
     }
+    /*
+    setTimeout(function() {
+        console.log("answer: ", answer);
+        if (answer) {
+            console.log("click");
+            try {
+                document.getElementById("load-older-testSuite").click();
+                // $("#load-older-testSuite").click();
+                console.log("after");
+            } catch (e) {
+                console.error("error: ", e);
+            }
+        }
+    }, 100);
+    */
     return;
 }
 
+document.getElementById("load-older-testSuite").addEventListener("click", function(event) {console.log("hello");});
+
 document.getElementById("load-older-testSuite").addEventListener("change", afterLoadOlderTestCase, false);
 function afterLoadOlderTestCase(event) {
+    console.log("listener");
     event.stopPropagation();
     olderTestCaseFiles = this.files;
     readOlderTestCase(this.files[0], 0, this.files.length);

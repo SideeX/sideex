@@ -379,6 +379,8 @@ document.addEventListener("keydown", function(event) {
             $("#playback").click();
         } else if (keyNum === 84) { // Ctrl + T
             setBreakpoint(getSelectedRecord());
+        } else if (keyNum == 78) { // Ctrl + N
+            $("#grid-add").click();
         }
     }
 }, false);
@@ -414,6 +416,8 @@ function deleteCommand(selected_ID) {
 }
 
 function copyCommand() {
+    // clear tempCommand
+    tempCommand = [];
     let ref = getSelectedRecords();
     let targetOptions;
     for (let i=0 ; i<ref.length ; i++) {
@@ -434,9 +438,21 @@ function copyCommand() {
 }
 
 function pasteCommand() {
-    for (let i=tempCommand.length-1 ; i>=0 ; i--) {
-        addCommandManu(tempCommand[i]["command"], tempCommand[i]["target"], tempCommand[i]["value"]);
-        // addCommandManu(tempCommand["command"], [[tempCommand["test"]]], tempCommand["value"]);
+    if (tempCommand.length > 0) {
+        if (getSelectedRecords().length == 0) {
+            // NOTE: because there is no selected record.
+            // Therefore, index i is form 0 to length-1.
+            for (let i=0 ; i<tempCommand.length ; i++) {
+                addCommandManu(tempCommand[i]["command"], tempCommand[i]["target"], tempCommand[i]["value"]);
+            }
+            return;
+        }
+
+        // NOTE: because addCommandManu is add command on this below.
+        // Therefore, index i is form length-1 to 0
+        for (let i=tempCommand.length-1 ; i>=0 ; i--) {
+            addCommandManu(tempCommand[i]["command"], tempCommand[i]["target"], tempCommand[i]["value"]);
+        }
     }
 }
 
