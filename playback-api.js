@@ -175,8 +175,7 @@ window.onload = function() {
 
         isSelecting = true;
         if (isRecording)
-            /* TODO: disable record button */
-            isRecording = false;
+            recordButton.click();
         button.textContent = "Cancel";
         browser.tabs.query({
             active: true,

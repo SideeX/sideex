@@ -16,6 +16,7 @@
  */
 
 var selenium = new Selenium(BrowserBot.createForWindow(window));
+var locatorBuilders = new LocatorBuilders(window);
 
 function doCommands(request, sender, sendResponse, type) {
     if (request.commands) {
