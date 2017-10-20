@@ -89,8 +89,7 @@ function handleMessage(message, sender, sendResponse) {
     }
 
     if (message.attachRecorderRequest) {
-        if (isRecording && !isPlaying &&
-            (recorder.openedTabIds[sender.tab.id] || getRecordsArray().length == 0)) {
+        if (isRecording && !isPlaying) {
             browser.tabs.sendMessage(sender.tab.id, {attachRecorder: true});
         }
         return;

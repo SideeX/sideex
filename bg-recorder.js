@@ -19,28 +19,37 @@
 
 class BackgroundRecorder {
     constructor() {
-        this.currentRecordingTabId = -1;
-        this.currentRecordingWindowId = -1;
-        this.currentRecordingFrameLocation = "root";
+        this.currentRecordingTabId = {};
+        this.currentRecordingWindowId = {};
+        this.currentRecordingFrameLocation = {};
         this.openedTabNames = {};
         this.openedTabIds = {};
+        this.openedTabCount = {};
+
         this.openedWindowIds = {};
-        this.openedTabCount = 1;
         this.contentWindowId = -1;
         this.selfWindowId = -1;
         this.attached = false;
-        this.initialSetFlag = true;
         this.rebind();
     }
 
     // TODO: rename method
     tabsOnActivatedHandler(activeInfo) {
+        let testCase = getSelectedCase();
+        if (!testCase) {
+            return;
+        }
+        let testCaseId = testCase.id;
+        if (!this.openedTabIds[testCaseId]) {
+            return;
+        }
+
         var self = this;
         // Because event listener is so fast that selectWindow command is added
         // before other commands like clicking a link to browse in new tab.
         // Delay a little time to add command in order.
         setTimeout(function() {
-            if (self.currentRecordingTabId === activeInfo.tabId && self.currentRecordingWindowId === activeInfo.windowId)
+            if (self.currentRecordingTabId[testCaseId] === activeInfo.tabId && self.currentRecordingWindowId[testCaseId] === activeInfo.windowId)
                 return;
             // If no command has been recorded, ignore selectWindow command
             // until the user has select a starting page to record the commands
@@ -48,20 +57,27 @@ class BackgroundRecorder {
                 return;
             // Ignore all unknown tabs, the activated tab may not derived from
             // other opened tabs, or it may managed by other SideeX panels
-            if (self.openedTabIds[activeInfo.tabId] == undefined)
+            if (self.openedTabIds[testCaseId][activeInfo.tabId] == undefined)
                 return;
             // Tab information has existed, add selectWindow command
-            self.currentRecordingTabId = activeInfo.tabId;
-            self.currentRecordingWindowId = activeInfo.windowId;
-            self.currentRecordingFrameLocation = "root";
-
-            addCommandAuto("selectWindow", [[self.openedTabIds[activeInfo.tabId]]], "");
+            self.currentRecordingTabId[testCaseId] = activeInfo.tabId;
+            self.currentRecordingWindowId[testCaseId] = activeInfo.windowId;
+            self.currentRecordingFrameLocation[testCaseId] = "root";
+            addCommandAuto("selectWindow", [[self.openedTabIds[testCaseId][activeInfo.tabId]]], "");
         }, 150);
     }
 
     windowsOnFocusChangedHandler(windowId) {
+        let testCase = getSelectedCase();
+        if (!testCase) {
+            return;
+        }
+        let testCaseId = testCase.id;
+        if (!this.openedTabIds[testCaseId]) {
+            return;
+        }
 
-        if (this.windowId === browser.windows.WINDOW_ID_NONE) {
+        if (windowId === browser.windows.WINDOW_ID_NONE) {
             // In some Linux window managers, WINDOW_ID_NONE will be listened before switching
             // See MDN reference :
             // https://developer.mozilla.org/en-US/Add-ons/WebExtensions/API/windows/onFocusChanged
@@ -71,7 +87,7 @@ class BackgroundRecorder {
         // If the activated window is the same as the last, just do nothing
         // selectWindow command will be handled by tabs.onActivated listener
         // if there also has a event of switching a activated tab
-        if (this.currentRecordingWindowId === windowId)
+        if (this.currentRecordingWindowId[testCaseId] === windowId)
             return;
 
         let self = this;
@@ -85,7 +101,7 @@ class BackgroundRecorder {
             }
 
             // The activated tab is not the same as the last
-            if (tabs[0].id !== self.currentRecordingTabId) {
+            if (tabs[0].id !== self.currentRecordingTabId[testCaseId]) {
                 // If no command has been recorded, ignore selectWindow command
                 // until the user has select a starting page to record commands
                 if (getRecordsArray().length === 0)
@@ -93,48 +109,60 @@ class BackgroundRecorder {
 
                 // Ignore all unknown tabs, the activated tab may not derived from
                 // other opened tabs, or it may managed by other SideeX panels
-                if (self.openedTabIds[tabs[0].id] == undefined)
+                if (self.openedTabIds[testCaseId][tabs[0].id] == undefined)
                     return;
 
                 // Tab information has existed, add selectWindow command
-                self.currentRecordingWindowId = windowId;
-                self.currentRecordingTabId = tabs[0].id;
-                self.currentRecordingFrameLocation = "root";
-                addCommandAuto("selectWindow", [[self.openedTabIds[tabs[0].id]]], "");
+                self.currentRecordingWindowId[testCaseId] = windowId;
+                self.currentRecordingTabId[testCaseId] = tabs[0].id;
+                self.currentRecordingFrameLocation[testCaseId] = "root";
+                addCommandAuto("selectWindow", [[self.openedTabIds[testCaseId][tabs[0].id]]], "");
             }
         });
     }
 
     tabsOnRemovedHandler(tabId, removeInfo) {
-        if (this.openedTabIds[tabId] != undefined) {
-            if (this.currentRecordingTabId !== tabId) {
+        let testCase = getSelectedCase();
+        if (!testCase) {
+            return;
+        }
+        let testCaseId = testCase.id;
+        if (!this.openedTabIds[testCaseId]) {
+            return;
+        }
+
+        if (this.openedTabIds[testCaseId][tabId] != undefined) {
+            if (this.currentRecordingTabId[testCaseId] !== tabId) {
                 addCommandAuto("selectWindow", [
-                    [this.openedTabIds[tabId]]
+                    [this.openedTabIds[testCaseId][tabId]]
                 ], "");
                 addCommandAuto("close", [
-                    [this.openedTabIds[tabId]]
+                    [this.openedTabIds[testCaseId][tabId]]
                 ], "");
                 addCommandAuto("selectWindow", [
-                    [this.openedTabIds[this.currentRecordingTabId]]
-                ]);
+                    [this.openedTabIds[testCaseId][this.currentRecordingTabId[testCaseId]]]
+                ], "");
             } else {
                 addCommandAuto("close", [
-                    [this.openedTabIds[tabId]]
+                    [this.openedTabIds[testCaseId][tabId]]
                 ], "");
             }
-            delete this.openedTabNames[openedTabIds[tabId]];
-            delete this.openedTabIds[tabId];
-            this.currentRecordingFrameLocation = "root";
+            delete this.openedTabNames[testCaseId][this.openedTabIds[testCaseId][tabId]];
+            delete this.openedTabIds[testCaseId][tabId];
+            this.currentRecordingFrameLocation[testCaseId] = "root";
         }
     }
 
     webNavigationOnCreatedNavigationTargetHandler(details) {
-        console.log(details);
-        if (this.openedTabIds[details.sourceTabId] != undefined) {
-            this.openedTabNames["win_ser_" + this.openedTabCount] = details.tabId;
-            this.openedTabIds[details.tabId] = "win_ser_" + this.openedTabCount;
+        let testCase = getSelectedCase();
+        if (!testCase)
+            return;
+        let testCaseId = testCase.id;
+        if (this.openedTabIds[testCaseId][details.sourceTabId] != undefined) {
+            this.openedTabNames[testCaseId]["win_ser_" + this.openedTabCount[testCaseId]] = details.tabId;
+            this.openedTabIds[testCaseId][details.tabId] = "win_ser_" + this.openedTabCount[testCaseId];
             this.setOpenedWindow(details.windowId);
-            this.openedTabCount++;
+            this.openedTabCount[testCaseId]++;
         }
     };
 
@@ -142,11 +170,28 @@ class BackgroundRecorder {
         if (!message.command || this.openedWindowIds[sender.tab.windowId] == undefined)
             return;
 
-        if (Object.keys(this.openedTabIds).length === 0) {
-            this.currentRecordingTabId = sender.tab.id;
-            this.currentRecordingWindowId = sender.tab.windowId;
-            this.openedTabNames["win_ser_local"] = sender.tab.id;
-            this.openedTabIds[sender.tab.id] = "win_ser_local";
+        if (!getSelectedSuite() || !getSelectedCase()) {
+            let id = "case" + sideex_testCase.count;
+            sideex_testCase.count++;
+            addTestCase("Untitled Test Case", id);
+        }
+
+        let testCaseId = getSelectedCase().id;
+
+        if (!this.openedTabIds[testCaseId]) {
+            this.openedTabIds[testCaseId] = {};
+            this.openedTabNames[testCaseId] = {};
+            this.currentRecordingFrameLocation[testCaseId] = "root";
+            this.currentRecordingTabId[testCaseId] = sender.tab.id;
+            this.currentRecordingWindowId[testCaseId] = sender.tab.windowId;
+            this.openedTabCount[testCaseId] = 1;
+        }
+
+        if (Object.keys(this.openedTabIds[testCaseId]).length === 0) {
+            this.currentRecordingTabId[testCaseId] = sender.tab.id;
+            this.currentRecordingWindowId[testCaseId] = sender.tab.windowId;
+            this.openedTabNames[testCaseId]["win_ser_local"] = sender.tab.id;
+            this.openedTabIds[testCaseId][sender.tab.id] = "win_ser_local";
         }
 
         if (getRecordsArray().length === 0) {
@@ -155,12 +200,12 @@ class BackgroundRecorder {
             ], "");
         }
 
-        if (this.openedTabIds[sender.tab.id] == undefined)
+        if (this.openedTabIds[testCaseId][sender.tab.id] == undefined)
             return;
 
-        if (message.frameLocation !== this.currentRecordingFrameLocation) {
+        if (message.frameLocation !== this.currentRecordingFrameLocation[testCaseId]) {
             let newFrameLevels = message.frameLocation.split(':');
-            let oldFrameLevels = this.currentRecordingFrameLocation.split(':');
+            let oldFrameLevels = this.currentRecordingFrameLocation[testCaseId].split(':');
             while (oldFrameLevels.length > newFrameLevels.length) {
                 addCommandAuto("selectFrame", [
                     ["relative=parent"]
@@ -179,7 +224,7 @@ class BackgroundRecorder {
                 ], "");
                 oldFrameLevels.push(newFrameLevels[oldFrameLevels.length]);
             }
-            this.currentRecordingFrameLocation = message.frameLocation;
+            this.currentRecordingFrameLocation[testCaseId] = message.frameLocation;
         }
 
         //Record: doubleClickAt
