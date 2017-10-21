@@ -336,6 +336,7 @@ document.addEventListener("keydown", function(event) {
         // to avoid typing in input
         if (event.ctrlKey || keyNum == 116) {
             if (keyNum == 65 || keyNum == 67 || keyNum == 86 || keyNum == 88) {
+                // enable Ctrl + A, C, V, X
                 return;
             }
             // NOTE: lock the browser default shortcuts
@@ -377,10 +378,14 @@ document.addEventListener("keydown", function(event) {
             }
         } else if (keyNum == 80) { // Ctrl + P
             $("#playback").click();
-        } else if (keyNum === 84) { // Ctrl + T
+        } else if (keyNum === 66) { // Ctrl + T
             setBreakpoint(getSelectedRecord());
-        } else if (keyNum == 78) { // Ctrl + N
+        } else if (keyNum == 73) { // Ctrl + I
             $("#grid-add").click();
+        } else if (keyNum == 88) { // Ctrl + X
+
+        } else if (keyNum == 79) { // Ctrl + O
+
         }
     }
 }, false);
