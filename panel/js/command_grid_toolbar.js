@@ -383,9 +383,13 @@ document.addEventListener("keydown", function(event) {
         } else if (keyNum == 73) { // Ctrl + I
             $("#grid-add").click();
         } else if (keyNum == 88) { // Ctrl + X
-
+            copyCommand();
+            let selectedRecords = getSelectedRecords();
+            for(let i=selectedRecords.length-1 ; i>=0 ; i--){
+                deleteCommand(selectedRecords[i].id);
+            }
         } else if (keyNum == 79) { // Ctrl + O
-
+            $('#load-testSuite-hidden').click();
         }
     }
 }, false);

@@ -51,7 +51,6 @@ function getCommandValue(tr, for_show) {
 
 function getRecordsNum() {
     return document.getElementById("records-count").value;
-    
 }
 
 function setColor(index, state) {
