@@ -123,15 +123,16 @@ function appendOlderTestCase(str) {
 }
 
 function getSeleniumBase(str) {
-    let bases = str.match(/<link rel="selenium.base" href=\"[^\"]*\"/g);
-    seleniumBase = bases[0].substring(bases[0].indexOf("href=\"")+6, bases[0].lastIndexOf("\""))
+    let bases = str.match(/<link rel="selenium\.base" href=\"[^\"]*\"/g);
+    seleniumBase = bases[0].substring(bases[0].indexOf("href=\"")+6, bases[0].lastIndexOf("\""));
     if (seleniumBase.charAt(seleniumBase.length-1) == "/") {
-        seleniumBase = seleniumBase.substring(0, -1);
+        seleniumBase = seleniumBase.substring(0, seleniumBase.length-1);
     }
 }
 
 function appendOpenCommandTarget(str) {
-    return "<td>" + seleniumBase + str.substring(4, -5) + "</td>";
+    console.log("str input: ", str);
+    return "<td>" + seleniumBase + str.substring(4, str.length-5) + "</td>";
 }
 
 function appendTestSuite(suiteFile, suiteResult) {
@@ -211,10 +212,13 @@ function addDatalistTag(str) {
         // we do tjis in evey count equals to 1
         if (count == 1) {
             if (isOpenCommand) {
-                let insertBase = appendOpenCommandTarget(str.substring(preindex, postindex+5));
+                let originBase = str.substring(preindex, postindex+5)
+                let insertBase = appendOpenCommandTarget(originBase);
+                console.log("insert: ", insertBase);
                 str = str.substring(0, preindex) + insertBase + str.substring(postindex+5);
-                postindex += insertBase.length;
+                postindex += (insertBase.length-originBase.length);
                 isOpenCommand = false;
+                console.log("atfer str: ", str);
             }
 
             let insert = "<datalist>" + addOption(str.substring(preindex, postindex)) + "</datalist>";
