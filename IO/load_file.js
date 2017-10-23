@@ -100,12 +100,12 @@ function readSuite(f) {
                 }
                 // parse for testCase or testSuite
                 if (checkIsTestSuite(test_suite)) {
-                    alert("Sorry, we do not support test suite of the format of an early version of Selenium IDE now.");
-                    /*
+                    // alert("Sorry, we do not support test suite of the format of an early version of Selenium IDE now.");
+                    ///*
                     olderTestSuiteResult = test_suite.substring(0, test_suite.indexOf("<table")) + test_suite.substring(test_suite.indexOf("</body>"));
                     olderTestSuiteFile = f;
                     loadCaseIntoSuite(test_suite);
-                    */
+                    //*/
                     return;
                 } else {
                     test_suite = transformVersion(test_suite);

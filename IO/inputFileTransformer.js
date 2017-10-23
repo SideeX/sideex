@@ -1,6 +1,6 @@
 // coding: utf-8
 var olderTestCaseFiles = undefined;
-
+var seleniumBase = undefined;
 // for load in testCase
 function transformVersion(input) {
     let component = splitTbody(input);
@@ -45,12 +45,23 @@ function loadCaseIntoSuite(str) {
     for (let i=1 ; i<href.length ; i++) {
         testCaseName += (", \"" + href[i] + "\"");
     }
+    /*
     // ask user to load testCase
     var answer = confirm("Please load " + testCaseName );
     if (answer) {
         document.getElementById("load-older-testSuite").click();
         // document.getElementById("load-older-testSuite").dispatchEvent(new Event('click'));
     }
+    */
+
+    openOldFileDialog("The is test suite of early version of Selenium IDE. Please load " + testCaseName)
+        .then(function(answer) {
+            if (answer == "true") {
+                document.getElementById("load-older-testSuite").click();
+            } else {
+                return ;
+            }
+    });
     /*
     setTimeout(function() {
         console.log("answer: ", answer);
@@ -69,11 +80,11 @@ function loadCaseIntoSuite(str) {
     return;
 }
 
-document.getElementById("load-older-testSuite").addEventListener("click", function(event) {console.log("hello");});
+// document.getElementById("load-older-testSuite").addEventListener("click", function(event) {console.log("hello");});
 
 document.getElementById("load-older-testSuite").addEventListener("change", afterLoadOlderTestCase, false);
 function afterLoadOlderTestCase(event) {
-    console.log("listener");
+    // console.log("listener");
     event.stopPropagation();
     olderTestCaseFiles = this.files;
     readOlderTestCase(this.files[0], 0, this.files.length);
@@ -87,7 +98,7 @@ function readOlderTestCase(file, index, filesLength) {
         // NOTE: Because append testCase need one by one ,
         // there write a recursive loop for doing this
         olderTestSuiteResult = appendOlderTestCase(event.target.result);
-        console.log("result: ", olderTestSuiteResult);
+        // console.log("result: ", olderTestSuiteResult);
         if(index == filesLength-1) {
             appendTestSuite(olderTestSuiteFile, olderTestSuiteResult);
         } else {
@@ -102,12 +113,25 @@ function readOlderTestCase(file, index, filesLength) {
 }
 
 function appendOlderTestCase(str) {
+    getSeleniumBase(str);
     let postindex = olderTestSuiteResult.indexOf("</body>");
     let fore = olderTestSuiteResult.substring(0, postindex);
     let back = olderTestSuiteResult.substring(postindex);
     fore += addDatalistTag(splitTag(str, "table"));
 
     return fore + back;
+}
+
+function getSeleniumBase(str) {
+    let bases = str.match(/<link rel="selenium.base" href=\"[^\"]*\"/g);
+    seleniumBase = bases[0].substring(bases[0].indexOf("href=\"")+6, bases[0].lastIndexOf("\""))
+    if (seleniumBase.charAt(seleniumBase.length-1) == "/") {
+        seleniumBase = seleniumBase.substring(0, -1);
+    }
+}
+
+function appendOpenCommandTarget(str) {
+    return "<td>" + seleniumBase + str.substring(4, -5) + "</td>";
 }
 
 function appendTestSuite(suiteFile, suiteResult) {
@@ -175,10 +199,24 @@ function addDatalistTag(str) {
     let preindex = str.indexOf("<td>");
     let postindex = str.indexOf("</td>");
     let count = 0;
+    let isOpenCommand = false;
     while (preindex>=0 && postindex>=0) {
+        if (count == 0) {
+            if (str.substring(preindex, postindex).search("open") >= 0) {
+                isOpenCommand = true;
+            }
+        }
+
         // NOTE: Because we add datalist tag in second td in every tbody's tr
         // we do tjis in evey count equals to 1
         if (count == 1) {
+            if (isOpenCommand) {
+                let insertBase = appendOpenCommandTarget(str.substring(preindex, postindex+5));
+                str = str.substring(0, preindex) + insertBase + str.substring(postindex+5);
+                postindex += insertBase.length;
+                isOpenCommand = false;
+            }
+
             let insert = "<datalist>" + addOption(str.substring(preindex, postindex)) + "</datalist>";
             str = str.substring(0, postindex) + insert + str.substring(postindex);
             postindex += insert.length;
@@ -199,3 +237,29 @@ function addMeta(str) {
     let part = splitForeAndBack(str, "</head>");
     return part[0] + "<meta name=\"description\" content=\"SideeX2\">" + part[1];
 }
+
+var openOldFileDialog = function(question) {
+    var defer = $.Deferred();
+    $('<div></div>')
+        .html(question)
+        .dialog({
+            title: "Open Test Cases",
+            resizable: false,
+            height: "auto",
+            width: 400,
+            modal: true,
+            buttons: {
+                "browse...": function() {
+                    defer.resolve("true");
+                    $(this).dialog("close");
+                },
+                Cancel: function() {
+                    $(this).dialog("close");
+                }
+            },
+            close: function() {
+                $(this).remove();
+            }
+        });
+    return defer.promise();
+};
