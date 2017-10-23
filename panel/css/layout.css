@@ -26,6 +26,7 @@ body {
     width: 100%;
     min-width: 679px;
     min-height: 690px;
+    overflow: hidden;
 }
 
 .clear {
@@ -537,7 +538,7 @@ section#main {
 .width_full {
     width: 100%;
     margin-top: 13px;
-    height: 33%;
+    height: 30%;
 }
 
 .width_half {
@@ -1168,6 +1169,7 @@ input[type=submit].btn_post_message:hover {
     margin-left: 3%;
     margin-bottom: 10px;
     height: 33px;
+    min-width: 679px;
 }
 
 .submit_link select {
@@ -1360,7 +1362,7 @@ button.active {
 }
 
 .fixed {
-    top: 110px;
+    top: 99px;
     position: fixed;
     width: auto;
     z-index: 2;

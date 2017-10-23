@@ -161,7 +161,7 @@ function addCommand(command_name, command_target_array, command_value, auto, ins
         attachEvent(1, count);
 
         // focus on new element
-        document.getElementById("records-" + count).scrollIntoView();
+        document.getElementById("records-" + count).scrollIntoView(false);
     }
     if (auto) {
         new_record.parentNode.insertBefore(document.createTextNode("\n"), new_record.nextSibling);
