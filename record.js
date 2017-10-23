@@ -82,9 +82,9 @@ Recorder.addEventHandler('sendKeys', 'keydown', function(event) {
                     }
                     if (formChk == 'form' && (tempTarget.hasAttribute("id") || tempTarget.hasAttribute("name")) && (!tempTarget.hasAttribute("onsubmit"))) {
                         if (tempTarget.hasAttribute("id"))
-                            this.record("submit", "id=" + tempTarget.id, "");
+                            this.record("submit", [["id=" + tempTarget.id]], "");
                         else if (tempTarget.hasAttribute("name"))
-                            this.record("submit", "name=" + tempTarget.name, "");
+                            this.record("submit", [["name=" + tempTarget.name]], "");
                     } else
                         this.record("sendKeys", this.locatorBuilders.buildAll(enterTarget), "${KEY_ENTER}");
                     enterTarget = null;
