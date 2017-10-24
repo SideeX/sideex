@@ -93,6 +93,7 @@ function readSuite(f) {
         // if it is not SideeX2, transforming it
         if (!checkIsVersion2(test_suite)) {
             if (test_suite.search("<table") > 0 && test_suite.search("<datalist>") < 0) {
+                // TODO: write a non-blocked confirm window
                 // confrim user if want to transform input file for loading it
                 let result = window.confirm("\"" + f.name + "\" is of the format of an early version of Selenium IDE. Some commands may not work. Do you still want to open it?");
                 if (!result) {
@@ -101,11 +102,9 @@ function readSuite(f) {
                 // parse for testCase or testSuite
                 if (checkIsTestSuite(test_suite)) {
                     // alert("Sorry, we do not support test suite of the format of an early version of Selenium IDE now.");
-                    ///*
                     olderTestSuiteResult = test_suite.substring(0, test_suite.indexOf("<table")) + test_suite.substring(test_suite.indexOf("</body>"));
                     olderTestSuiteFile = f;
                     loadCaseIntoSuite(test_suite);
-                    //*/
                     return;
                 } else {
                     test_suite = transformVersion(test_suite);
@@ -116,31 +115,8 @@ function readSuite(f) {
         }
 
         // append on test grid
-        var id = "suite" + sideex_testSuite.count;
-        sideex_testSuite.count++;
-        var suiteFileName;
-        if (f.name.lastIndexOf(".") >= 0) {
-            suiteFileName = f.name.substring(0, f.name.lastIndexOf("."));
-        } else {
-            suiteFileName = f.name;
-        }
-        addTestSuite(suiteFileName, id);
-        // name is used for download
-        sideex_testSuite[id] = {
-            file_name: f.name,
-            title: suiteFileName
-        };
-
-        test_case = test_suite.match(/<table[\s\S]*?<\/table>/gi);
-        if (test_case) {
-            for (var i = 0; i < test_case.length; ++i) {
-                readCase(test_case[i]);
-            }
-        }
-
-        setSelectedSuite(id);
-        clean_panel();
-        // document.getElementById("records-grid").innerHTML = "";
+        appendTestSuite(f, test_suite);
+        return;
         // set up some veraible for recording after loading
     };
     reader.onerror = function(e) {
