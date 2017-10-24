@@ -1,3 +1,62 @@
+/*
+ * Copyright 2017 SideeX committers
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+Recorder.inputTypes = ["text", "password", "file", "datetime", "datetime-local", "date", "month", "time", "week", "number", "range", "email", "url", "search", "tel", "color"];
+Recorder.addEventHandler('type', 'change', function(event) {
+    // © Chen-Chieh Ping, SideeX Team
+    if (event.target.tagName && !preventType) {
+    // END
+        var tagName = event.target.tagName.toLowerCase();
+        var type = event.target.type;
+        if ('input' == tagName && Recorder.inputTypes.indexOf(type) >= 0) {
+            if (event.target.value.length > 0) {
+                this.record("type", this.locatorBuilders.buildAll(event.target), event.target.value);
+
+                // © Chen-Chieh Ping, SideeX Team
+                if (enterTarget != null) {
+                    var tempTarget = event.target.parentElement;
+                    var formChk = tempTarget.tagName.toLowerCase();
+                    while (formChk != 'form' && formChk != 'body') {
+                        tempTarget = tempTarget.parentElement;
+                        formChk = tempTarget.tagName.toLowerCase();
+                    }
+                    if (formChk == 'form' && (tempTarget.hasAttribute("id") || tempTarget.hasAttribute("name")) && (!tempTarget.hasAttribute("onsubmit"))) {
+                        if (tempTarget.hasAttribute("id"))
+                            this.record("submit", [
+                                ["id=" + tempTarget.id, "id"]
+                            ], "");
+                        else if (tempTarget.hasAttribute("name"))
+                            this.record("submit", [
+                                ["name=" + tempTarget.name, "name"]
+                            ], "");
+                    } else
+                        this.record("sendKeys", this.locatorBuilders.buildAll(enterTarget), "${KEY_ENTER}");
+                    enterTarget = null;
+                }
+                // END
+            } else {
+                this.record("type", this.locatorBuilders.buildAll(event.target), event.target.value);
+            }
+        } else if ('textarea' == tagName) {
+            this.record("type", this.locatorBuilders.buildAll(event.target), event.target.value);
+        }
+    }
+});
+
+// © Jie-Lin You, SideeX Team
 var preventClickTwice = false;
 Recorder.addEventHandler('clickAt', 'click', function(event) {
     if (event.button == 0 && !preventClick && event.isTrusted) {
@@ -18,8 +77,9 @@ Recorder.addEventHandler('clickAt', 'click', function(event) {
         setTimeout(function() { preventClickTwice = false; }, 30);
     }
 }, true);
+// END
 
-// record: doubleClickAt
+// © Chen-Chieh Ping, SideeX Team
 Recorder.addEventHandler('doubleClickAt', 'dblclick', function(event) {
     var top = event.pageY,
         left = event.pageX;
@@ -31,16 +91,16 @@ Recorder.addEventHandler('doubleClickAt', 'dblclick', function(event) {
     } while (element);
     this.record("doubleClickAt", this.locatorBuilders.buildAll(event.target), left + ',' + top);
 }, true);
+// END
 
-// record: SendKeys
-var inputTypes = ["text", "password", "file", "datetime", "datetime-local", "date", "month", "time", "week", "number", "range", "email", "url", "search", "tel", "color"];
+// © Chen-Chieh Ping, SideeX Team
 var focusTarget = null;
 var focusValue = null;
 var tempValue = null;
 var preventType = false;
 var inp = document.getElementsByTagName("input");
 for (var i = 0; i < inp.length; i++) {
-    if (inputTypes.indexOf(inp[i].type) >= 0) {
+    if (Recorder.inputTypes.indexOf(inp[i].type) >= 0) {
         inp[i].addEventListener("focus", function(event) {
             focusTarget = event.target;
             focusValue = focusTarget.value;
@@ -54,7 +114,9 @@ for (var i = 0; i < inp.length; i++) {
         });
     }
 }
+// END
 
+// © Chen-Chieh Ping, SideeX Team
 var preventClick = false;
 var enterTarget = null;
 var enterValue = null;
@@ -64,7 +126,7 @@ Recorder.addEventHandler('sendKeys', 'keydown', function(event) {
         var key = event.keyCode;
         var tagName = event.target.tagName.toLowerCase();
         var type = event.target.type;
-        if (tagName == 'input' && inputTypes.indexOf(type) >= 0) {
+        if (tagName == 'input' && Recorder.inputTypes.indexOf(type) >= 0) {
             if (key == 13) {
                 enterTarget = event.target;
                 enterValue = enterTarget.value;
@@ -98,7 +160,6 @@ Recorder.addEventHandler('sendKeys', 'keydown', function(event) {
                 }, 50);
             }
 
-            //SuggestionDropDownExt, Chen-Chieh Ping, SELAB, CSIE, NCKU, 2016/11/10
             var tempbool = false;
             if ((key == 38 || key == 40) && event.target.value != '') {
                 if (focusTarget != null && focusTarget.value != tempValue) {
@@ -126,113 +187,9 @@ Recorder.addEventHandler('sendKeys', 'keydown', function(event) {
         }
     }
 }, true);
+// END
 
-//Recoed: Type
-Recorder.addEventHandler('Type', 'change', function(event) {
-    if (event.target.tagName && !preventType) {
-        var tagName = event.target.tagName.toLowerCase();
-        var type = event.target.type;
-        if ('input' == tagName && inputTypes.indexOf(type) >= 0) {
-            if (event.target.value.length > 0) {
-                this.record("type", this.locatorBuilders.buildAll(event.target), event.target.value);
-
-                //FormSubmitByEnterKeyExt, Chen-Chieh Ping, SELAB, CSIE, NCKU, 2016/10/07
-                if (enterTarget != null) {
-                    //FormSubmitByEnterKeyExt & UnnamedWinIFrameExt, Jie-Lin You, SELAB, CSIE, NCKU, 2016/10/18
-                    var tempTarget = event.target.parentElement;
-                    var formChk = tempTarget.tagName.toLowerCase();
-                    while (formChk != 'form' && formChk != 'body') {
-                        tempTarget = tempTarget.parentElement;
-                        formChk = tempTarget.tagName.toLowerCase();
-                    }
-                    if (formChk == 'form' && (tempTarget.hasAttribute("id") || tempTarget.hasAttribute("name")) && (!tempTarget.hasAttribute("onsubmit"))) {
-                        if (tempTarget.hasAttribute("id"))
-                            this.record("submit", [
-                                ["id=" + tempTarget.id, "id"]
-                            ], "");
-                        else if (tempTarget.hasAttribute("name"))
-                            this.record("submit", [
-                                ["name=" + tempTarget.name, "name"]
-                            ], "");
-                    } else
-                        this.record("sendKeys", this.locatorBuilders.buildAll(enterTarget), "${KEY_ENTER}");
-                    enterTarget = null;
-                }
-            } else {
-                this.record("type", this.locatorBuilders.buildAll(event.target), event.target.value);
-            }
-        } else if ('textarea' == tagName) {
-            this.record("type", this.locatorBuilders.buildAll(event.target), event.target.value);
-        }
-    }
-});
-
-//select / addSelect / removeSelect
-Recorder.addEventHandler('select', 'focus', function(event) {
-    if (event.target.nodeName) {
-        var tagName = event.target.nodeName.toLowerCase();
-        if ('select' == tagName && event.target.multiple) {
-            var options = event.target.options;
-            for (var i = 0; i < options.length; i++) {
-                if (options[i]._wasSelected == null) {
-                    // is the focus was gained by mousedown event, _wasSelected would be already set
-                    options[i]._wasSelected = options[i].selected;
-                }
-            }
-        }
-    }
-}, true);
-
-Recorder.addEventHandler('select', 'change', function(event) {
-    if (event.target.tagName) {
-        var tagName = event.target.tagName.toLowerCase();
-        if ('select' == tagName) {
-            if (!event.target.multiple) {
-                var option = event.target.options[event.target.selectedIndex];
-                this.record("select", this.locatorBuilders.buildAll(event.target), getOptionLocator(option));
-            } else {
-                var options = event.target.options;
-                for (var i = 0; i < options.length; i++) {
-                    if (options[i]._wasSelected == null) {}
-                    if (options[i]._wasSelected != options[i].selected) {
-                        var value = getOptionLocator(options[i]);
-                        if (options[i].selected) {
-                            this.record("addSelection", this.locatorBuilders.buildAll(event.target), value);
-                        } else {
-                            this.record("removeSelection", this.locatorBuilders.buildAll(event.target), value);
-                        }
-                        options[i]._wasSelected = options[i].selected;
-                    }
-                }
-            }
-        }
-    }
-});
-
-function getOptionLocator(option) {
-    var label = option.text.replace(/^ *(.*?) *$/, "$1");
-    if (label.match(/\xA0/)) { // if the text contains &nbsp;
-        return "label=regexp:" + label.replace(/[\(\)\[\]\\\^\$\*\+\?\.\|\{\}]/g, function(str) {
-                return '\\' + str
-            })
-            .replace(/\s+/g, function(str) {
-                if (str.match(/\xA0/)) {
-                    if (str.length > 1) {
-                        return "\\s+";
-                    } else {
-                        return "\\s";
-                    }
-                } else {
-                    return str;
-                }
-            });
-    } else {
-        return "label=" + label;
-    }
-};
-
-//BaiMao 
-//DragAndDropExt, Shuo-Heng Shih, SELAB, CSIE, NCKU, 2016/07/22
+// © Shuo-Heng Shih, SideeX Team
 Recorder.addEventHandler('dragAndDrop', 'mousedown', function(event) {
     var self = this;
     if (event.clientX < window.document.documentElement.clientWidth && event.clientY < window.document.documentElement.clientHeight) {
@@ -260,8 +217,9 @@ Recorder.addEventHandler('dragAndDrop', 'mousedown', function(event) {
         }
     }
 }, true);
+// END
 
-//DragAndDropExt, Shuo-Heng Shih, SELAB, CSIE, NCKU, 2016/11/01
+// © Shuo-Heng Shih, SideeX Team
 Recorder.addEventHandler('dragAndDrop', 'mouseup', function(event) {
     clearTimeout(this.selectMouseup);
     if (this.selectMousedown) {
@@ -322,17 +280,18 @@ Recorder.addEventHandler('dragAndDrop', 'mouseup', function(event) {
     delete this.mouseoverQ;
 
 }, true);
+// END
 
-//DragAndDropExt, Shuo-Heng Shih, SELAB, CSIE, NCKU, 2016/07/19
-// record: dragAndDropToObject
+// © Shuo-Heng Shih, SideeX Team
 Recorder.addEventHandler('dragAndDropToObject', 'dragstart', function(event) {
     var self = this;
     this.dropLocator = setTimeout(function() {
         self.dragstartLocator = event;
     }.bind(this), 200);
 }, true);
+// END
 
-//DragAndDropExt, Shuo-Heng Shih, SELAB, CSIE, NCKU, 2016/10/17
+// © Shuo-Heng Shih, SideeX Team
 Recorder.addEventHandler('dragAndDropToObject', 'drop', function(event) {
     clearTimeout(this.dropLocator);
     if (this.dragstartLocator && event.button == 0 && this.dragstartLocator.target !== event.target) {
@@ -342,8 +301,9 @@ Recorder.addEventHandler('dragAndDropToObject', 'drop', function(event) {
     delete this.dragstartLocator;
     delete this.selectMousedown;
 }, true);
+// END
 
-//InfluentialScrollingExt, Shuo-Heng Shih, SELAB, CSIE, NCKU, 2016/08/02
+// © Shuo-Heng Shih, SideeX Team
 var prevTimeOut = null;
 Recorder.addEventHandler('runScript', 'scroll', function(event) {
     if (pageLoaded === true) {
@@ -355,33 +315,16 @@ Recorder.addEventHandler('runScript', 'scroll', function(event) {
         }.bind(self), 500);
     }
 }, true);
+// END
 
-//InfluentialMouseoverExt, Shuo-Heng Shih, SELAB, CSIE, NCKU, 2016/10/17
+// © Shuo-Heng Shih, SideeX Team
 var nowNode = 0;
-var findClickableElement = function(e) {
-    if (!e.tagName) return null;
-    var tagName = e.tagName.toLowerCase();
-    var type = e.type;
-    if (e.hasAttribute("onclick") || e.hasAttribute("href") || tagName == "button" ||
-        (tagName == "input" &&
-            (type == "submit" || type == "button" || type == "image" || type == "radio" || type == "checkbox" || type == "reset"))) {
-        return e;
-    } else {
-        if (e.parentNode != null) {
-            return findClickableElement(e.parentNode);
-        } else {
-            return null;
-        }
-    }
-};
-
-// record: mouseOver
 Recorder.addEventHandler('mouseOver', 'mouseover', function(event) {
     if (window.document.documentElement)
         nowNode = window.document.documentElement.getElementsByTagName('*').length;
     var self = this;
     if (pageLoaded === true) {
-        var clickable = findClickableElement(event.target);
+        var clickable = this.findClickableElement(event.target);
         if (clickable) {
             this.nodeInsertedLocator = event.target;
             setTimeout(function() {
@@ -402,18 +345,18 @@ Recorder.addEventHandler('mouseOver', 'mouseover', function(event) {
         }
     }
 }, true);
+// END
 
-//InfluentialMouseoverExt, Shuo-Heng Shih, SELAB, CSIE, NCKU, 2016/11/08
-// record: mouseOut
+// © Shuo-Heng Shih, SideeX Team
 Recorder.addEventHandler('mouseOut', 'mouseout', function(event) {
     if (this.mouseoutLocator !== null && event.target === this.mouseoutLocator) {
         this.record("mouseOut", this.locatorBuilders.buildAll(event.target), '');
     }
     delete this.mouseoutLocator;
 }, true);
+// END
 
-// InfluentialMouseoverExt & InfluentialScrollingExt, Shuo-Heng Shih, SELAB, CSIE, NCKU, 2016/11/08
-// record: mouseOver
+// © Shuo-Heng Shih, SideeX Team
 Recorder.addEventHandler('mouseOver', 'DOMNodeInserted', function(event) {
     if (pageLoaded === true && window.document.documentElement.getElementsByTagName('*').length > nowNode) {
         var self = this;
@@ -439,8 +382,9 @@ Recorder.addEventHandler('mouseOver', 'DOMNodeInserted', function(event) {
         }
     }
 }, true);
+// END
 
-// InfluentialMouseoverExt & InfluentialScrollingExt, Shuo-Heng Shih, SELAB, CSIE, NCKU, 2016/08/02
+// © Shuo-Heng Shih, SideeX Team
 var readyTimeOut = null;
 var pageLoaded = true;
 Recorder.addEventHandler('checkPageLoaded', 'readystatechange', function(event) {
@@ -455,9 +399,9 @@ Recorder.addEventHandler('checkPageLoaded', 'readystatechange', function(event) 
         }.bind(self), 1500); //setReady after complete 1.5s
     }
 }, true);
+// END
 
-// Do not use port?
-// record: verify/assert text and title
+// © Ming-Hung Hsu, SideeX Team
 Recorder.addEventHandler('contextMenu', 'contextmenu', function(event) {
     var myPort = browser.runtime.connect();
     var tmpText = this.locatorBuilders.buildAll(event.target);
@@ -473,8 +417,9 @@ Recorder.addEventHandler('contextMenu', 'contextmenu', function(event) {
         myPort.onMessage.removeListener(portListener);
     });
 }, true);
+// END
 
-// record: EditContent
+// © Yun-Wen Lin, SideeX Team
 var getEle;
 var checkFocus = 0;
 Recorder.addEventHandler('editContent', 'focus', function(event) {
@@ -485,7 +430,9 @@ Recorder.addEventHandler('editContent', 'focus', function(event) {
         checkFocus = 1;
     }
 }, true);
+// END
 
+// © Yun-Wen Lin, SideeX Team
 Recorder.addEventHandler('editContent', 'blur', function(event) {
     if (checkFocus == 1) {
         if (event.target == getEle) {
@@ -496,9 +443,92 @@ Recorder.addEventHandler('editContent', 'blur', function(event) {
         }
     }
 }, true);
+// END
 
 browser.runtime.sendMessage({
     attachRecorderRequest: true
 }).catch(function(reason){
     // Failed silently if receiveing end does not exist
+});
+
+// Copyright 2005 Shinya Kasatani
+Recorder.prototype.getOptionLocator = function(option) {
+    var label = option.text.replace(/^ *(.*?) *$/, "$1");
+    if (label.match(/\xA0/)) { // if the text contains &nbsp;
+        return "label=regexp:" + label.replace(/[\(\)\[\]\\\^\$\*\+\?\.\|\{\}]/g, function(str) {
+                return '\\' + str
+            })
+            .replace(/\s+/g, function(str) {
+                if (str.match(/\xA0/)) {
+                    if (str.length > 1) {
+                        return "\\s+";
+                    } else {
+                        return "\\s";
+                    }
+                } else {
+                    return str;
+                }
+            });
+    } else {
+        return "label=" + label;
+    }
+};
+
+Recorder.prototype.findClickableElement = function(e) {
+    if (!e.tagName) return null;
+    var tagName = e.tagName.toLowerCase();
+    var type = e.type;
+    if (e.hasAttribute("onclick") || e.hasAttribute("href") || tagName == "button" ||
+        (tagName == "input" &&
+            (type == "submit" || type == "button" || type == "image" || type == "radio" || type == "checkbox" || type == "reset"))) {
+        return e;
+    } else {
+        if (e.parentNode != null) {
+            return this.findClickableElement(e.parentNode);
+        } else {
+            return null;
+        }
+    }
+};
+
+//select / addSelect / removeSelect
+Recorder.addEventHandler('select', 'focus', function(event) {
+    if (event.target.nodeName) {
+        var tagName = event.target.nodeName.toLowerCase();
+        if ('select' == tagName && event.target.multiple) {
+            var options = event.target.options;
+            for (var i = 0; i < options.length; i++) {
+                if (options[i]._wasSelected == null) {
+                    // is the focus was gained by mousedown event, _wasSelected would be already set
+                    options[i]._wasSelected = options[i].selected;
+                }
+            }
+        }
+    }
+}, true);
+
+Recorder.addEventHandler('select', 'change', function(event) {
+    if (event.target.tagName) {
+        var tagName = event.target.tagName.toLowerCase();
+        if ('select' == tagName) {
+            if (!event.target.multiple) {
+                var option = event.target.options[event.target.selectedIndex];
+                this.record("select", this.locatorBuilders.buildAll(event.target), this.getOptionLocator(option));
+            } else {
+                var options = event.target.options;
+                for (var i = 0; i < options.length; i++) {
+                    if (options[i]._wasSelected == null) {}
+                    if (options[i]._wasSelected != options[i].selected) {
+                        var value = this.getOptionLocator(options[i]);
+                        if (options[i].selected) {
+                            this.record("addSelection", this.locatorBuilders.buildAll(event.target), value);
+                        } else {
+                            this.record("removeSelection", this.locatorBuilders.buildAll(event.target), value);
+                        }
+                        options[i]._wasSelected = options[i].selected;
+                    }
+                }
+            }
+        }
+    }
 });
