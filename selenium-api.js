@@ -418,7 +418,7 @@ Selenium.prototype.doStore = function(value, varName) {
 
 Selenium.prototype.doStoreText = function(locator, varName) {
     var element = this.browserbot.findElement(locator);
-    browser.runtime.sendMessage({ "storeStr": element.textContent, "storeVar": varName });
+    browser.runtime.sendMessage({ "storeStr": getText(element), "storeVar": varName });
 };
 
 Selenium.prototype.doStoreTitle = function(value, varName) {
