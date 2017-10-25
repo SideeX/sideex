@@ -592,10 +592,9 @@ function catchPlayingError(reason) {
         enableClick();
         sideex_log.error(reason);
 
-        if (currentPlayingCommandIndex == -1) {
-            currentPlayingCommandIndex++;
+        if (currentPlayingCommandIndex >= 0) {
+            setColor(currentPlayingCommandIndex + 1, "fail");
         }
-        setColor(currentPlayingCommandIndex + 1, "fail");
         setColor(currentTestCaseId, "fail");
         document.getElementById("result-failures").innerHTML = parseInt(document.getElementById("result-failures").innerHTML) + 1;
         sideex_log.info("Test case failed");

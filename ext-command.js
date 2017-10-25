@@ -67,19 +67,7 @@ class ExtCommand {
         let self = this;
         this.currentPlayingFrameLocation = "root";
         return this.queryActiveTab(this.currentPlayingWindowId)
-               .then(function setFirstTab(tab) {
-                   self.currentPlayingTabId = tab.id;
-                   self.playingTabNames["win_ser_local"] = self.currentPlayingTabId;
-                   self.playingTabIds[self.currentPlayingTabId] = "win_ser_local";
-                   self.playingFrameLocations[self.currentPlayingTabId] = {};
-                   self.playingFrameLocations[self.currentPlayingTabId]["root"] = 0;
-                   // we assume that there has an "open" command
-                   // select Frame directly will cause failed
-                   self.playingTabStatus[self.currentPlayingTabId] = true;
-               }).catch(function createNewWindow(e){
-                   console.log(e);
-                   // : TODO: create a new window if not exist
-               });
+               .then(this.setFirstTab.bind(this));
     }
 
     clear() {
@@ -145,12 +133,10 @@ class ExtCommand {
     }
 
     queryActiveTab(windowId) {
-        return browser.tabs.query({windowId: windowId, active: true, url: "<all_urls>"})
-           .then(function(tabs) {
-               if (!tabs.length)
-                   return Promise.reject("No matched Tab");
-               return tabs[0];
-           });
+        return browser.tabs.query({windowId: windowId, active: true, url: ["http://*/*", "https://*/*"]})
+               .then(function(tabs) {
+                    return tabs[0];
+               });
     }
 
     sendCommand(command, target, value, top) {
@@ -268,6 +254,44 @@ class ExtCommand {
         })
     }
 
+    createNewTabOrWindow() {
+        let self = this;
+        return browser.tabs.query({
+                    windowId: self.currentPlayingWindowId,
+                    active: true
+               }).then(function(tabs) {
+                   if (tabs.length === 0) {
+                       return browser.windows.create({
+                          url: "https://google.com"
+                       }).then(function (window) {
+                           self.setFirstTab(window.tabs[0]);
+                           self.contentWindowId = window.id;
+                           recorder.setOpenedWindow(window.id);
+                       })
+                   } else {
+                       return browser.tabs.update(tabs[0].id, {
+                                   url: "https://google.com"
+                              }).then(function(tab) {
+                                  self.setFirstTab(tab);
+                              })
+                   }
+               })
+    }
+
+    setFirstTab(tab) {
+        if (!tab) {
+            return this.createNewTabOrWindow()
+        } else {
+            this.currentPlayingTabId = tab.id;
+            this.playingTabNames["win_ser_local"] = this.currentPlayingTabId;
+            this.playingTabIds[this.currentPlayingTabId] = "win_ser_local";
+            this.playingFrameLocations[this.currentPlayingTabId] = {};
+            this.playingFrameLocations[this.currentPlayingTabId]["root"] = 0;
+            // we assume that there has an "open" command
+            // select Frame directly will cause failed
+            this.playingTabStatus[this.currentPlayingTabId] = true;
+        }
+    }
 }
 
 function isExtCommand(command) {
