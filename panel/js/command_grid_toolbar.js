@@ -79,8 +79,7 @@ function addCommand(command_name, command_target_array, command_value, auto, ins
     }
 
     // mark modified
-    getSelectedCase().classList.add("modified");
-    getSelectedSuite().getElementsByTagName("strong")[0].classList.add("modified");
+    modifyCaseSuite();
     closeConfirm(true);
     
     // create tr node     
@@ -227,6 +226,7 @@ $("#command-command").on("input", function(event) {
         var s_case = getSelectedCase();
         if (s_case) {
             sideex_testCase[s_case.id].records = document.getElementById("records-grid").innerHTML;
+			modifyCaseSuite();		
         }
     }
 });
@@ -253,6 +253,7 @@ $("#command-target").on("input", function(event) {
         var s_case = getSelectedCase();
         if (s_case) {
             sideex_testCase[s_case.id].records = document.getElementById("records-grid").innerHTML;
+			modifyCaseSuite();		
         }
     }
 });
@@ -278,6 +279,7 @@ $("#command-value").on("input", function(event) {
         var s_case = getSelectedCase();
         if (s_case) {
             sideex_testCase[s_case.id].records = document.getElementById("records-grid").innerHTML;
+			modifyCaseSuite();
         }
     }
 });
@@ -396,6 +398,9 @@ document.addEventListener("keydown", function(event) {
 
 function deleteCommand(selected_ID) {
     if (selected_ID) {
+	
+	    modifyCaseSuite();
+	
         var delete_node = document.getElementById(selected_ID);
         // do not forget to remove textNode
         if (delete_node.previousSibling.nodeType == 3) {
@@ -513,4 +518,9 @@ function setBreakpoint(selected_ID) {
             current_node.classList.remove("break");
         }
     }
+}
+
+function modifyCaseSuite() {
+    getSelectedCase().classList.add("modified");
+    getSelectedSuite().getElementsByTagName("strong")[0].classList.add("modified");
 }
