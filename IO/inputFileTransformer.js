@@ -3,6 +3,7 @@ var olderTestCaseFiles = undefined;
 var seleniumBase = undefined;
 // for load in testCase
 function transformVersion(input) {
+    getSeleniumBase(input);
     let component = splitTbody(input);
     component[1] = addDatalistTag(component[1]);
     component[0] = addMeta(component[0]);
