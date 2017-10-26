@@ -267,6 +267,10 @@ class ExtCommand {
                            self.setFirstTab(window.tabs[0]);
                            self.contentWindowId = window.id;
                            recorder.setOpenedWindow(window.id);
+                           browser.runtime.getBackgroundPage()
+                           .then(function(backgroundWindow) {
+                               backgroundWindow.master[window.id] = recorder.getSelfWindowId();
+                           });
                        })
                    } else {
                        return browser.tabs.update(tabs[0].id, {

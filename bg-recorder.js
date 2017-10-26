@@ -319,4 +319,8 @@ class BackgroundRecorder {
     setSelfWindowId(windowId) {
         this.selfWindowId = windowId;
     }
+
+    getSelfWindowId() {
+        return this.selfWindowId;
+    }
 }
