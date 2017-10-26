@@ -205,6 +205,9 @@ window.onload = function() {
                     }).then(function(response) {
                         if (response){
                             console.log(response.result);
+                            if (!response.result) {
+                                sideex_log.error("Element not found");
+                            }
                         }
                     });
                 }

@@ -3639,11 +3639,11 @@ Selenium.prototype.doEditContent = function(locator, value) {
 // Modified prompt by SideeX comitters (Copyright 2017)
 Selenium.prototype.doChooseCancelOnNextPrompt = function() {
     return this.browserbot.cancelNextPrompt();
-}
+};
 
 Selenium.prototype.doAnswerOnNextPrompt = function (answer) {
     return this.browserbot.setNextPromptResult(answer);
-}
+};
 
 Selenium.prototype.doAssertPrompt = function (message) {
     return this.browserbot.getPromptMessage().then(function(actualMessage) {
@@ -3652,7 +3652,7 @@ Selenium.prototype.doAssertPrompt = function (message) {
                else
                     return Promise.resolve(true);
            });
-}
+};
 
 // Modified alert by SideeX comitters (Copyright 2017)
 Selenium.prototype.doAssertAlert = function(message) {
@@ -3662,16 +3662,16 @@ Selenium.prototype.doAssertAlert = function(message) {
                else
                    return Promise.resolve(true);
            });
-}
+};
 
 // Modified confirm by SideeX comitters (Copyright 2017)
 Selenium.prototype.doChooseCancelOnNextConfirmation = function() {
     return this.browserbot.setNextConfirmationResult(false);
-}
+};
 
 Selenium.prototype.doChooseOkOnNextConfirmation = function (answer) {
     return this.browserbot.setNextConfirmationResult(true);
-}
+};
 
 Selenium.prototype.doAssertConfirmation = function(value) {
     return this.browserbot.getConfirmationMessage().then(function(actualMessage) {
@@ -3691,8 +3691,8 @@ Selenium.prototype.doShowElement = function(locator){
         setTimeout(function() {
             element.style.backgroundColor = origin_backgroundColor;
         }, 500);
-        return "element found"
+        return true;
     } catch (e) {
-        return "element not found";
+        return false;
     }
-}
+};
