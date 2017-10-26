@@ -188,6 +188,7 @@ function genCommandDatalist() {
         "store",
         "storeText",
         "storeTitle",
+	"submit",
         "type",
         "verifyText",
         "verifyTitle"
