@@ -55,6 +55,18 @@ function getSelectedCase() {
     }
 }
 
+function getSuiteNum() {
+    return document.getElementById("testCase-grid").getElementsByTagName("DIV").length;
+}
+
+function getCaseNumInSuite() {
+    let selectedSuite = getSelectedSuite();
+    if (selectedSuite != null) {
+        return selectedSuite.getElementsByTagName("P").length;
+    }
+    return 0;
+}
+
 function saveOldCase() {
     var old_case = getSelectedCase();
     if (old_case) {
@@ -97,7 +109,7 @@ function appendContextMenu(node, isCase) {
         rename_case.addEventListener("click", function(event) {
             event.stopPropagation();
             var s_case = getSelectedCase();
-            var n_title = prompt("Please enter the Test Case's title", sideex_testCase[s_case.id].title);
+            var n_title = prompt("Please enter the Test Case's name", sideex_testCase[s_case.id].title);
             // get text node
             s_case.childNodes[0].textContent = n_title;
             sideex_testCase[s_case.id].title = n_title;
@@ -167,10 +179,11 @@ function appendContextMenu(node, isCase) {
         rename_suite.addEventListener("click", function(event) {
             event.stopPropagation();
             var s_suite = getSelectedSuite();
-            var n_title = prompt("Please enter the Test Suite's title", sideex_testSuite[s_suite.id].title);
+            var n_title = prompt("Please enter the Test Suite's name", sideex_testSuite[s_suite.id].title);
             // get text node
             s_suite.childNodes[0].textContent = n_title;
             sideex_testSuite[s_suite.id].title = n_title;
+            sideex_testSuite[s_suite.id].file_name = n_title + ".html";
             $(s_suite).find("strong").addClass("modified");
             closeConfirm(true);
         }, false);
@@ -267,6 +280,9 @@ function addTestCase(title, id) {
     }, false);
 
     closeConfirm(true);
+    
+    // enable play button
+    enableButton("playback");
 }
 
 function addTestSuite(title, id) {
@@ -320,11 +336,15 @@ function addTestSuite(title, id) {
     }, false);
 
     makeCaseSortable(div);
+
+    // enable play button
+    enableButton("playSuites");
+    enableButton("playSuite");
 }
 
 document.getElementById("add-testSuite").addEventListener("click", function(event) {
     event.stopPropagation();
-    var title = prompt("Please enter the Test Suite's title", "Untitled Test Suite");
+    var title = prompt("Please enter the Test Suite's name", "Untitled Test Suite");
     if (title) {
         var id = "suite" + sideex_testSuite.count;
         sideex_testSuite.count++;
@@ -388,16 +408,29 @@ document.getElementById("close-testSuite").addEventListener('click', function(ev
                     downloadSuite(s_suite, remove_testSuite);
                 else
                     remove_testSuite(s_suite);
+
+                // disable play button when there is no suite
+                if (getSuiteNum() == 0) {
+                    disableButton("playback");
+                    disableButton("playSuite");
+                    disableButton("playSuites");
+                }
             });
         } else {
             remove_testSuite(s_suite);
+            // disable play button when there is no suite
+            if (getSuiteNum() == 0) {
+                disableButton("playback");
+                disableButton("playSuite");
+                disableButton("playSuites");
+            }    
         }
         // document.getElementById("records-grid").innerHTML = "";
     }
 }, false);
 
 document.getElementById("add-testCase").addEventListener("click", function(event) {
-    var title = prompt("Please enter the Test Case's title", "Untitled Test Case");
+    var title = prompt("Please enter the Test Case's name", "Untitled Test Case");
     if (title) {
         var id = "case" + sideex_testCase.count;
         sideex_testCase.count++;
@@ -421,9 +454,18 @@ document.getElementById("delete-testCase").addEventListener('click', function() 
                     downloadSuite(getSelectedSuite(), remove_testCase);
                 else
                     remove_testCase();
+
+                // disable play button when there is no test case
+                if (getCaseNumInSuite() == 0) {
+                    disableButton("playback");
+                }
             });
         } else {
             remove_testCase();
+            // disable play button when there is no test case
+            if (getCaseNumInSuite() == 0) {
+                disableButton("playback");
+            }
         }
         // document.getElementById("records-grid").innerHTML = "";
     }

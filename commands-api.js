@@ -16,6 +16,7 @@
  */
 
 var selenium = new Selenium(BrowserBot.createForWindow(window));
+var locatorBuilders = new LocatorBuilders(window);
 
 function doCommands(request, sender, sendResponse, type) {
     if (request.commands) {
@@ -67,12 +68,9 @@ function doCommands(request, sender, sendResponse, type) {
             }
         }
 
-        //do every command need giving sideex id
-        if (contentSideexTabId === -1) {
-            contentSideexTabId = request.mySideexTabId;
-        }
         return true;
     }
+    // TODO: refactoring
     if (request.selectMode) {
         if (request.selecting) {
             targetSelecter = new TargetSelecter(function (element, win) {
@@ -108,11 +106,15 @@ function doCommands(request, sender, sendResponse, type) {
             }
         }
     }
+    // TODO: code refactoring
+    if (request.attachRecorder) {
+        recorder.attach();
+        return;
+    } else if (request.detachRecorder) {
+        recorder.detach();
+        return;
+    }
 
-}
-
-function doClick2(element) {
-    console.error("element:" + element);
 }
 
 browser.runtime.onMessage.addListener(doCommands);

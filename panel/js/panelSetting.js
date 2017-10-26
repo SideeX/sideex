@@ -110,6 +110,15 @@ $(document).ready(function() {
         $(this).addClass("active");
         $('#records-grid .selectedRecord').removeClass('selectedRecord'); 
     });
+
+    $("#slider").slider({
+        min: 0,
+        max: 2000,
+        value: 0,
+        step: 400
+    }).slider("pips", {
+        rest: "label", labels: ["Fast", "", "", "", "", "Slow"]
+    });
 });
 
 var dropdown = function(node) {
@@ -179,6 +188,7 @@ function genCommandDatalist() {
         "store",
         "storeText",
         "storeTitle",
+	"submit",
         "type",
         "verifyText",
         "verifyTitle"

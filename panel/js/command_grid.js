@@ -158,6 +158,7 @@ function getSelectedCase() {
 }
 
 // attach event on <tr> (records)
+var firstSelectedTrId = undefined;
 function attachEvent(start, end) {
     for (var i = start; i <= end; ++i) {
         var node = document.getElementById("records-" + i);
@@ -166,18 +167,47 @@ function attachEvent(start, end) {
         // click
         node.addEventListener("click", function(event) {
             // use jquery's API to add and remove class property
-            $('#records-grid .selectedRecord').removeClass('selectedRecord');
+            if (firstSelectedTrId == undefined && $(".selectedRecord").length>0) {
+                firstSelectedTrId = parseInt($(".selectedRecord")[0].id.substring(8));
+            }
+
+            if (!event.ctrlKey && !event.shiftKey) {
+                $('#records-grid .selectedRecord').removeClass('selectedRecord');
+                firstSelectedTrId = undefined;
+            }
+
+            if (event.shiftKey) {
+                if (firstSelectedTrId != undefined) {
+                    let thisSelectedTrId = parseInt($(this)[0].id.substring(8));
+                    $('#records-grid .selectedRecord').removeClass('selectedRecord');
+                    if (firstSelectedTrId < thisSelectedTrId) {
+                        for (let i=firstSelectedTrId ; i<thisSelectedTrId ; i++) {
+                            $("#records-" + i).addClass("selectedRecord");
+                        }
+
+                    } else {
+                        for (let i=firstSelectedTrId ; i>thisSelectedTrId ; i--) {
+                            $("#records-" + i).addClass("selectedRecord");
+                        }
+                    }
+                }
+            }
             $(".record-bottom").removeClass("active");
             $(this).addClass('selectedRecord');
 
             // show on grid toolbar
-            var ref = event.target.parentNode;
-            if (ref.tagName != "TR") {
+            // var ref = event.target.parentNode;
+            // if (ref.tagName != "TR") {
+            //     ref = ref.parentNode;
+            // }
+            var ref = event.target;
+            while (ref.tagName.toLowerCase() != "tr") {
                 ref = ref.parentNode;
             }
 
             // notice that "textNode" also is a node
             document.getElementById("command-command").value = getCommandName(ref);
+            scrape(document.getElementById("command-command").value);
             document.getElementById("command-target").value = getCommandTarget(ref);
             document.getElementById("target-dropdown").innerHTML = escapeHTML(ref.getElementsByTagName("td")[1].getElementsByTagName("datalist")[0].innerHTML);
             document.getElementById("command-target-list").innerHTML = escapeHTML(ref.getElementsByTagName("td")[1].getElementsByTagName("datalist")[0].innerHTML);
@@ -199,6 +229,7 @@ function attachEvent(start, end) {
 
             // notice that "textNode" also is a node
             document.getElementById("command-command").value = getCommandName(ref);
+            scrape(document.getElementById("command-command").value);
             document.getElementById("command-target").value = getCommandTarget(ref);
             document.getElementById("command-target-list").innerHTML = escapeHTML(ref.getElementsByTagName("td")[1].getElementsByTagName("datalist")[0].innerHTML);
             document.getElementById("command-value").value = getCommandValue(ref);

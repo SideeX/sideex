@@ -14,11 +14,6 @@
  *  limitations under the License.
  *
  */
-
-var playingTabIds = {};
-var playingTabNames = {};
-var playingTabCount = 1;
-var currentPlayingFrameLocation = "root";
 var currentPlayingCommandIndex = -1;
 
 var currentTestCaseId = "";
@@ -42,6 +37,7 @@ var implicitTime = "";
 var caseFailed = false;
 var extCommand = new ExtCommand();
 
+// TODO: move to another file
 window.onload = function() {
     var recordButton = document.getElementById("record");
     var playButton = document.getElementById("playback");
@@ -54,19 +50,90 @@ window.onload = function() {
     var selectElementButton = document.getElementById("selectElementButton");
     /*var recordButton = document.getElementById("record");*/
     //element.addEventListener("click",play);
+    //Tim
+    var referContainer=document.getElementById("refercontainer");
+    var logContainer=document.getElementById("logcontainer");
+    referContainer.style.display="none";
+    $('#command-command').on('input change', function() {
+        scrape(document.getElementById("command-command").value);
+    });
+   
+    
+    
+    var logLi=document.getElementById("history-log");
+    var referenceLi=document.getElementById("reference-log");
+    var logState=true;
+    var referenceState=false;
+    referenceLi.firstChild.style.color="#818181";
+    logLi.addEventListener("mouseover",function(){
+        logLi.firstChild.style.color="#000000";
+    })
+    logLi.addEventListener("mouseout",function(){
+        if(logState)
+            logLi.firstChild.style.color="#333333";
+        else 
+            logLi.firstChild.style.color="#818181"
+    })
+    referenceLi.addEventListener("mouseover",function(){
+        referenceLi.firstChild.style.color="#000000";
+    })
+    referenceLi.addEventListener("mouseout",function(){
+        if(referenceState)
+            referenceLi.firstChild.style.color="#333333";
+        else 
+            referenceLi.firstChild.style.color="#818181"
+    })
+    logLi.addEventListener("click",function(){       
+        if(logState==false){
+            
+            logContainer.style.display="inline";
+            referContainer.style.display="none";
+            logLi.firstChild.style.color="#333333";
+            referenceLi.firstChild.style.color="#818181";
+            logState=true;
+            referenceState=false;
+        }
+    })
+    referenceLi.addEventListener("click",function(){
+        if(referenceState==false){
+            scrape(document.getElementById("command-command").value);
+            referContainer.style.display="inline";
+            logContainer.style.display="none";
+            referenceLi.firstChild.style.color="#333333";
+            logLi.firstChild.style.color="#818181";
+            referenceState=true;
+            logState=false;
+        }
+    })
+
     recordButton.addEventListener("click", function(){
         isRecording = !isRecording;
         if (isRecording) {
+            recorder.attach();
             notificationCount = 0;
+            browser.tabs.query({windowId: extCommand.getContentWindowId(), url: "<all_urls>"})
+            .then(function(tabs) {
+                for(let tab of tabs) {
+                    browser.tabs.sendMessage(tab.id, {attachRecorder: true});
+                }
+            });
             recordButton.childNodes[1].textContent = "Stop";
         }
         else {
+            recorder.detach();
+            browser.tabs.query({windowId: extCommand.getContentWindowId(), url: "<all_urls>"})
+            .then(function(tabs) {
+                for(let tab of tabs) {
+                    browser.tabs.sendMessage(tab.id, {detachRecorder: true});
+                }
+            });
             recordButton.childNodes[1].textContent = "Record";
         }
     })
     playButton.addEventListener("click", function() {
         document.getElementById("result-runs").innerHTML = "0";
         document.getElementById("result-failures").innerHTML = "0";
+        recorder.detach();
         initAllSuite();
         setCaseScrollTop(getSelectedCase());
         play();
@@ -75,17 +142,18 @@ window.onload = function() {
         stop();
     });
     pauseButton.addEventListener("click", pause);
-    pauseButton.disabled = true;
     resumeButton.addEventListener("click", resume);
     playSuiteButton.addEventListener("click", function() {
         document.getElementById("result-runs").innerHTML = "0";
         document.getElementById("result-failures").innerHTML = "0";
+        recorder.detach();
         initAllSuite();
         playSuite(0);
     });
     playSuitesButton.addEventListener("click", function() {
         document.getElementById("result-runs").innerHTML = "0";
         document.getElementById("result-failures").innerHTML = "0";
+        recorder.detach();
         initAllSuite();
         playSuites(0);
     });
@@ -107,8 +175,7 @@ window.onload = function() {
 
         isSelecting = true;
         if (isRecording)
-            /* TODO: disable record button */
-            isRecording = false;
+            recordButton.click();
         button.textContent = "Cancel";
         browser.tabs.query({
             active: true,
@@ -146,10 +213,9 @@ window.onload = function() {
             console.error(e);
         }
     });
-    /*recordButton.addEventListener("click", startRecord);*/
-    //console.error(recordButton);
 };
 
+// TODO: rename it, should be enableClick()
 function disableClick() {
     document.getElementById("pause").disabled = false;
     document.getElementById('testCase-grid').style.pointerEvents = 'none';
@@ -170,8 +236,10 @@ function play() {
 }
 
 function stop() {
+
     if (isPause){
-        resume();
+        isPause = false;
+        switchPR();
     }
     isPlaying = false;
     isPlayingSuite = false;
@@ -185,10 +253,12 @@ function stop() {
 }
 
 function playAfterConnectionFailed() {
-    initializeAfterConnectionFailed()
-        .then(executionLoop)
-        .then(finalizePlayingProgress)
-        .catch(catchPlayingError);
+    if (isPlaying) {
+        initializeAfterConnectionFailed()
+            .then(executionLoop)
+            .then(finalizePlayingProgress)
+            .catch(catchPlayingError);
+    }
 }
 
 function initializeAfterConnectionFailed() {
@@ -213,6 +283,10 @@ function pause() {
     if (isPlaying) {
         sideex_log.info("Pausing");
         isPause = true;
+        isPlaying = false;
+        // No need to detach
+        // prevent from missing status info
+        //extCommand.detach();
         switchPR();
     }
 }
@@ -224,6 +298,7 @@ function resume() {
         sideex_log.info("Resuming");
         isPlaying = true;
         isPause = false;
+        extCommand.attach();
         switchPR();
         disableClick();
         executionLoop()
@@ -315,7 +390,7 @@ function executeCommand(index) {
                 target: commandTarget,
                 value: commandValue
             }, {
-                frameId: extCommand.getFrame(tabs[0].id)
+                frameId: extCommand.getFrameId(tabs[0].id)
             })
         })
         .then(function(result) {
@@ -331,10 +406,6 @@ function executeCommand(index) {
         })
 
     finalizePlayingProgress();
-}
-
-function onError(error) {
-    console.log(error);
 }
 
 function cleanStatus() {
@@ -374,20 +445,11 @@ function initializePlayingProgress(isDbclick) {
 }
 
 function executionLoop() {
-    if (!isPlaying) {
-        cleanStatus();
-        return false;
-    }
-
-    if (isPause) {
-        return true;
-    }
-
-    currentPlayingCommandIndex++;
     let commands = getRecordsArray();
-    if (currentPlayingCommandIndex >= commands.length) {
+
+    if (currentPlayingCommandIndex + 1 >= commands.length) {
         if (!caseFailed) {
-            setColor(currentTestCaseId, "success");
+             setColor(currentTestCaseId, "success");
             document.getElementById("result-runs").innerHTML = parseInt(document.getElementById("result-runs").innerHTML) + 1;
             declaredVars = {};
             sideex_log.info("Test case passed");
@@ -397,40 +459,73 @@ function executionLoop() {
         return true;
     }
 
+    if (commands[currentPlayingCommandIndex + 1].getElementsByTagName("td")[0].classList.contains("break")
+        && !commands[currentPlayingCommandIndex + 1].getElementsByTagName("td")[0].classList.contains("stopping")) {
+        commands[currentPlayingCommandIndex + 1].getElementsByTagName("td")[0].classList.add("stopping");
+        sideex_log.info("Breakpoint: Stop.");
+        pause();
+        return Promise.reject("shutdown");
+    }
+
+    if (!isPlaying) {
+        cleanStatus();
+        return Promise.reject("shutdown");
+    }
+
+    if (isPause) {
+        return Promise.reject("shutdown");
+    }
+
+    currentPlayingCommandIndex++;
+
+    if (commands[currentPlayingCommandIndex].getElementsByTagName("td")[0].classList.contains("stopping")) {
+        commands[currentPlayingCommandIndex].getElementsByTagName("td")[0].classList.remove("stopping");
+    }
+
     let commandName = getCommandName(commands[currentPlayingCommandIndex]);
     let commandTarget = getCommandTarget(commands[currentPlayingCommandIndex]);
     let commandValue = getCommandValue(commands[currentPlayingCommandIndex]);
 
+    if (commandName == "") {
+        return Promise.reject("no command name");
+    }
 
     setColor(currentPlayingCommandIndex + 1, "executing");
 
-    if (isExtCommand(commandName)) {
-        sideex_log.info("Executing: | " + commandName + " | " + commandTarget + " | " + commandValue + " |");
-        let upperCase = commandName.charAt(0).toUpperCase() + commandName.slice(1);
-        return (extCommand["do" + upperCase](commandTarget, commandValue))
-           .then(function() {
-               setColor(currentPlayingCommandIndex + 1, "success");
-           }).then(executionLoop); 
-    } else {
-        return doPreparation()
-           .then(doPrePageWait)
-           .then(doPageWait)
-           .then(doAjaxWait)
-           .then(doDomWait)
-           .then(doCommand)
-           .then(executionLoop)
-    }
+    return delay($('#slider').slider("option", "value")).then(function () {
+        if (isExtCommand(commandName)) {
+            sideex_log.info("Executing: | " + commandName + " | " + commandTarget + " | " + commandValue + " |");
+            let upperCase = commandName.charAt(0).toUpperCase() + commandName.slice(1);
+            return (extCommand["do" + upperCase](commandTarget, commandValue))
+               .then(function() {
+                    setColor(currentPlayingCommandIndex + 1, "success");
+               }).then(executionLoop); 
+        } else {
+            return doPreparation()
+               .then(doPrePageWait)
+               .then(doPageWait)
+               .then(doAjaxWait)
+               .then(doDomWait)
+               .then(doCommand)
+               .then(executionLoop)
+        }
+    });
 }
 
+function delay(t) {
+    return new Promise(function(resolve) { 
+        setTimeout(resolve, t)
+    });
+ }
+
 function finalizePlayingProgress() {
-    enableClick();
-    playingTabIds = {};
-    playingTabNames = {};
-    playingTabCount = 1;
+    if (!isPause) {
+        enableClick();
+        extCommand.clear();
+    }
     //console.log("success");
     setTimeout(function() {
         isPlaying = false;
-        //isRecording = true;
         switchPS();
     }, 500);
 }
@@ -490,21 +585,19 @@ function catchPlayingError(reason) {
             currentPlayingCommandIndex--;
             playAfterConnectionFailed();
         }, 100);
+    } else if (reason == "shutdown") {
+        return;
     } else {
+        extCommand.clear();
         enableClick();
         sideex_log.error(reason);
 
-        if (currentPlayingCommandIndex == -1) {
-            currentPlayingCommandIndex++;
+        if (currentPlayingCommandIndex >= 0) {
+            setColor(currentPlayingCommandIndex + 1, "fail");
         }
-        setColor(currentPlayingCommandIndex + 1, "fail");
         setColor(currentTestCaseId, "fail");
         document.getElementById("result-failures").innerHTML = parseInt(document.getElementById("result-failures").innerHTML) + 1;
         sideex_log.info("Test case failed");
-
-        playingTabIds = {};
-        playingTabNames = {};
-        playingTabCount = 1;
 
         /* Clear the flag, reset to recording phase */
         /* A small delay for preventing recording events triggered in playing phase*/
@@ -518,8 +611,12 @@ function catchPlayingError(reason) {
 }
 
 function doPreparation() {
+    if (!isPlaying) {
+        currentPlayingCommandIndex--;
+        return Promise.reject("shutdown");
+    }
     //console.log("in preparation");
-    return extCommand.sendMessage("waitPreparation", "", "")
+    return extCommand.sendCommand("waitPreparation", "", "")
         .then(function() {
             return true;
         })
@@ -527,8 +624,12 @@ function doPreparation() {
 
 
 function doPrePageWait() {
+    if (!isPlaying) {
+        currentPlayingCommandIndex--;
+        return Promise.reject("shutdown");
+    }
     //console.log("in prePageWait");
-    return extCommand.sendMessage("prePageWait", "", "")
+    return extCommand.sendCommand("prePageWait", "", "")
        .then(function(response) {
            if (response && response.new_page) {
                //console.log("prePageWaiting");
@@ -540,8 +641,12 @@ function doPrePageWait() {
 }
 
 function doPageWait() {
+    if (!isPlaying) {
+        currentPlayingCommandIndex--;
+        return Promise.reject("shutdown");
+    }
     //console.log("in pageWait");
-    return extCommand.sendMessage("pageWait", "", "")
+    return extCommand.sendCommand("pageWait", "", "")
         .then(function(response) {
             if (pageTime && (Date.now() - pageTime) > 30000) {
                 sideex_log.error("Page Wait timed out after 30000ms");
@@ -565,7 +670,11 @@ function doPageWait() {
 
 function doAjaxWait() {
     //console.log("in ajaxWait");
-    return extCommand.sendMessage("ajaxWait", "", "")
+    if (!isPlaying) {
+        currentPlayingCommandIndex--;
+        return Promise.reject("shutdown");
+    }
+    return extCommand.sendCommand("ajaxWait", "", "")
         .then(function(response) {
             if (ajaxTime && (Date.now() - ajaxTime) > 30000) {
                 sideex_log.error("Ajax Wait timed out after 30000ms");
@@ -588,8 +697,12 @@ function doAjaxWait() {
 }
 
 function doDomWait() {
+    if (!isPlaying) {
+        currentPlayingCommandIndex--;
+        return Promise.reject("shutdown");
+    }
     //console.log("in domWait");
-    return extCommand.sendMessage("domWait", "", "")
+    return extCommand.sendCommand("domWait", "", "")
         .then(function(response) {
             if (domTime && (Date.now() - domTime) > 30000) {
                 sideex_log.error("DOM Wait timed out after 30000ms");
@@ -622,9 +735,19 @@ function doCommand() {
         sideex_log.info("Executing: | " + commandName + " | " + commandTarget + " | " + commandValue + " |");
     }
 
+    if (!isPlaying) {
+        currentPlayingCommandIndex--;
+        return Promise.reject("shutdown");
+    }
+
     let p = new Promise(function(resolve, reject) {
         let count = 0;
         let interval = setInterval(function() {
+            if (!isPlaying) {
+                currentPlayingCommandIndex--;
+                reject("shutdown");
+                clearInterval(interval);
+            }
             if (count > 60) {
                 sideex_log.error("Timed out after 30000ms");
                 reject("Window not Found");
@@ -650,9 +773,9 @@ function doCommand() {
             }
             if (isWindowMethodCommand(commandName))
             {
-                return extCommand.sendMessage(commandName, commandTarget, commandValue, true);
+                return extCommand.sendCommand(commandName, commandTarget, commandValue, true);
             }
-            return extCommand.sendMessage(commandName, commandTarget, commandValue);
+            return extCommand.sendCommand(commandName, commandTarget, commandValue);
         })
         .then(function(result) {
             if (result.result != "success") {
@@ -713,4 +836,12 @@ function isWindowMethodCommand(command) {
         || command == "assertAlert")
         return true;
     return false;
+}
+
+function enableButton(buttonId) {
+    document.getElementById(buttonId).disabled = false;
+}
+
+function disableButton(buttonId) {
+    document.getElementById(buttonId).disabled = true;
 }

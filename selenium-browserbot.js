@@ -31,8 +31,9 @@ var BrowserBot = function(topLevelApplicationWindow) {
     this.topFrame = this.topWindow;
     this.baseUrl = window.location.href;
 
-    //UnnamedWinIFrameExt, Jie-Lin You, SELAB, CSIE, NCKU, 2016/05/26
+    // © Jie-Lin You, SideeX Team
     this.count = 1;
+    // END
 
     // the buttonWindow is the Selenium window
     // it contains the Run/Pause buttons... this should *not* be the AUT window
@@ -55,8 +56,9 @@ var BrowserBot = function(topLevelApplicationWindow) {
     this.recordedConfirmations = new Array();
     this.recordedPrompts = new Array();
     this.openedWindows = {};
-    //UnnamedWinIFrameExt, Jie-Lin You, SELAB, CSIE, NCKU, 2016/05/26
+    // © Jie-Lin You, SideeX Team
     this.openedWindows["win_ser_local"] = this.topWindow;
+    // END
 
     this.nextConfirmResult = true;
     this.nextPromptResult = '';
@@ -313,7 +315,7 @@ BrowserBot.prototype.triggerMouseEvent = function(element, eventType, canBubble,
     }
 };
 
-//DragAndDropExt, Shuo-Heng Shih, SELAB, CSIE, NCKU, 2016/10/17
+// © Shuo-Heng Shih, SideeX Team
 BrowserBot.prototype.triggerDragEvent = function(element, target) {
     var getXpathOfElement = function(element) {
         if (element == null) {
@@ -392,6 +394,7 @@ BrowserBot.prototype.triggerDragEvent = function(element, target) {
     scriptTag.text = script;
     doc.body.appendChild(scriptTag);
 };
+// END
 
 BrowserBot.prototype._windowClosed = function(win) {
     try {
@@ -761,13 +764,14 @@ BrowserBot.prototype.setOpenLocation = function(win, loc) {
         } catch (e) {} // DGF don't know why, but this often fails
     } else {
         try {
-            // fix selenium's bug, Yu-Xian Chen, SELAB, CSIE, NCKU, 2016/11/07
+            // © Yu-Xian Chen, SideeX Team
             // window.location.href = window.location.href will not reload the page if there's an anchor (#) in the URL
             if (win.location.href === loc) {
                 win.location.reload();
             } else {
                 win.location.href = loc;
             }
+            // END
         } catch (err) {
             //Samit: Fix: SeleniumIDE under Firefox 4 breaks if you try to open chrome URL on (XPCNativeWrapper) unwrapped window objects
             if (err.name && err.name == "NS_ERROR_FAILURE") {
@@ -863,11 +867,12 @@ BrowserBot.prototype.modifyWindowToRecordPopUpDialogs = function(originalWindow,
             myOriginalOpen = this[originalOpenReference];
         }
 
-        //UnnamedWinIFrameExt, Jie-Lin You, SELAB, CSIE, NCKU, 2016/05/26
+        // © Jie-Lin You, SideeX Team
         if (windowName == "" || windowName == "_blank" || typeof windowName === "undefined") {
             windowName = "win_ser_" + self.count;
             self.count += 1;
         }
+        // END
 
         var openedWindow = myOriginalOpen(url, windowName, windowFeatures, replaceFlag);
         //LOG.debug("window.open call intercepted; window ID (which you can use with selectWindow()) is \"" +  windowName + "\"");
@@ -1341,11 +1346,12 @@ BrowserBot.prototype._handleClosedSubFrame = function(testWindow, doNotModify) {
             return this.getCurrentWindow(doNotModify);
         }
     } else if (this._windowClosed(testWindow)) {
-        //UnnamedWinIFrameExt, Jie-Lin You, SELAB, CSIE, NCKU, 2016/11/25
+        // © Jie-Lin You, SideeX Team
         /*var closedError = new SeleniumError("Current window or frame is closed!");
         closedError.windowClosed = true;
         throw closedError;*/
         testWindow = this.topWindow; //select live object
+        // END
     }
     return testWindow;
 };
@@ -1678,7 +1684,7 @@ BrowserBot.prototype.locateElementById = function(identifier, inDocument, inWind
  */
 BrowserBot.prototype.locateElementByName = function(locator, document, inWindow) {
     var elements = document.getElementsByTagName("*");
-    //UnnamedWinIFrameExt, Jie-Lin You, SELAB, CSIE, NCKU, 2016/11/23
+    // © Jie-Lin You, SideeX Team
     /*
         var filters = locator.split(' ');
         filters[0] = 'name=' + filters[0];
@@ -1688,6 +1694,7 @@ BrowserBot.prototype.locateElementByName = function(locator, document, inWindow)
             elements = this.selectElements(filter, elements, 'value');
         }
     */
+    // END
     var filter = 'name=' + locator;
     elements = this.selectElements(filter, elements, 'value');
 
@@ -1974,29 +1981,30 @@ BrowserBot.prototype.contextMenuOnElement = function(element, clientX, clientY) 
     this._fireEventOnElement("contextmenu", element, clientX, clientY);
 };
 
-//UnnamedWinIFrameExt, Jie-Lin You, SELAB, CSIE, NCKU, 2016/05/26
-//UnnamedWinIFrameExt, Jie-Lin You, SELAB, CSIE, NCKU, 2016/11/17
 BrowserBot.prototype._modifyElementTarget = function(e) {
     var element = this.findClickableElement(e) || e;
     if (element.target) {
         if (element.target == "_blank" || /^selenium_blank/.test(element.target)) {
             var tagName = getTagName(element);
             if (tagName == "a" || tagName == "form") {
+                // © Jie-Lin You, SideeX Team
                 var newTarget = "win_ser_" + this.count;
                 this.count += 1;
+                // END
                 this.browserbot.openWindow('', newTarget);
                 element.target = newTarget;
             }
-
+        // © Jie-Lin You, SideeX Team
         } else {
             var newTarget = element.target;
             this.browserbot.openWindow('', newTarget);
             element.target = newTarget;
         }
+        // END
     }
 };
 
-//UnnamedWinIFrameExt, Jie-Lin You, SELAB, CSIE, NCKU, 2016/11/17
+// © Jie-Lin You, SideeX Team
 BrowserBot.prototype.findClickableElement = function(e) {
     if (!e.tagName) return null;
     var tagName = e.tagName.toLowerCase();
@@ -2013,6 +2021,7 @@ BrowserBot.prototype.findClickableElement = function(e) {
         }
     }
 };
+// END
 
 BrowserBot.prototype._handleClickingImagesInsideLinks = function(targetWindow, element) {
     var itrElement = element;

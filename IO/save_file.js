@@ -59,25 +59,20 @@ function panelToFile(str) {
     str = "\n";
     if(tr)
     for (var i = 0; i < tr.length; ++i) {
-        var pattern = tr[i].match(/([\s]*?)(?:<td>)([\s\S]*?)(?:<\/td>)([\s]*?)(?:<td>)([\s\S]*?)(?:<datalist>)([\s\S]*?)(?:<\/datalist><\/td>)([\s]*?)(?:<td>)([\s\S]*?)(?:<\/td>)/);
-
+        var pattern = tr[i].match(/([\s]*?)(?:<td[\b\s\S]*>)([\s\S]*?)(?:<\/td>)([\s]*?)(?:<td>)([\s\S]*?)(?:<datalist>)([\s\S]*?)(?:<\/datalist><\/td>)([\s]*?)(?:<td>)([\s\S]*?)(?:<\/td>)/);
         if (!pattern) {
             str = temp_str;
             break;
         }
 
         var option = pattern[5].match(/<option>[\s\S]*?<\/option>/gi);
-
-        if (!pattern[4].match(/\n/)) {
-            pattern[4] = pattern[4] + "\n";
-        }
-
-        str = str + "<tr>" + pattern[1] + "<td>" + pattern[2] + "</td>" + pattern[3] + "<td>" + pattern[4] + "        <datalist>\n";
+        
+        str = str + "<tr>" + pattern[1] + "<td>" + pattern[2] + "</td>" + pattern[3] + "<td>" + pattern[4].replace(/\n\s+/g, "") + "<datalist>";
         for (var j = 0; j < option.length; ++j) {
             option[j] = option[j].replace(/<option>/, "").replace(/<\/option>/, "");
-            str = str + "            <option>" + option[j] + "</option>\n";
+            str = str + "<option>" + option[j] + "</option>";
         }
-        str = str + "        </datalist>\n    </td>" + pattern[6] + "<td>" + pattern[7] + "</td>\n</tr>\n";
+        str = str + "</datalist></td>" + pattern[6] + "<td>" + pattern[7] + "</td>\n</tr>\n";
     }
     str = '<tbody>' + str + '</tbody>';
     return str;

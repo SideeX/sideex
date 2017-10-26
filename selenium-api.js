@@ -395,7 +395,7 @@ Selenium.prototype.doVerifyText = function(locator, value) {
 
 Selenium.prototype.doVerifyTitle = function(value) {
     if (normalizeSpaces(this.getTitle()) !== value) {
-        throw new Error("Actual value '" + normalizeSapces(this.getTitle()) + "' did not match '" + value + "'");
+        throw new Error("Actual value '" + normalizeSpaces(this.getTitle()) + "' did not match '" + value + "'");
     }
 };
 
@@ -418,7 +418,7 @@ Selenium.prototype.doStore = function(value, varName) {
 
 Selenium.prototype.doStoreText = function(locator, varName) {
     var element = this.browserbot.findElement(locator);
-    browser.runtime.sendMessage({ "storeStr": element.textContent, "storeVar": varName });
+    browser.runtime.sendMessage({ "storeStr": getText(element), "storeVar": varName });
 };
 
 Selenium.prototype.doStoreTitle = function(value, varName) {
@@ -430,7 +430,7 @@ Selenium.prototype.doEcho = function(value) {
 };
 
 
-// xian
+// © Yu-Xian Chen, SideeX Team
 Selenium.prototype.doWaitPreparation = function() {
     // function setNewPageValue(e) {
     //     window.new_page = true;
@@ -477,11 +477,15 @@ Selenium.prototype.doWaitPreparation = function() {
                 _win.addEventListener("DOMNodeRemovedFromDocument", setDOMModifiedTime, false);\
                 _win.addEventListener("DOMSubtreeModified", setDOMModifiedTime, false);');
 };
+// END
 
+// © Yu-Xian Chen, SideeX Team
 Selenium.prototype.doPrePageWait = function() {
     window.sideex_new_page = window.eval('(function() {return window.new_page;}())');
 };
+// END
 
+// © Yu-Xian Chen, SideeX Team
 Selenium.prototype.doPageWait = function() {
     // if (window.document.readyState == "complete") {
     //     return true;
@@ -492,7 +496,9 @@ Selenium.prototype.doPageWait = function() {
     var expression = 'if(window.document.readyState=="complete"){return true;}else{return false;}';
     window.sideex_page_done = window.eval('(function() {' + expression + '}())');
 };
+// END
 
+// © Yu-Xian Chen, SideeX Team
 Selenium.prototype.doAjaxWait = function() {
     // // check ajax wait
     // if (window.ajax_obj) {
@@ -524,10 +530,13 @@ Selenium.prototype.doAjaxWait = function() {
                       else {if (window.origXMLHttpRequest) {window.origXMLHttpRequest = "";}return true;}';
     window.sideex_ajax_done = window.eval('(function() {' + expression + '}())');
 };
+// END
 
+// © Yu-Xian Chen, SideeX Team
 Selenium.prototype.doDomWait = function() {
     window.sideex_dom_time = window.eval('(function() {return window.domModifiedTime;}())');
 };
+// END
 
 Selenium.prototype.doClick = function(locator) {
     /**
@@ -542,9 +551,10 @@ Selenium.prototype.doClick = function(locator) {
     var elementWithHref = getAncestorOrSelfWithJavascriptHref(element);
 
     this.browserbot.clickElement(element);
-    //ClickAtMouseDownUpExt, Jie-Lin You, SELAB, CSIE, NCKU, 2016/11/15
+    // © Jie-Lin You, SideeX Team
     this.browserbot.triggerMouseEvent(element, 'mousedown', true);
     this.browserbot.triggerMouseEvent(element, 'mouseup', true);
+    // END
 };
 
 Selenium.prototype.doDoubleClick = function(locator) {
@@ -557,13 +567,14 @@ Selenium.prototype.doDoubleClick = function(locator) {
      *
      */
     var element = this.browserbot.findElement(locator);
-    //DoubleClickExt, Chen-Chieh Ping, SELAB, CSIE, NCKU, 2016/11/23
+    // © Chen-Chieh Ping, SideeX Team
     this.browserbot.clickElement(element);
     this.browserbot.triggerMouseEvent(element, 'mousedown', true);
     this.browserbot.triggerMouseEvent(element, 'mouseup', true);
     this.browserbot.clickElement(element);
     this.browserbot.triggerMouseEvent(element, 'mousedown', true);
     this.browserbot.triggerMouseEvent(element, 'mouseup', true);
+    // END
     this.browserbot.doubleClickElement(element);
 };
 
@@ -591,13 +602,14 @@ Selenium.prototype.doClickAt = function(locator, coordString) {
      */
     var element = this.browserbot.findElement(locator);
     var clientXY = getClientXY(element, coordString);
-    //ClickAtMouseDownUpExt, Jie-Lin You, SELAB, CSIE, NCKU, 2016/11/15
+    // © Jie-Lin You, SideeX Team
     //this.doMouseMove(locator);
     //this.doMouseDown(locator);
     this.browserbot.clickElement(element, clientXY[0], clientXY[1]);
     this.browserbot.triggerMouseEvent(element, 'mousedown', true, clientXY[0], clientXY[1]);
     this.browserbot.triggerMouseEvent(element, 'mouseup', true, clientXY[0], clientXY[1]);
     //this.doMouseUp(locator);
+    // END
 };
 
 Selenium.prototype.doDoubleClickAt = function(locator, coordString) {
@@ -613,7 +625,7 @@ Selenium.prototype.doDoubleClickAt = function(locator, coordString) {
      */
     var element = this.browserbot.findElement(locator);
     var clientXY = getClientXY(element, coordString);
-    //DoubleClickExt, Chen-Chieh Ping, SELAB, CSIE, NCKU, 2016/11/23
+    // © Chen-Chieh Ping, SideeX Team
     //this.doMouseMove(locator);
     //this.doMouseDown(locator);
     this.browserbot.triggerMouseEvent(element, 'mousedown', true, clientXY[0], clientXY[1]);
@@ -624,6 +636,7 @@ Selenium.prototype.doDoubleClickAt = function(locator, coordString) {
     this.browserbot.triggerMouseEvent(element, 'mouseup', true, clientXY[0], clientXY[1]);
     this.browserbot.doubleClickElement(element, clientXY[0], clientXY[1]);
     //this.doMouseUp(locator);
+    // END
 };
 
 Selenium.prototype.doContextMenuAt = function(locator, coordString) {
@@ -983,10 +996,11 @@ Selenium.prototype.doType = function(locator, value) {
 
     var element = this.browserbot.findElement(locator);
 
-    //SuggestionDropDownExt, Chen-Chieh Ping, SELAB, CSIE, NCKU, 2016/11/10
+    // © Chen-Chieh Ping, SideeX Team
     //core.events.setValue(element, value);
     core.events.setValue(element, '');
     bot.action.type(element, value);
+    // END
 };
 
 Selenium.prototype.doTypeKeys = function(locator, value) {
@@ -1053,7 +1067,7 @@ Selenium.prototype.doSendKeys = function(locator, value) {
             }
             return key;
         });
-        console.log("value: " + keysRa);
+
         bot.action.type(element, keysRa);
     } else {
         bot.action.type(element, value);
@@ -2318,10 +2332,11 @@ Selenium.prototype.doDragAndDropToObject = function(locatorOfObjectToBeDragged, 
         var movementsString = "" + deltaX + "," + deltaY;
         this.doDragAndDrop(locatorOfObjectToBeDragged, movementsString);
     } else {
-        //DragAndDropExt, Shuo-Heng Shih, SELAB, CSIE, NCKU, 2016/09/29
+        // © Shuo-Heng Shih, SideeX Team
         var element = this.browserbot.findElement(locatorOfObjectToBeDragged);
         var target = this.browserbot.findElement(locatorOfDragDestinationObject);
         this.browserbot.triggerDragEvent(element, target);
+        // END
     }
 };
 
@@ -3603,8 +3618,7 @@ OptionLocatorFactory.prototype.OptionLocatorById = function(id) {
     };
 };
 
-
-//EditContentExt, Lin Yun Wen, SELAB, CSIE, NCKU, 2016/11/17
+// © Yun-Wen Lin, SideeX Team
 Selenium.prototype.doEditContent = function(locator, value) {
     /**
      *to set text in the element which's conentEditable attribute is true
@@ -3620,6 +3634,7 @@ Selenium.prototype.doEditContent = function(locator, value) {
         throw new SeleniumError("The value of contentEditable attribute of this element is not true.");
     }
 };
+// END
 
 // Modified prompt by SideeX comitters (Copyright 2017)
 Selenium.prototype.doChooseCancelOnNextPrompt = function() {
@@ -3666,57 +3681,6 @@ Selenium.prototype.doAssertConfirmation = function(value) {
                     return Promise.resolve(true);
            });
 };
-/*
-Selenium.prototype.doAssertConfirmation = function (message) {
-    return this.browserbot.getConfirmMessage().then(function(actualMessage) {
-               if (message != actualMessage)
-                    return Promise.reject("Confirm message doesn't match actual message");
-               else
-                    return Promise.resolve(true);
-           });
-}
-*/
-/*
-Selenium.prototype.doChooseCancelOnNextConfirmation = function(locator,value) {
-    try{
-        var actualCode = '('+function(){
-            var tempWindowConfirmation = window.confirm;
-            window.confirm = function(message) {
-                window.confirm = tempWindowConfirmation;
-                messageToContent(message,false);
-                return false;
-            }
-        }+')();';
-        
-        var injectModifyWindowMethodOnPlay = document.createElement("script");
-        injectModifyWindowMethodOnPlay.textContent = actualCode;
-        //injectModifyWindowMethodOnPlay.src = browser.extension.getURL("testInject.js");
-        (document.head || document.documentElement).appendChild(injectModifyWindowMethodOnPlay);
-    } catch(reason) {
-        console.error("reason: "+reason);
-    }
-}
-
-Selenium.prototype.doChooseOkOnNextConfirmation = function(locator,value) {
-    try{
-        var actualCode = '('+function(){
-            var tempWindowConfirmation = window.confirm;
-            window.confirm = function(message) {
-                window.confirm = tempWindowConfirmation;
-                messageToContent(message,true);
-                return true;
-            }
-        }+')();';
-        
-        var injectModifyWindowMethodOnPlay = document.createElement("script");
-        injectModifyWindowMethodOnPlay.textContent = actualCode;
-        //injectModifyWindowMethodOnPlay.src = browser.extension.getURL("testInject.js");
-        (document.head || document.documentElement).appendChild(injectModifyWindowMethodOnPlay);
-    } catch(reason) {
-        console.error("reason: "+reason);
-    }
-}
-*/
 
 // Added show element by SideeX comitters (Copyright 2017)
 Selenium.prototype.doShowElement = function(locator){

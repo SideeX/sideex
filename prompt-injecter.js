@@ -28,23 +28,23 @@ if (window === window.top) {
                 switch (event.data.recordedType) {
                     case "prompt":
                         if (event.data.recordedResult != null) {
-                            record("answerOnNextPrompt", [[event.data.recordedResult]], "", true, event.data.frameLocation);
+                            recorder.record("answerOnNextPrompt", [[event.data.recordedResult]], "", true, event.data.frameLocation);
                         } else {
-                            record("chooseCancelOnNextPrompt", [[""]], "", true, event.data.frameLocation);
+                            recorder.record("chooseCancelOnNextPrompt", [[""]], "", true, event.data.frameLocation);
                         }
-                        record("assertPrompt", [[event.data.recordedMessage]], "", false, event.data.frameLocation);
+                        recorder.record("assertPrompt", [[event.data.recordedMessage]], "", false, event.data.frameLocation);
                         break;
                     case "confirm":
                         if (event.data.recordedResult == true) {
-                            record("chooseOkOnNextConfirmation", [[""]], "", true, event.data.frameLocation);
+                            recorder.record("chooseOkOnNextConfirmation", [[""]], "", true, event.data.frameLocation);
                         } else {
-                            record("chooseCancelOnNextConfirmation", [[""]], "", true, event.data.frameLocation);
+                            recorder.record("chooseCancelOnNextConfirmation", [[""]], "", true, event.data.frameLocation);
                         }
-                        record("assertConfirmation", [[event.data.recordedMessage]], "", false, event.data.frameLocation);
+                        recorder.record("assertConfirmation", [[event.data.recordedMessage]], "", false, event.data.frameLocation);
                         break;
                     case "alert":
                         //record("answerOnNextAlert",[[event.data.recordedResult]],"",true);
-                        record("assertAlert", [[event.data.recordedMessage]], "", false, event.data.frameLocation);
+                        recorder.record("assertAlert", [[event.data.recordedMessage]], "", false, event.data.frameLocation);
                         break;
                 }
             }

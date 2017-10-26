@@ -15,6 +15,9 @@
  *
  */
 
+var olderTestSuiteResult = undefined;
+var olderTestSuiteFile = undefined;
+
 function fileToPanel(f) {
     // set records
     var output = f.match(/<tbody>[\s\S]+?<\/tbody>/);
@@ -29,9 +32,7 @@ function fileToPanel(f) {
     if (tr)
         for (var i = 0; i < tr.length; ++i) {
             pattern = tr[i].match(/(?:<tr>)([\s]*?)(?:<td>)([\s\S]*?)(?:<\/td>)([\s]*?)(?:<td>)([\s\S]*?)(?:<datalist>)([\s\S]*?)(?:<\/datalist>([\s]*?)<\/td>)([\s]*?)(?:<td>)([\s\S]*?)(?:<\/td>)([\s]*?)(?:<\/tr>)/);
-            // remove whitespace
-            pattern[4] = pattern[4].slice(0, -9);
-
+            
             var new_tr = '<tr>' + pattern[1] + '<td><div style="display: none;">' + pattern[2] + '</div><div style="overflow:hidden;height:15px;"></div></td>' + pattern[3] + '<td><div style="display: none;">' + pattern[4] +
                 '</div><div style="overflow:hidden;height:15px;"></div>\n        ' + '<datalist>' + pattern[5] + '</datalist>' + pattern[6] + '</td>' +
                 pattern[7] + '<td><div style="display: none;">' + pattern[8] + '</div><div style="overflow:hidden;height:15px;"></div></td>' + pattern[9] + '</tr>';
@@ -85,28 +86,38 @@ function readSuite(f) {
     var reader = new FileReader();
 
     reader.readAsText(f);
-    reader.onload = function() {
-        var test_suite = reader.result;
-        // append on test grid
-        var id = "suite" + sideex_testSuite.count;
-        sideex_testSuite.count++;
-        addTestSuite(f.name.substring(0, f.name.lastIndexOf(".")), id);
-        // name is used for download
-        sideex_testSuite[id] = {
-            file_name: f.name,
-            title: f.name.substring(0, f.name.lastIndexOf("."))
-        };
 
-        test_case = test_suite.match(/<table[\s\S]*?<\/table>/gi);
-        if (test_case) {
-            for (var i = 0; i < test_case.length; ++i) {
-                readCase(test_case[i]);
+    reader.onload = function(event) {
+        var test_suite = reader.result;
+        // check for input file version
+        // if it is not SideeX2, transforming it
+        if (!checkIsVersion2(test_suite)) {
+            if (test_suite.search("<table") > 0 && test_suite.search("<datalist>") < 0) {
+                // TODO: write a non-blocked confirm window
+                // confrim user if want to transform input file for loading it
+                let result = window.confirm("\"" + f.name + "\" is of the format of an early version of Selenium IDE. Some commands may not work. Do you still want to open it?");
+                if (!result) {
+                    return;
+                }
+                // parse for testCase or testSuite
+                if (checkIsTestSuite(test_suite)) {
+                    // alert("Sorry, we do not support test suite of the format of an early version of Selenium IDE now.");
+                    olderTestSuiteResult = test_suite.substring(0, test_suite.indexOf("<table")) + test_suite.substring(test_suite.indexOf("</body>"));
+                    olderTestSuiteFile = f;
+                    loadCaseIntoSuite(test_suite);
+                    return;
+                } else {
+                    test_suite = transformVersion(test_suite);
+                }
             }
+            // some early version of SideeX2 without <meta>
+            test_suite = addMeta(test_suite);
         }
 
-        setSelectedSuite(id);
-        clean_panel();
-        // document.getElementById("records-grid").innerHTML = "";
+        // append on test grid
+        appendTestSuite(f, test_suite);
+        return;
+        // set up some veraible for recording after loading
     };
     reader.onerror = function(e) {
         console.log("Error", e);
@@ -115,8 +126,9 @@ function readSuite(f) {
 
 document.getElementById("load-testSuite-hidden").addEventListener("change", function(event) {
     event.stopPropagation();
-    for (var i = 0; i < this.files.length; i++)
+    for (var i = 0; i < this.files.length; i++) {
         readSuite(this.files[i]);
+    }
 }, false);
 
 document.getElementById("load-testSuite-show").addEventListener("click", function(event) {
