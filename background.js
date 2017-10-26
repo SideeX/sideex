@@ -25,7 +25,8 @@ function openPanel(tab) {
         browser.windows.update(master[contentWindowId], {
             focused: true
         }).catch(function(e) {
-            console.log(e);
+            master[contentWindowId] == undefined;
+            openPanel(tab);
         });
         return;
     } else if (!clickEnabled) {
@@ -91,7 +92,6 @@ browser.windows.onRemoved.addListener(function(windowId) {
             if (keys.length === 1) {
                 browser.contextMenus.removeAll();
             }
-            break;
         }
     }
 });
