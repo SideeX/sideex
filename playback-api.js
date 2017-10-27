@@ -53,6 +53,11 @@ window.onload = function() {
     //Tim
     var referContainer=document.getElementById("refercontainer");
     var logContainer=document.getElementById("logcontainer");
+    var saveLogButton=document.getElementById("save-log");
+    
+    
+    saveLogButton.addEventListener("click",savelog);
+
     referContainer.style.display="none";
     $('#command-command').on('input change', function() {
         scrape(document.getElementById("command-command").value);
@@ -114,22 +119,34 @@ window.onload = function() {
         if (isRecording) {
             recorder.attach();
             notificationCount = 0;
-            browser.tabs.query({windowId: extCommand.getContentWindowId(), url: "<all_urls>"})
-            .then(function(tabs) {
-                for(let tab of tabs) {
-                    browser.tabs.sendMessage(tab.id, {attachRecorder: true});
+            if (getRecordsArray().length) {
+                for (let tabId in recorder.openedTabIds) {
+                    browser.tabs.sendMessage(Number(tabId), {attachRecorder: true})
                 }
-            });
+            } else {
+                browser.tabs.query({windowId: extCommand.getContentWindowId(), url: "<all_urls>"})
+                .then(function(tabs) {
+                    for(let tab of tabs) {
+                        browser.tabs.sendMessage(tab.id, {attachRecorder: true});
+                    }
+                });
+            }
             recordButton.childNodes[1].textContent = "Stop";
         }
         else {
             recorder.detach();
-            browser.tabs.query({windowId: extCommand.getContentWindowId(), url: "<all_urls>"})
-            .then(function(tabs) {
-                for(let tab of tabs) {
-                    browser.tabs.sendMessage(tab.id, {detachRecorder: true});
+            if (getRecordsArray().length) {
+                for (let tabId in recorder.openedTabIds) {
+                    browser.tabs.sendMessage(Number(tabId), {detachRecorder: true})
                 }
-            });
+            } else {
+                browser.tabs.query({windowId: extCommand.getContentWindowId(), url: "<all_urls>"})
+                .then(function(tabs) {
+                    for(let tab of tabs) {
+                        browser.tabs.sendMessage(tab.id, {detachRecorder: true});
+                    }
+                });
+            }
             recordButton.childNodes[1].textContent = "Record";
         }
     })
@@ -178,7 +195,8 @@ window.onload = function() {
 
         isSelecting = true;
         if (isRecording)
-            recordButton.click();
+            /* TODO: disable record button */
+            isRecording = false;
         button.textContent = "Cancel";
         browser.tabs.query({
             active: true,
@@ -478,9 +496,8 @@ function executionLoop() {
         commands[currentPlayingCommandIndex + 1].getElementsByTagName("td")[0].classList.add("stopping");
         sideex_log.info("Breakpoint: Stop.");
         pause();
-        return Promise.reject("shutdown");
     }
-
+    
     if (!isPlaying) {
         cleanStatus();
         return Promise.reject("shutdown");
@@ -499,10 +516,6 @@ function executionLoop() {
     let commandName = getCommandName(commands[currentPlayingCommandIndex]);
     let commandTarget = getCommandTarget(commands[currentPlayingCommandIndex]);
     let commandValue = getCommandValue(commands[currentPlayingCommandIndex]);
-
-    if (commandName == "") {
-        return Promise.reject("no command name");
-    }
 
     setColor(currentPlayingCommandIndex + 1, "executing");
 
@@ -610,9 +623,10 @@ function catchPlayingError(reason) {
         enableClick();
         sideex_log.error(reason);
 
-        if (currentPlayingCommandIndex >= 0) {
-            setColor(currentPlayingCommandIndex + 1, "fail");
+        if (currentPlayingCommandIndex == -1) {
+            currentPlayingCommandIndex++;
         }
+        setColor(currentPlayingCommandIndex + 1, "fail");
         setColor(currentTestCaseId, "fail");
         document.getElementById("result-failures").textContent = parseInt(document.getElementById("result-failures").textContent) + 1;
         sideex_log.info("Test case failed");
