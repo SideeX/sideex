@@ -53,6 +53,10 @@ window.onload = function() {
     //Tim
     var referContainer=document.getElementById("refercontainer");
     var logContainer=document.getElementById("logcontainer");
+    var saveLogButton=document.getElementById("save-log");
+    
+    
+    saveLogButton.addEventListener("click",savelog);
     referContainer.style.display="none";
     $('#command-command').on('input change', function() {
         scrape(document.getElementById("command-command").value);

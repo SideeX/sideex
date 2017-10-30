@@ -712,9 +712,7 @@ ul.tabs {
     border-radius: 5px;
     -webkit-box-shadow: 0 1px 0 #fff;
     -moz-box-shadow: 0 1px 0 #fff;
-    text-shadow: 0 1px 0 #fff;
-    border: 1px solid #ccc;
-    box-shadow: 0 1px 0 #fff;  
+    text-shadow: 0 1px 0 #fff;    
     font-weight: bold;
 }
 ul.tabs2 li {
@@ -772,15 +770,23 @@ html ul.tabs2:nth-child(2) a {
     border-bottom-left-radius: 5px;
 }
 
-html ul.tabs li:last-child,
-html ul.tabs li:last-child a {
+html ul.tabs #clear-log,
+html ul.tabs #clear-log a {
     cursor: pointer;
-    -webkit-border-top-right-radius: 5px;
-    -webkit-border-bottom-right-radius: 5px;
-    -moz-border-radius-topright: 5px;
-    -moz-border-radius-bottomright: 5px;
-    border-top-right-radius: 5px;
-    border-bottom-right-radius: 5px;
+    -webkit-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+    border: 1px solid  #ccc;
+    box-shadow: 0 1px 0 #fff;  
+}
+html ul.tabs #save-log,
+html ul.tabs #save-log a {
+    cursor: pointer;
+    -webkit-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+    border: 1px solid  #ccc;
+    box-shadow: 0 1px 0 #fff; 
 }
 html ul.tabs2 li:active {
     background: #F1F2F4;
