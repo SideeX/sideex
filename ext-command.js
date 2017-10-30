@@ -240,7 +240,7 @@ class ExtCommand {
         return new Promise(function(resolve, reject) {
             let counter = 0;
             let interval = setInterval(function() {
-                if (ref[inspecting] == undefined) {
+                if (ref[inspecting] == undefined || ref[inspecting] == false) {
                     counter++;
                     if (counter > self.waitTimes) {
                         reject("Timeout");
@@ -254,7 +254,7 @@ class ExtCommand {
         })
     }
 
-    createNewTabOrWindow() {
+    updateOrCreateTab() {
         let self = this;
         return browser.tabs.query({
                     windowId: self.currentPlayingWindowId,
@@ -273,18 +273,25 @@ class ExtCommand {
                            });
                        })
                    } else {
+                       let tabInfo = null;
                        return browser.tabs.update(tabs[0].id, {
                                    url: "https://google.com"
                               }).then(function(tab) {
-                                  self.setFirstTab(tab);
+                                  tabInfo = tab;
+                                  return self.wait("playingTabStatus", tab.id);
+                              }).then(function() {
+                                  // Firefox did not update url information when tab is updated
+                                  // We assign url manually and go to set first tab
+                                  tabInfo.url = "https://google.com";
+                                  self.setFirstTab(tabInfo);
                               })
                    }
                })
     }
 
     setFirstTab(tab) {
-        if (!tab) {
-            return this.createNewTabOrWindow()
+        if (!tab || (tab.url && this.isAddOnPage(tab.url))) {
+            return this.updateOrCreateTab()
         } else {
             this.currentPlayingTabId = tab.id;
             this.playingTabNames["win_ser_local"] = this.currentPlayingTabId;
@@ -295,6 +302,14 @@ class ExtCommand {
             // select Frame directly will cause failed
             this.playingTabStatus[this.currentPlayingTabId] = true;
         }
+    }
+
+    isAddOnPage(url) {
+        if (url.startsWith("https://addons.mozilla.org") ||
+            url.startsWith("https://chrome.google.com/webstore")) {
+            return true;
+        }
+        return false;
     }
 }
 
