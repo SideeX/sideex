@@ -415,6 +415,7 @@ function cleanStatus() {
     var commands = getRecordsArray();
     for (var i = 0; i < commands.length; ++i) {
         commands[i].setAttribute("class", "");
+        commands[i].getElementsByTagName("td")[0].classList.remove("stopping");
     }
     classifyRecords(1, commands.length);
 }
