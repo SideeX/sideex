@@ -1071,7 +1071,7 @@ Selenium.prototype.doSendKeys = function(locator, value) {
         window.postMessage({
             direction: "from-sendkeys",
             keys: keysRa,
-            element: locator
+            element: element
         }, "*");
         //bot.action.type(element, keysRa);
     } else {
@@ -1079,7 +1079,7 @@ Selenium.prototype.doSendKeys = function(locator, value) {
         window.postMessage({
             direction: "from-sendkeys",
             keys: value,
-            element: locator
+            element: element
         }, "*");
     }
 };
