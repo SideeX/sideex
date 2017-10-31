@@ -49,5 +49,5 @@
         "default_title": "SideeX"
     },
 
-    "web_accessible_resources": ["prompt.js"]
+    "web_accessible_resources": ["prompt.js", "key.js"]
 }
