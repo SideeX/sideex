@@ -16,8 +16,11 @@
  */
 
 var elementForInjectingScript = document.createElement("script");
+var elementForInjectingScriptKey = document.createElement("script");
 elementForInjectingScript.src = browser.runtime.getURL("prompt.js");
+elementForInjectingScriptKey.src = browser.runtime.getURL("key.js");
 (document.head || document.documentElement).appendChild(elementForInjectingScript);
+(document.head || document.documentElement).appendChild(elementForInjectingScriptKey);
 
 
 if (window === window.top) {

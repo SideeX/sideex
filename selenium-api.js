@@ -1054,8 +1054,8 @@ Selenium.prototype.doSendKeys = function(locator, value) {
         throw new SeleniumError("type not supported immediately after call to controlKeyDown() or altKeyDown() or metaKeyDown()");
     }
 
-    var element = this.browserbot.findElement(locator);
-
+    //var element = this.browserbot.findElement(locator);
+    var element = parse_locator(locator);
 
     if (value.match(/[\uE000-\uF8FF]/)) {
         //we have special keys, process separately
@@ -1068,9 +1068,19 @@ Selenium.prototype.doSendKeys = function(locator, value) {
             return key;
         });
 
-        bot.action.type(element, keysRa);
+        window.postMessage({
+            direction: "from-sendkeys",
+            keys: keysRa,
+            element: locator
+        }, "*");
+        //bot.action.type(element, keysRa);
     } else {
-        bot.action.type(element, value);
+        //bot.action.type(element, value);
+        window.postMessage({
+            direction: "from-sendkeys",
+            keys: value,
+            element: locator
+        }, "*");
     }
 };
 
