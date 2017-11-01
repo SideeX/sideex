@@ -42,7 +42,6 @@ function getSelectedRecords() {
     } else {
         return "";
     }
-    
 }
 
 function getStringLengthInPx(str) {
@@ -58,14 +57,13 @@ function getStringLengthInPx(str) {
 
 function adjustTooLongStr(str, node) {
     var l = str.length;
-
-    while (getStringLengthInPx(str) + 12 > node.clientWidth) {
-        str = str.slice(0, -1);
+    var strPx = getStringLengthInPx(str);
+    if (strPx > node.clientWidth - 12) {
+        // set how many chars should be displayed
+        var num = Math.floor((node.clientWidth - 12)/(strPx/l));
+        str = str.substring(0, num);
     }
-    if (str.length < l) {
-        str = str + "..........";
-    }
-    return str;
+    return str;	
 }
 
 function addCommand(command_name, command_target_array, command_value, auto, insertCommand) {
