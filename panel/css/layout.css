@@ -524,6 +524,8 @@ section#main {
 .module_content {
     margin-top: 0px;
     margin-bottom: 1px;
+    margin-left: 3px;
+    margin-right: 3px;
     color: #666;
 }
 
@@ -808,18 +810,48 @@ ul.tabs li:hover a {
 
 /* Messages */
 
-.test-suite-title {
+div.test-suite-title {
     border-bottom: solid 1px;
-    background-color: rgb(194, 194, 194)
+    background-color: rgb(194, 194, 194);
+}
+strong.test-suite-title {
+    padding-left: 5px;
+    padding-right: 20px;
+}
+p.test-case-title {
+    padding-left: 20px;
+    padding-right: 20px;
+}
+i.fa-floppy-o {
+    margin-left: 5px;
+    color: rgb(156, 155, 155);
+}
+i.fa-plus {
+    float: right;
+    margin-right: 5px;
+    margin-top: 4px;
+    color: rgb(156, 155, 155);
+}
+
+i.fa-floppy-o:hover {
+    color: rgba(65, 65, 65, 0.9);
+}
+i.fa-plus:hover {
+    color: rgba(65, 65, 65, 0.9);
 }
 
 .message {
     border: solid 1px;
+    border-radius: 5px;
     width: inherit;
     cursor: pointer;
     margin-top: 5px;
     line-height: 20px;
     min-height: 30px;
+}
+
+div.message:hover {
+    box-shadow: 0 4px 10px 0 rgba(0, 0, 0, 0.19);
 }
 
 .message .selectedCase {
@@ -1191,7 +1223,7 @@ input[type=submit].btn_post_message:hover {
 }
 
 #main .module_content h2 {
-    color: #444444;
+    color: #444444; 
     text-transform: none;
     text-shadow: 0 1px 0 #fff;
     font-size: 18px;
