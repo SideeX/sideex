@@ -44,7 +44,7 @@ $(document).ready(function() {
     //dropdown when click the down icon
     $(".fa-chevron-down").click(function() {
         dropdown($("#" + $(this).attr("id") + "dropdown"));
-        $(".w3-show").bind("mouseleave", function() {
+        $(".w3-show").on("mouseleave", function() {
             dropdown($(this));
         });
     });
@@ -62,7 +62,7 @@ $(document).ready(function() {
                     $t_fixed.find("tbody").remove().end().addClass("fixed").insertBefore($this);
                     $t_fixed.find("th").each(function(index) {
                         var $self = $(this);
-                        $this.find("th").eq(index).bind("DOMAttrModified", function(e) {
+                        $this.find("th").eq(index).on("DOMAttrModified", function(e) {
                             $self.css("width", $(this).outerWidth() + "px");
                         });
                     });
@@ -125,12 +125,12 @@ var dropdown = function(node) {
     if (!node.hasClass("w3-show")) {
         node.addClass("w3-show");
         setTimeout(function() {
-            $(document).bind("click", clickWhenDropdownHandler);
+            $(document).on("click", clickWhenDropdownHandler);
         }, 200);
     } else {
-        $(".w3-show").unbind("mouseleave");
+        $(".w3-show").off("mouseleave");
         node.removeClass("w3-show");
-        $(document).unbind("click", clickWhenDropdownHandler);
+        $(document).off("click", clickWhenDropdownHandler);
     }
 };
 
@@ -144,14 +144,14 @@ var clickWhenDropdownHandler = function(e) {
 
 function closeConfirm(bool) {
     if (bool) {
-        $(window).bind("beforeunload", function(e) {
+        $(window).on("beforeunload", function(e) {
             var confirmationMessage = "You have a modified suite!";
             e.returnValue = confirmationMessage; // Gecko, Trident, Chrome 34+
             return confirmationMessage; // Gecko, WebKit, Chrome <34
         });
     } else {
         if (!$("#testCase-grid").find(".modified").length)
-            $(window).unbind("beforeunload");
+            $(window).off("beforeunload");
     }
 }
 

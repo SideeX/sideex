@@ -16,7 +16,7 @@
  */
 
 // Trigger action when the contexmenu is about to be shown
-$(document).bind("contextmenu", function(event) {
+$(document).on("contextmenu", function(event) {
 
     $(".menu").css("left", event.pageX);
     $(".menu").css("top", event.pageY);
@@ -64,7 +64,7 @@ $(document).bind("contextmenu", function(event) {
 
 
 // If the document is clicked somewhere
-$(document).bind("mousedown", function(e) {
+$(document).on("mousedown", function(e) {
     if (!$(e.target).parents(".menu").length > 0) $(".menu").hide();
     else setTimeout(function() { $(".menu").hide(); }, 150);
 });
