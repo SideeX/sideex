@@ -53,3 +53,27 @@ $(document).ready(function() {
 
     });
 });
+
+function mouseOverTestSuite(event) {
+    var div = event.target;
+    console.log(div.getElementsByClassName("fa fa-plus")[0]);
+    console.log(div.getElementsByClassName("fa fa-floppy-o")[0]);
+    setIconDark(div.getElementsByClassName("fa fa-plus")[0]);
+    setIconDark(div.getElementsByClassName("fa fa-floppy-o")[0]);
+}
+
+function mouseOutTestSuite(event) {
+    var div = event.target;
+    setIconBright(div.getElementsByClassName("fa-plus")[0]);
+    setIconBright(div.getElementsByClassName("fa-floppy-o")[0]);
+}
+
+function setIconBright(element) {
+    console.log("element: ", element);
+    element.style.color = "rgba(230, 230, 230, 0.5)";
+}
+
+function setIconDark(element) {
+    console.log("element1: ", element);
+    element.style.color = "rgba(65, 65, 65, 0.9)";
+}
