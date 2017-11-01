@@ -286,13 +286,21 @@ function addTestCase(title, id) {
 }
 
 function addTestSuite(title, id) {
+    // set test suite title
     var text = document.createElement("strong");
     text.innerHTML = escapeHTML(title);
+
+    // set test suite div
     var div = document.createElement("div");
     div.setAttribute("id", id);
     div.setAttribute("contextmenu", "menu" + id);
     div.setAttribute("class", "message");
-    div.appendChild(text);
+
+    // set test suite title div
+    var textDiv = documetn.createElement("div");
+    textDiv.setAttribute("class", "test-suite-title");
+    textDiv.appendChild(text);
+    div.appendChild(textDiv);
 
     var s_suite = getSelectedSuite();
     if (s_suite) {

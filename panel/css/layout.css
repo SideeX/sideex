@@ -523,8 +523,6 @@ section#main {
 
 .module_content {
     margin-top: 0px;
-    margin-right: 20px;
-    margin-left: 20px;
     margin-bottom: 1px;
     color: #666;
 }
@@ -811,8 +809,14 @@ ul.tabs li:hover a {
 
 /* Messages */
 
+.test-suite-title {
+    border-bottom: solid 1px;
+    background-color: rgb(194, 194, 194)
+}
+
 .message {
-    border-bottom: 1px dotted #cccccc;
+    border: solid 1px;
+    width: inherit;
     cursor: pointer;
     margin-top: 5px;
     line-height: 20px;
