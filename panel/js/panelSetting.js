@@ -119,6 +119,7 @@ $(document).ready(function() {
     }).slider("pips", {
         rest: "label", labels: ["Fast", "", "", "", "", "Slow"]
     });
+
 });
 
 var dropdown = function(node) {
