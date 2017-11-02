@@ -547,9 +547,12 @@ Selenium.prototype.doClick = function(locator) {
      * @param locator an element locator
      *
      */
+    console.log("over1");
     var element = this.browserbot.findElement(locator);
+    console.log("over3");
     var elementWithHref = getAncestorOrSelfWithJavascriptHref(element);
 
+    console.log("over2");
     this.browserbot.clickElement(element);
     // © Jie-Lin You, SideeX Team
     this.browserbot.triggerMouseEvent(element, 'mousedown', true);
@@ -600,14 +603,18 @@ Selenium.prototype.doClickAt = function(locator, coordString) {
      *      event relative to the element returned by the locator.
      *
      */
+    console.log("over out1");
     var element = this.browserbot.findElement(locator);
+    console.log("over out2");
     var clientXY = getClientXY(element, coordString);
+    console.log("over out3");
     // © Jie-Lin You, SideeX Team
     //this.doMouseMove(locator);
     //this.doMouseDown(locator);
     this.browserbot.clickElement(element, clientXY[0], clientXY[1]);
     this.browserbot.triggerMouseEvent(element, 'mousedown', true, clientXY[0], clientXY[1]);
     this.browserbot.triggerMouseEvent(element, 'mouseup', true, clientXY[0], clientXY[1]);
+    console.log("over out4");
     //this.doMouseUp(locator);
     // END
 };
@@ -2805,11 +2812,16 @@ Selenium.prototype.doWaitForPageToLoad.dontCheckAlertsAndConfirms = true;
  * If the string matches the pattern "javascript{ ... }", evaluate the string between the braces.
  */
 Selenium.prototype.preprocessParameter = function(value) {
+    console.log("in1");
     var match = value.match(/^javascript\{((.|\r?\n)+)\}$/);
+    console.log("in2");
     if (match && match[1]) {
+        console.log("in4");
         var result = eval(match[1]);
+        console.log("in5");
         return result == null ? null : result.toString();
     }
+    console.log("in3", value);
     return this.replaceVariables(value);
 };
 
@@ -2819,13 +2831,15 @@ Selenium.prototype.preprocessParameter = function(value) {
  */
 Selenium.prototype.replaceVariables = function(str) {
     var stringResult = str;
-
+    
+    console.log("out1");
     // Find all of the matching variable references
     var match = stringResult.match(/\$\{\w+\}/g);
     if (!match) {
+        console.log("out3", stringResult);
         return stringResult;
     }
-
+    console.log("out2");
     // For each match, lookup the variable value, and replace if found
     for (var i = 0; match && i < match.length; i++) {
         var variable = match[i]; // The replacement variable, with ${}
@@ -2838,6 +2852,7 @@ Selenium.prototype.replaceVariables = function(str) {
             stringResult = stringResult.replace(variable, replacement);
         }
     }
+    console.log("out4");
     return stringResult;
 };
 

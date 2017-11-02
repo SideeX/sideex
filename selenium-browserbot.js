@@ -1568,7 +1568,6 @@ BrowserBot.prototype.recursivelyDeleteCookie = function(cookieName, domain, path
  * in the specified document, using various lookup protocols
  */
 BrowserBot.prototype.findElementRecursive = function(locatorType, locatorString, inDocument, inWindow) {
-
     var element = this.findElementBy(locatorType, locatorString, inDocument, inWindow);
     if (element != null) {
         return element;
@@ -1577,12 +1576,15 @@ BrowserBot.prototype.findElementRecursive = function(locatorType, locatorString,
     for (var i = 0; i < inWindow.frames.length; i++) {
         // On some browsers, the document object is undefined for third-party
         // frames.  Make sure the document is valid before continuing.
-        if (inWindow.frames[i].document) {
-            element = this.findElementRecursive(locatorType, locatorString, inWindow.frames[i].document, inWindow.frames[i]);
-
-            if (element != null) {
-                return element;
+        try {
+            if (inWindow.frames[i].document) {
+                element = this.findElementRecursive(locatorType, locatorString, inWindow.frames[i].document, inWindow.frames[i]);
+                if (element != null) {
+                    return element;
+                }
             }
+        } catch (e) {
+            return null;
         }
     }
 };
@@ -1596,7 +1598,10 @@ BrowserBot.prototype.findElementOrNull = function(locator, win) {
     if (win == null) {
         win = this.getCurrentWindow();
     }
-    var element = this.findElementRecursive(locator.type, locator.string, win.document, win);
+    // var element = this.findElementRecursive(locator.type, locator.string, win.document, win);
+    // NOTE: Because we do go into frame by selectFrame commands, we do not find
+    // element go into frame by findElementRecursive operations.
+    var element = this.findElementBy(locator.type, locator.string, win.document, win);
     element = core.firefox.unwrap(element);
 
     if (element != null) {
