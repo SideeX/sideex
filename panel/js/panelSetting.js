@@ -168,6 +168,7 @@ function genCommandDatalist() {
         "chooseCancelOnNextPrompt",
         "chooseOkOnNextConfirmation",
         "clickAt",
+        "close",
         "doubleClickAt",
         "dragAndDropToObject",
         "echo",
@@ -188,7 +189,7 @@ function genCommandDatalist() {
         "store",
         "storeText",
         "storeTitle",
-	"submit",
+        "submit",
         "type",
         "verifyText",
         "verifyTitle"

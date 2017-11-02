@@ -85,7 +85,8 @@ window.onload = function() {
     })
     logLi.addEventListener("click",function(){       
         if(logState==false){
-            
+            document.getElementById("clear-log").parentElement.style.display="inline";
+           
             logContainer.style.display="inline";
             referContainer.style.display="none";
             logLi.firstChild.style.color="#333333";
@@ -96,6 +97,8 @@ window.onload = function() {
     })
     referenceLi.addEventListener("click",function(){
         if(referenceState==false){
+            document.getElementById("clear-log").parentElement.style.display="none";
+           
             scrape(document.getElementById("command-command").value);
             referContainer.style.display="inline";
             logContainer.style.display="none";
