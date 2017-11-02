@@ -313,7 +313,7 @@ function addTestSuite(title, id) {
     pluseIcon.classList.add("fa");
     pluseIcon.classList.add("fa-plus");
     pluseIcon.setAttribute("aria-hidden", "true");
-    saveIcon.addEventListener("click", clickCasePlusIcon);
+    pluseIcon.addEventListener("click", clickCasePlusIcon);
     textDiv.appendChild(pluseIcon);
 
     // set test suite div
