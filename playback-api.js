@@ -85,7 +85,8 @@ window.onload = function() {
     })
     logLi.addEventListener("click",function(){       
         if(logState==false){
-            
+            document.getElementById("clear-log").parentElement.style.display="inline";
+           
             logContainer.style.display="inline";
             referContainer.style.display="none";
             logLi.firstChild.style.color="#333333";
@@ -96,6 +97,8 @@ window.onload = function() {
     })
     referenceLi.addEventListener("click",function(){
         if(referenceState==false){
+            document.getElementById("clear-log").parentElement.style.display="none";
+           
             scrape(document.getElementById("command-command").value);
             referContainer.style.display="inline";
             logContainer.style.display="none";
@@ -205,6 +208,9 @@ window.onload = function() {
                     }).then(function(response) {
                         if (response){
                             console.log(response.result);
+                            if (!response.result) {
+                                sideex_log.error("Element not found");
+                            }
                         }
                     });
                 }
@@ -412,6 +418,7 @@ function cleanStatus() {
     var commands = getRecordsArray();
     for (var i = 0; i < commands.length; ++i) {
         commands[i].setAttribute("class", "");
+        commands[i].getElementsByTagName("td")[0].classList.remove("stopping");
     }
     classifyRecords(1, commands.length);
 }

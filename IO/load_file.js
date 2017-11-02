@@ -129,6 +129,7 @@ document.getElementById("load-testSuite-hidden").addEventListener("change", func
     for (var i = 0; i < this.files.length; i++) {
         readSuite(this.files[i]);
     }
+    this.value = null;
 }, false);
 
 document.getElementById("load-testSuite-show").addEventListener("click", function(event) {
