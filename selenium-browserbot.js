@@ -1596,7 +1596,8 @@ BrowserBot.prototype.findElementOrNull = function(locator, win) {
     if (win == null) {
         win = this.getCurrentWindow();
     }
-    var element = this.findElementRecursive(locator.type, locator.string, win.document, win);
+    // var element = this.findElementRecursive(locator.type, locator.string, win.document, win);
+    var element = this.findElementBy(locator.type, locator.string, win.document, win);
     element = core.firefox.unwrap(element);
 
     if (element != null) {

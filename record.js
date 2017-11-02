@@ -14,46 +14,54 @@
  * limitations under the License.
  */
 
+var typeTarget;
+var typeLock = 0;
 Recorder.inputTypes = ["text", "password", "file", "datetime", "datetime-local", "date", "month", "time", "week", "number", "range", "email", "url", "search", "tel", "color"];
 Recorder.addEventHandler('type', 'change', function(event) {
     // © Chen-Chieh Ping, SideeX Team
-    if (event.target.tagName && !preventType) {
-    // END
-        var tagName = event.target.tagName.toLowerCase();
-        var type = event.target.type;
-        if ('input' == tagName && Recorder.inputTypes.indexOf(type) >= 0) {
-            if (event.target.value.length > 0) {
-                this.record("type", this.locatorBuilders.buildAll(event.target), event.target.value);
-
-                // © Chen-Chieh Ping, SideeX Team
-                if (enterTarget != null) {
-                    var tempTarget = event.target.parentElement;
-                    var formChk = tempTarget.tagName.toLowerCase();
-                    while (formChk != 'form' && formChk != 'body') {
-                        tempTarget = tempTarget.parentElement;
-                        formChk = tempTarget.tagName.toLowerCase();
+    if (event.target.tagName && !preventType && typeLock == 0 && (typeLock = 1)) {
+        // END
+            var tagName = event.target.tagName.toLowerCase();
+            var type = event.target.type;
+            if ('input' == tagName && Recorder.inputTypes.indexOf(type) >= 0) {
+                if (event.target.value.length > 0) {
+                    this.record("type", this.locatorBuilders.buildAll(event.target), event.target.value);
+    
+                    // © Chen-Chieh Ping, SideeX Team
+                    if (enterTarget != null) {
+                        var tempTarget = event.target.parentElement;
+                        var formChk = tempTarget.tagName.toLowerCase();
+                        while (formChk != 'form' && formChk != 'body') {
+                            tempTarget = tempTarget.parentElement;
+                            formChk = tempTarget.tagName.toLowerCase();
+                        }
+                        if (formChk == 'form' && (tempTarget.hasAttribute("id") || tempTarget.hasAttribute("name")) && (!tempTarget.hasAttribute("onsubmit"))) {
+                            if (tempTarget.hasAttribute("id"))
+                                this.record("submit", [
+                                    ["id=" + tempTarget.id, "id"]
+                                ], "");
+                            else if (tempTarget.hasAttribute("name"))
+                                this.record("submit", [
+                                    ["name=" + tempTarget.name, "name"]
+                                ], "");
+                        } else
+                            this.record("sendKeys", this.locatorBuilders.buildAll(enterTarget), "${KEY_ENTER}");
+                        enterTarget = null;
                     }
-                    if (formChk == 'form' && (tempTarget.hasAttribute("id") || tempTarget.hasAttribute("name")) && (!tempTarget.hasAttribute("onsubmit"))) {
-                        if (tempTarget.hasAttribute("id"))
-                            this.record("submit", [
-                                ["id=" + tempTarget.id, "id"]
-                            ], "");
-                        else if (tempTarget.hasAttribute("name"))
-                            this.record("submit", [
-                                ["name=" + tempTarget.name, "name"]
-                            ], "");
-                    } else
-                        this.record("sendKeys", this.locatorBuilders.buildAll(enterTarget), "${KEY_ENTER}");
-                    enterTarget = null;
+                    // END
+                } else {
+                    this.record("type", this.locatorBuilders.buildAll(event.target), event.target.value);
                 }
-                // END
-            } else {
+            } else if ('textarea' == tagName) {
                 this.record("type", this.locatorBuilders.buildAll(event.target), event.target.value);
             }
-        } else if ('textarea' == tagName) {
-            this.record("type", this.locatorBuilders.buildAll(event.target), event.target.value);
         }
-    }
+        typeLock = 0;
+});
+
+Recorder.addEventHandler('type', 'input', function(event) {
+    //console.log(event.target);
+    typeTarget = event.target;
 });
 
 // © Jie-Lin You, SideeX Team
@@ -133,6 +141,8 @@ Recorder.addEventHandler('sendKeys', 'keydown', function(event) {
                 var tempTarget = event.target.parentElement;
                 var formChk = tempTarget.tagName.toLowerCase();
                 //console.log(tempValue + " " + enterTarget.value + " " + tabCheck + " " + enterTarget + " " + focusValue);
+                console.log(focusValue);
+                console.log(enterTarget.value);
                 if (tempValue == enterTarget.value && tabCheck == enterTarget) {
                     this.record("sendKeys", this.locatorBuilders.buildAll(enterTarget), "${KEY_ENTER}");
                     enterTarget = null;
@@ -151,6 +161,43 @@ Recorder.addEventHandler('sendKeys', 'keydown', function(event) {
                         this.record("sendKeys", this.locatorBuilders.buildAll(enterTarget), "${KEY_ENTER}");
                     enterTarget = null;
                 }
+                if (typeTarget.tagName && !preventType && (typeLock = 1)) {
+                    // END
+                        var tagName = typeTarget.tagName.toLowerCase();
+                        var type = typeTarget.type;
+                        if ('input' == tagName && Recorder.inputTypes.indexOf(type) >= 0) {
+                            if (typeTarget.value.length > 0) {
+                                this.record("type", this.locatorBuilders.buildAll(typeTarget), typeTarget.value);
+                
+                                // © Chen-Chieh Ping, SideeX Team
+                                if (enterTarget != null) {
+                                    var tempTarget = typeTarget.parentElement;
+                                    var formChk = tempTarget.tagName.toLowerCase();
+                                    while (formChk != 'form' && formChk != 'body') {
+                                        tempTarget = tempTarget.parentElement;
+                                        formChk = tempTarget.tagName.toLowerCase();
+                                    }
+                                    if (formChk == 'form' && (tempTarget.hasAttribute("id") || tempTarget.hasAttribute("name")) && (!tempTarget.hasAttribute("onsubmit"))) {
+                                        if (tempTarget.hasAttribute("id"))
+                                            this.record("submit", [
+                                                ["id=" + tempTarget.id, "id"]
+                                            ], "");
+                                        else if (tempTarget.hasAttribute("name"))
+                                            this.record("submit", [
+                                                ["name=" + tempTarget.name, "name"]
+                                            ], "");
+                                    } else
+                                        this.record("sendKeys", this.locatorBuilders.buildAll(enterTarget), "${KEY_ENTER}");
+                                    enterTarget = null;
+                                }
+                                // END
+                            } else {
+                                this.record("type", this.locatorBuilders.buildAll(typeTarget), typeTarget.value);
+                            }
+                        } else if ('textarea' == tagName) {
+                            this.record("type", this.locatorBuilders.buildAll(typeTarget), typeTarget.value);
+                        }
+                    }
                 preventClick = true;
                 setTimeout(function() {
                     preventClick = false;

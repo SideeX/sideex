@@ -41,7 +41,7 @@ function handleMessage(message, sender, sendResponse) {
         for (var m = 0; m < message.target.length; ++m) {
             var option = document.createElement("option");
             option.appendChild(document.createTextNode(message.target[m][0]));
-            option.innerText = message.target[m][0];
+            option.text = message.target[m][0];
             locatorList.appendChild(option);
         }
 

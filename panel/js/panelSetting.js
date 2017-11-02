@@ -113,9 +113,9 @@ $(document).ready(function() {
 
     $("#slider").slider({
         min: 0,
-        max: 2000,
+        max: 10000,
         value: 0,
-        step: 400
+        step: 2000
     }).slider("pips", {
         rest: "label", labels: ["Fast", "", "", "", "", "Slow"]
     });
@@ -168,6 +168,7 @@ function genCommandDatalist() {
         "chooseCancelOnNextPrompt",
         "chooseOkOnNextConfirmation",
         "clickAt",
+        "close",
         "doubleClickAt",
         "dragAndDropToObject",
         "echo",
@@ -188,7 +189,7 @@ function genCommandDatalist() {
         "store",
         "storeText",
         "storeTitle",
-	"submit",
+        "submit",
         "type",
         "verifyText",
         "verifyTitle"
