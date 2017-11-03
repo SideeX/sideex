@@ -26,7 +26,7 @@ $(document).ready(function() {
         });
     });
 
-    $("#settings").click(function() {
+    $("#options").click(function() {
         browser.runtime.openOptionsPage();		
     });	
 

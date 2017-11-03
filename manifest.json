@@ -17,7 +17,8 @@
         "contextMenus",
         "downloads",
         "webNavigation",
-        "notifications"
+        "notifications",
+        "storage"
     ],
 
     "content_security_policy": "script-src 'self'; object-src 'self'",
@@ -49,5 +50,9 @@
         "default_title": "SideeX"
     },
 
-    "web_accessible_resources": ["prompt.js"]
+    "web_accessible_resources": ["prompt.js"],
+    "options_ui": 
+    {
+        "page": "options.html"	
+    }
 }
