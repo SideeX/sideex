@@ -305,14 +305,14 @@ function addTestSuite(title, id) {
     text.innerHTML = escapeHTML(title);
     textDiv.appendChild(text);
 
-    // add pluse icon
-    var pluseIcon = document.createElement("i");
-    pluseIcon.classList.add("fa");
-    pluseIcon.classList.add("fa-plus");
-    pluseIcon.classList.add("case-plus");
-    pluseIcon.setAttribute("aria-hidden", "true");
-    pluseIcon.addEventListener("click", clickCasePlusIcon);
-    textDiv.appendChild(pluseIcon);
+    // add plus icon
+    var plusIcon = document.createElement("i");
+    plusIcon.classList.add("fa");
+    plusIcon.classList.add("fa-plus");
+    plusIcon.classList.add("case-plus");
+    plusIcon.setAttribute("aria-hidden", "true");
+    plusIcon.addEventListener("click", clickCasePlusIcon);
+    textDiv.appendChild(plusIcon);
 
     // set test suite div
     var div = document.createElement("div");
