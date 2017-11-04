@@ -297,7 +297,7 @@ function addTestSuite(title, id) {
     // add save icon
     var saveIcon = document.createElement("i");
     saveIcon.classList.add("fa");
-    saveIcon.classList.add("fa-floppy-o");
+    saveIcon.classList.add("fa-download");
     saveIcon.setAttribute("aria-hidden", "true");
     saveIcon.addEventListener("click", clickSaveIcon);
     textDiv.appendChild(saveIcon);
@@ -312,6 +312,7 @@ function addTestSuite(title, id) {
     var pluseIcon = document.createElement("i");
     pluseIcon.classList.add("fa");
     pluseIcon.classList.add("fa-plus");
+    pluseIcon.classList.add("case-plus");
     pluseIcon.setAttribute("aria-hidden", "true");
     pluseIcon.addEventListener("click", clickCasePlusIcon);
     textDiv.appendChild(pluseIcon);
@@ -329,7 +330,8 @@ function addTestSuite(title, id) {
     if (s_suite) {
         s_suite.parentNode.insertBefore(div, s_suite.nextSibling);
     } else {
-        document.getElementById("testCase-grid").appendChild(div);
+        // document.getElementById("testCase-grid").appendChild(div);
+        document.getElementById("testCase-grid").insertBefore(div, document.getElementById("suite-plus"));
     }
 
     cleanSelected();
@@ -515,3 +517,5 @@ function clickSaveIcon(event) {
 function clickSuitePlusIcon(event) {
     document.getElementById("add-testSuite").click();
 }
+
+document.getElementById("suite-plus").addEventListener("click", clickSuitePlusIcon);
