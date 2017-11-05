@@ -61,13 +61,14 @@ function mouseOnAndOutTestSuite(event) {
         if (element == undefined) {
             return;
         }
-        if (element.id.includes("suite")) {
+        if (element.id.includes("suite") && !element.id.includes("menu")) {
             break;
         }
 
         element = element.parentNode;
     }
 
+    // console.log("element: ", element);
     let display = undefined;
     if (event.type == "mouseover") {
         display = true;
