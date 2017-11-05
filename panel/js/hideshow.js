@@ -54,26 +54,43 @@ $(document).ready(function() {
     });
 });
 
-function mouseOverTestSuite(event) {
-    var div = event.target;
-    console.log(div.getElementsByClassName("fa fa-plus")[0]);
-    console.log(div.getElementsByClassName("fa fa-floppy-o")[0]);
-    setIconDark(div.getElementsByClassName("fa fa-plus")[0]);
-    setIconDark(div.getElementsByClassName("fa fa-floppy-o")[0]);
+function mouseOnAndOutTestSuite(event) {
+    //event.stopPropagation();
+    var element = event.target;
+    while (true) {
+        if (element == undefined) {
+            return;
+        }
+        if (element.id.includes("suite")) {
+            break;
+        }
+
+        element = element.parentNode;
+    }
+
+    let display = undefined;
+    if (event.type == "mouseover") {
+        display = true;
+    } else if (event.type == "mouseout") {
+        display = false;
+    }
+    setIconDisplay(display, element);
 }
 
-function mouseOutTestSuite(event) {
-    var div = event.target;
-    setIconBright(div.getElementsByClassName("fa-plus")[0]);
-    setIconBright(div.getElementsByClassName("fa-floppy-o")[0]);
+function setIconDisplay(display, element) {
+    let plus = element.getElementsByClassName("fa fa-download")[0];
+    let download = element.getElementsByClassName("fa fa-plus")[0];
+    let color = display ? "rgb(156, 155, 155)": "#D0D1D4";
+    plus.style.color = color;
+    download.style.color = color;
 }
 
-function setIconBright(element) {
-    console.log("element: ", element);
-    element.style.color = "rgba(230, 230, 230, 0.5)";
-}
-
-function setIconDark(element) {
-    console.log("element1: ", element);
-    element.style.color = "rgba(65, 65, 65, 0.9)";
+function mouseOnAndOutSuitePlus(event) {
+    if (event.type == "mouseover") {
+        document.getElementById("suite-plus").style.backgroundColor = "rgba(250, 250, 250, 0.8)";
+        $("i.suite-plus")[0].style.color = "rgb(156, 155, 155)";
+    } else if (event.type == "mouseout") {
+        document.getElementById("suite-plus").style.backgroundColor = "rgba(255, 255, 255, 1)";
+        $("i.suite-plus")[0].style.color = "rgb(228, 228, 228)";
+    }
 }

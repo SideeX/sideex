@@ -48,6 +48,7 @@ window.onload = function() {
     var playSuitesButton = document.getElementById("playSuites");
     var showElementButton = document.getElementById("showElementButton")
     var selectElementButton = document.getElementById("selectElementButton");
+    var suitePlus = document.getElementById("suite-plus");
     /*var recordButton = document.getElementById("record");*/
     //element.addEventListener("click",play);
     //Tim
@@ -58,7 +59,8 @@ window.onload = function() {
         scrape(document.getElementById("command-command").value);
     });
    
-    
+    suitePlus.addEventListener("mouseover", mouseOnAndOutSuitePlus);
+    suitePlus.addEventListener("mouseout", mouseOnAndOutSuitePlus);
     
     var logLi=document.getElementById("history-log");
     var referenceLi=document.getElementById("reference-log");
