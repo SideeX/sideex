@@ -1617,7 +1617,13 @@ BrowserBot.prototype.findElementOrNull = function(locator, win) {
 
 BrowserBot.prototype.findElement = function(locator, win) {
     var element = this.findElementOrNull(locator, win);
-    if (element == null) throw new SeleniumError("Element " + locator + " not found");
+    if (element == null) {
+        if (locator.startsWith("tac=")) {
+            var cutPoint = locator.indexOf("::[tac]::");
+            var trimLocator = locator.substring(0, cutPoint) + "::[tac]::...";
+            throw new SeleniumError("Element " + trimLocator + " not found");
+        } else throw new SeleniumError("Element " + locator + " not found");
+    }
     return core.firefox.unwrap(element);
 };
 

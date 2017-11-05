@@ -544,7 +544,7 @@ LocatorBuilders.add('xpath:position', function(e, opt_contextNode) {
 
 LocatorBuilders.add('tac', function(e) {
     //if (!tacStatus)	return null;
-/*
+
     var p = '';
     var c = e;
     var d = e.ownerDocument;
@@ -661,7 +661,7 @@ LocatorBuilders.add('tac', function(e) {
         }
         c = c.parentElement;
     }
-*/
+
     return null;
 });
 // Samit: Warning: The old method of setting the order using LocatorBuilders.order is now deprecated

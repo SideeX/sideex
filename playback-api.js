@@ -751,7 +751,13 @@ function doCommand() {
     //console.log("in common");
 
     if (implicitCount == 0) {
-        sideex_log.info("Executing: | " + commandName + " | " + commandTarget + " | " + commandValue + " |");
+        if (commandTarget.startsWith("tac=")) {
+            var cutPoint = commandTarget.indexOf("::[tac]::");
+            var newCommandTarget = commandTarget.substring(0, cutPoint) + "::[tac]::...";
+            sideex_log.info("Executing: | " + commandName + " | " + newCommandTarget + " | " + commandValue + " |");
+        } else {
+            sideex_log.info("Executing: | " + commandName + " | " + commandTarget + " | " + commandValue + " |");
+        }
     }
 
     if (!isPlaying) {
