@@ -380,7 +380,13 @@ function executeCommand(index) {
     var commandTarget = getCommandTarget(commands[id]);
     var commandValue = getCommandValue(commands[id]);
 
-    sideex_log.info("Executing: | " + commandName + " | " + commandTarget + " | " + commandValue + " |");
+    if (commandTarget.startsWith("tac=")) {
+        var cutPoint = commandTarget.indexOf("::[tac]::");
+        var newCommandTarget = commandTarget.substring(0, cutPoint) + "::[tac]::...";
+        sideex_log.info("Executing: | " + commandName + " | " + newCommandTarget + " | " + commandValue + " |");
+    } else {
+        sideex_log.info("Executing: | " + commandName + " | " + commandTarget + " | " + commandValue + " |");
+    }	
 
     initializePlayingProgress(true);
 
@@ -501,7 +507,13 @@ function executionLoop() {
 
     return delay($('#slider').slider("option", "value")).then(function () {
         if (isExtCommand(commandName)) {
-            sideex_log.info("Executing: | " + commandName + " | " + commandTarget + " | " + commandValue + " |");
+            if (commandTarget.startsWith("tac=")) {
+                var cutPoint = commandTarget.indexOf("::[tac]::");
+                var newCommandTarget = commandTarget.substring(0, cutPoint) + "::[tac]::...";
+                sideex_log.info("Executing: | " + commandName + " | " + newCommandTarget + " | " + commandValue + " |");
+            } else {
+                sideex_log.info("Executing: | " + commandName + " | " + commandTarget + " | " + commandValue + " |");
+            }
             let upperCase = commandName.charAt(0).toUpperCase() + commandName.slice(1);
             return (extCommand["do" + upperCase](commandTarget, commandValue))
                .then(function() {

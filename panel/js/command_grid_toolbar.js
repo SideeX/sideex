@@ -54,7 +54,14 @@ $("#command-target").on("input", function(event) {
 
         var command_target = event.target.value;
         div = getTdShowValueNode(document.getElementById(temp), 1);
-        var command_target_adjust = adjustTooLongStr(command_target, div);
+        var command_target_adjust = "";
+        if (command_target.startsWith("tac=")) {
+            var cutPoint = command_target.indexOf("::[tac]::");
+            var new_command_target = command_target.substring(0, cutPoint) + "::[tac]::...";
+            command_target_adjust = adjustTooLongStr(new_command_target, div);
+        } else {
+            command_target_adjust = adjustTooLongStr(command_target, div);
+        }
         if (div.childNodes && div.childNodes[0]) {
             div.removeChild(div.childNodes[0]);
         }

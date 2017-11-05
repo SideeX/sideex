@@ -105,9 +105,13 @@ LocatorBuilders.prototype.buildAll = function(el) {
                 //Samit: The following is a quickfix for above commented code to stop exceptions on almost every locator builder
                 //TODO: the builderName should NOT be used as a strategy name, create a feature to allow locatorBuilders to specify this kind of behaviour
                 //TODO: Useful if a builder wants to capture a different element like a parent. Use the this.elementEquals
-                var fe = this.findElement(locator);
-                if ((e == fe) || (coreLocatorStrategies[finderName] && coreLocatorStrategies[finderName].is_fuzzy_match && coreLocatorStrategies[finderName].is_fuzzy_match(fe, e))) {
-                    locators.push([locator, finderName]);
+                if (finderName != 'tac') {
+                    var fe = this.findElement(locator);
+                    if ((e == fe) || (coreLocatorStrategies[finderName] && coreLocatorStrategies[finderName].is_fuzzy_match && coreLocatorStrategies[finderName].is_fuzzy_match(fe, e))) {
+                        locators.push([locator, finderName]);
+                    }
+                } else {
+                    locators.splice(0, 0, [locator, finderName]);
                 }
             }
         } catch (e) {
@@ -538,6 +542,128 @@ LocatorBuilders.add('xpath:position', function(e, opt_contextNode) {
     return null;
 });
 
+LocatorBuilders.add('tac', function(e) {
+    //if (!tacStatus)	return null;
+/*
+    var p = '';
+    var c = e;
+    var d = e.ownerDocument;
+    var nal = d.createAttribute("to-be-located-by-tac");
+    e.setAttributeNode(nal);
+    var ae = d.getElementsByTagName("*");
+    var aes = ae.length;
+
+    for (var i = 0; i < aes; i++) {
+        if(ae[i] == null){
+            continue;
+        }
+        var s = this.window.getComputedStyle(ae[i]);
+        if(s.display == "none" || s.visibility == "hidden"){
+            var nah = d.createAttribute("hidden-annotated-by-tac");
+            ae[i].setAttributeNode(nah);	
+        }
+    }
+
+    var he = d.getElementsByTagName("HTML");
+    var hes = he.length;
+    for (var i = 0; i < hes; i++) {
+        if (he[i] == null) {
+            continue;
+        }
+        var hec = he[i].children;
+        var hecs = hec.length;
+        for (var j = 0; j < hecs; j++) {
+            if (hec[j] == null) {
+                continue;
+            }	
+            if (hec[j].tagName.toLowerCase() == "div") {
+                he[i].removeChild(hec[j]);
+            }
+        }
+    }
+
+    var be = d.getElementsByTagName("BODY");
+    var bes = be.length;
+    for (var i = 0; i < bes; i++) {
+        if (be[i] == null) {
+            continue;
+        }
+        var bec = be[i].children;
+        var becs = bec.length;
+        for (var j = 0; j < becs; j++) {
+            if (bec[j] == null) {
+                continue;
+            }
+            var an = bec[j].attributes.length;	
+            for (var k = 0; k < an; k++) {
+                if (bec[j].attributes[k].name == "style") {
+                    if (bec[j].attributes[k].value.startsWith("pointer-events")) {
+                        be[i].removeChild(bec[j]);
+                    }
+                    break;
+                }
+            }
+            break;
+        }
+    }
+
+    var nse = d.getElementsByTagName("NOSCRIPT");
+    var nses = nse.length;
+    for (var i = 0; i < nses; i++) {
+        nse[i].textContent = "";
+    }
+
+    var de;
+    for(de = e; de.parentElement != null; de = de.parentElement){}
+    var dc = de.outerHTML;
+
+    e.removeAttribute("to-be-located-by-tac");
+    for (var i = 0; i < aes; i++) {
+        if (ae[i] == null) {
+            continue;
+        }
+		
+        if (ae[i].hasAttribute("hidden-annotated-by-tac")) {
+            ae[i].removeAttribute("hidden-annotated-by-tac");
+        }
+    }
+
+    while (c != null) {
+        if (c.parentElement != null) {
+            var se = c.parentElement.children;
+            var ct = 0;
+            var tct = 0;
+            var f = false;
+
+            for (var i = 0; i < se.length; i++) {
+                if (se[i].tagName == c.tagName && !f) {
+                    ct++;
+                    tct++;
+                } else if (se[i].tagName == c.tagName) {
+                    tct++;
+                }
+                if (se[i] == c) {
+                    f = true;
+                }
+            }
+
+            if (tct > 1) {
+                p = "/" + c.tagName.toLowerCase() + "[" + ct + "]" + p;
+            } else {
+                p = "/" + c.tagName.toLowerCase() + p;
+            }
+        } else {
+            p = "/" + c.tagName.toLowerCase() + p;
+            if (true) {
+                var tac = "tac=" + p + "::[tac]::" + dc;
+                return tac;
+            }
+        }
+        c = c.parentElement;
+    }
+*/
+    return null;
+});
 // Samit: Warning: The old method of setting the order using LocatorBuilders.order is now deprecated
 // You can change the priority of builders by setting LocatorBuilders.order.
 //LocatorBuilders.order = ['ui', 'id', 'link', 'name', 'css', 'dom:name', 'xpath:link', 'xpath:img', 'xpath:attributes', 'xpath:idRelative', 'xpath:href', 'dom:index', 'xpath:position'];
