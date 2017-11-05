@@ -322,8 +322,8 @@ function addTestSuite(title, id) {
     div.setAttribute("id", id);
     div.setAttribute("contextmenu", "menu" + id);
     div.setAttribute("class", "message");
-    // div.addEventListener("mouseover", mouseOverTestSuite);
-    // div.addEventListener("mouseout", mouseOutTestSuite);
+    div.addEventListener("mouseover", mouseOnAndOutTestSuite);
+    div.addEventListener("mouseout", mouseOnAndOutTestSuite);
     div.appendChild(textDiv);
 
     var s_suite = getSelectedSuite();
@@ -507,10 +507,15 @@ document.getElementById("delete-testCase").addEventListener('click', function() 
 }, false);
 
 function clickCasePlusIcon(event) {
+    event.stopPropagation();
+    event.target.parentNode.parentNode.click();
+    console.log("parent: ", event.target.parentNode);
     document.getElementById('add-testCase').click();
 }
 
 function clickSaveIcon(event) {
+    event.stopPropagation();
+    event.target.parentNode.parentNode.click();
     document.getElementById('save-testSuite').click();
 }
 
