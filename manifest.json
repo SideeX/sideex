@@ -26,7 +26,7 @@
     "content_scripts": [
         {
             "matches": ["<all_urls>"],
-            "js": ["atoms.js", "utils.js", "selenium-browserbot.js", "escape.js", "selenium-api.js", "locatorBuilders.js", "record-api.js", "record.js", "commands-api.js", "targetSelecter.js"],
+            "js": ["atoms.js", "utils.js", "storage.js", "selenium-browserbot.js", "escape.js", "selenium-api.js", "locatorBuilders.js", "record-api.js", "record.js", "commands-api.js", "targetSelecter.js"],
             "match_about_blank": true,
             "all_frames": true
         },

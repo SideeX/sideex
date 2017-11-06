@@ -543,7 +543,7 @@ LocatorBuilders.add('xpath:position', function(e, opt_contextNode) {
 });
 
 LocatorBuilders.add('tac', function(e) {
-    //if (!tacStatus)	return null;
+    if (!tacStatus)	return null;
 
     var p = '';
     var c = e;
