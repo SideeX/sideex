@@ -29,10 +29,22 @@ var sideex_testSuite = {
 };
 
 function clean_panel() {
-    document.getElementById("records-grid").innerHTML = "";
+    emptyNode(document.getElementById("records-grid"));
+    emptyNode(document.getElementById("command-target-list"));
+    emptyNode(document.getElementById("target-dropdown"));
     document.getElementById("command-command").value = "";
     document.getElementById("command-target").value = "";
-    document.getElementById("command-target-list").innerHTML = "";
-    document.getElementById("target-dropdown").innerHTML = "";
     document.getElementById("command-value").value = "";
+}
+
+// TODO: move to an appropriate files
+
+/**
+ * Remove all child nodes in a node.
+ * @argument {Node} node
+ */
+function emptyNode(node) {
+    while (node.firstChild) {
+        node.removeChild(node.firstChild);
+    }
 }
