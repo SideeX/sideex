@@ -342,6 +342,11 @@ function addTestSuite(title, id) {
     enableButton("playSuite");
 }
 
+function modifyCaseSuite() {
+    getSelectedCase().classList.add("modified");
+    getSelectedSuite().getElementsByTagName("strong")[0].classList.add("modified");
+}
+
 document.getElementById("add-testSuite").addEventListener("click", function(event) {
     event.stopPropagation();
     var title = prompt("Please enter the Test Suite's name", "Untitled Test Suite");

@@ -149,14 +149,6 @@ function reAssignId(start, end) {
     }
 }
 
-function getSelectedCase() {
-    if (document.getElementById("testCase-grid").getElementsByClassName("selectedCase")) {
-        return document.getElementById("testCase-grid").getElementsByClassName("selectedCase")[0];
-    } else {
-        return null;
-    }
-}
-
 // attach event on <tr> (records)
 var firstSelectedTrId = undefined;
 function attachEvent(start, end) {
@@ -235,4 +227,198 @@ function attachEvent(start, end) {
             document.getElementById("command-value").value = getCommandValue(ref);
         }, false);
     }
+}
+
+// "delete" command is different from add and reorder
+function reAssignIdForDelete(delete_ID, count) {
+    var records = getRecordsArray();
+    for (var i = delete_ID - 1; i < count; ++i) {
+        records[i].id = "records-" + (i + 1);
+    }
+    classifyRecords(delete_ID, count);
+}
+
+function getSelectedCase() {
+    if (document.getElementById("testCase-grid").getElementsByClassName("selectedCase")) {
+        return document.getElementById("testCase-grid").getElementsByClassName("selectedCase")[0];
+    } else {
+        return null;
+    }
+}
+
+function getSelectedRecord() {
+    var selectedNode = document.getElementById("records-grid")
+        .getElementsByClassName("selectedRecord");
+    if (selectedNode.length) {
+        return selectedNode[0].id;
+    } else {
+        return "";
+    }
+}
+
+function getSelectedRecords() {
+    var selectedNode = document.getElementById("records-grid").getElementsByClassName("selectedRecord");
+    if (selectedNode.length) {
+        return selectedNode;
+    } else {
+        return "";
+    }
+}
+
+function getStringLengthInPx(str) {
+    var d = document.createElement("div");
+    d.appendChild(document.createTextNode(str));
+    d.style = "position:absolute;visibility:hidden;";
+    d.id = "d_getpx";
+    document.body.appendChild(d);
+    var px = document.getElementById("d_getpx").clientWidth;
+    document.body.removeChild(document.getElementById("d_getpx"));
+    return px;
+}
+
+function adjustTooLongStr(str, node) {
+    var l = str.length;
+    var strPx = getStringLengthInPx(str);
+    if (strPx > node.clientWidth - 12) {
+        // set how many chars should be displayed
+        var num = Math.floor((node.clientWidth - 12)/(strPx/l));
+        str = str.substring(0, num);
+    }
+    return str;
+}
+
+function addCommand(command_name, command_target_array, command_value, auto, insertCommand) {
+    // create default test suite and case if necessary
+    var s_suite = getSelectedSuite(),
+        s_case = getSelectedCase();
+    if (!s_suite || !s_case) {
+        var id = "case" + sideex_testCase.count;
+        sideex_testCase.count++;
+        addTestCase("Untitled Test Case", id);
+    }
+
+    // mark modified
+    modifyCaseSuite();
+    closeConfirm(true);
+    
+    // create tr node     
+    var new_record = document.createElement("tr");
+    new_record.setAttribute("class", "");
+    new_record.setAttribute("style", "");
+    new_record.appendChild(document.createTextNode("\n    "));
+
+    // create td node
+    for (var i = 0; i < 3; ++i) {
+        var td = document.createElement("td");
+        var div_show = document.createElement("div");
+        var div_hidden = document.createElement("div");
+        div_show.style = "overflow:hidden;height:15px;";
+        div_hidden.style = "display:none;";
+        new_record.appendChild(td);
+        if (i == 0) {
+            div_hidden.appendChild(document.createTextNode(command_name));
+            new_record.appendChild(document.createTextNode("\n    "));
+        } else if (i == 1) {
+            // use textNode to avoid tac's tag problem (textNode's content will be pure text, does not be parsed as html)
+            div_hidden.appendChild(document.createTextNode(command_target_array[0][0]));
+            new_record.appendChild(document.createTextNode("\n    "));
+        } else {
+            div_hidden.appendChild(document.createTextNode(command_value));
+            new_record.appendChild(document.createTextNode("\n"));
+        }
+        td.appendChild(div_hidden);
+        td.appendChild(div_show);
+    }
+
+    // append datalist to target
+    var targets = document.createElement("datalist");
+    for (var m = 0; m < command_target_array.length; ++m) {
+        var option = document.createElement("option");
+        // use textNode to avoid tac's tag problem (textNode's content will be pure text, does not be parsed as html)
+        option.appendChild(document.createTextNode(command_target_array[m][0]));
+        option.text=command_target_array[m][0];
+        targets.appendChild(option);
+    }
+    new_record.getElementsByTagName("td")[1].appendChild(targets);
+
+    // var selected_ID = getSelectedRecord();
+    // NOTE: change new API for get selected records
+    var selectedRecords = getSelectedRecords();
+    var selected_ID;
+    if (selectedRecords.length > 0) {
+         selected_ID = selectedRecords[selectedRecords.length-1].id;
+    }
+
+    var count = parseInt(getRecordsNum()) + 1;
+    document.getElementById("records-count").value = count;
+    if (count != 1) {
+        // remove green line
+        // document.getElementById("records-" + (count - 1)).style = "";
+    }
+    if (selected_ID) {
+        if (auto) {
+            document.getElementById(selected_ID).parentNode.insertBefore(new_record, document.getElementById(selected_ID));
+            selected_ID = parseInt(selected_ID.split("-")[1]);
+        } else {
+            document.getElementById(selected_ID).parentNode.insertBefore(new_record, document.getElementById(selected_ID).nextSibling);
+            selected_ID = parseInt(selected_ID.split("-")[1]) + 1;
+        }
+        reAssignId("records-" + selected_ID, "records-" + count);
+        attachEvent(selected_ID, selected_ID);
+        if (auto) {
+            selected_ID = "#records-" + (selected_ID + 1);
+            $(selected_ID).addClass('selectedRecord');
+        }
+    } else {
+        if (insertCommand) {
+            document.getElementById("records-grid").insertBefore(new_record, getRecordsArray()[getRecordsNum()-2]);
+        } else {
+            document.getElementById("records-grid").appendChild(new_record);
+        }
+        reAssignId("records-1", "records-" + count);
+        attachEvent(1, count);
+
+        // focus on new element
+        document.getElementById("records-" + count).scrollIntoView(false);
+    }
+    if (auto) {
+        new_record.parentNode.insertBefore(document.createTextNode("\n"), new_record.nextSibling);
+    } else {
+        new_record.parentNode.insertBefore(document.createTextNode("\n"), new_record);
+    }
+
+    // set div_show's innerHTML here, because we need div's clientWidth 
+    for (var k = 0; k < 3; ++k) {
+        var tooLongStr;
+        if (k == 0) {
+            tooLongStr = command_name;
+        } else if (k == 1) {
+            tooLongStr = command_target_array[0][0];
+        } else {
+            tooLongStr = command_value;
+        }
+        var adjust = adjustTooLongStr(tooLongStr, getTdShowValueNode(new_record, k));
+        getTdShowValueNode(new_record, k).appendChild(document.createTextNode(adjust));
+    }
+
+    // store command grid to testCase
+    var s_case = getSelectedCase();
+    if (s_case) {
+        sideex_testCase[s_case.id].records = document.getElementById("records-grid").innerHTML;
+    }
+}
+
+// add command manually (append downward)
+function addCommandManu(command_name, command_target_array, command_value) {
+    addCommand(command_name, command_target_array, command_value, 0, false);
+}
+
+// add command before last command (append upward)
+function addCommandBeforeLastCommand(command_name, command_target_array, command_value) {
+    addCommand(command_name, command_target_array, command_value, 0, true);
+}
+
+// add command automatically (append upward)
+function addCommandAuto(command_name, command_target_array, command_value) {
+    addCommand(command_name, command_target_array, command_value, 1, false);
 }
