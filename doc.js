@@ -60,12 +60,12 @@ function scrape(word){
                 targetTd[wordPosition]="Left blank";
             if(valueTd[wordPosition]=="X")
                 valueTd[wordPosition]="Left blank";
-            sideex_log.help("Command: "+word);
-            sideex_log.help("Target: "+targetTd[wordPosition]);
-            sideex_log.help("Value: " +valueTd[wordPosition]);
+            help_log.log("Command: "+word);
+            help_log.log("Target: "+targetTd[wordPosition]);
+            help_log.log("Value: " +valueTd[wordPosition]);
         }
         else{
-            sideex_log.help("Command not found");
+            help_log.log("Command not found");
         }        
 
 

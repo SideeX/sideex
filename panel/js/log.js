@@ -1,30 +1,37 @@
-var sideex_log = {};
+class Log {
 
-sideex_log.info = function(str) {
-    var div = document.createElement('h4');
-    div.setAttribute("class", "log-info");
-    str = "[info] " + str;
-    div.innerHTML = escapeHTML(str);
-    document.getElementById("logcontainer").appendChild(div);
-	document.getElementById("logcontainer").scrollIntoView(false);
-};
+    constructor(container) {
+        this.container = container;
+    }
 
-sideex_log.help = function(str) {
-    var div = document.createElement('h4');
-    div.setAttribute("class", "log-info");
-    div.innerHTML = escapeHTML(str);
-    document.getElementById("refercontainer").appendChild(div);
-};
+    log(str) {
+        this._write(str, "log-info");
+    }
 
-sideex_log.error = function(str) {
-    var div = document.createElement('h4');
-    div.setAttribute("class", "log-error");
-    str = "[error] " + str;
-    div.innerHTML = escapeHTML(str);
-    document.getElementById("logcontainer").appendChild(div);
-	document.getElementById("logcontainer").scrollIntoView(false);
-};
+    info(str) {
+        this._write("[info] " + str, "log-info");
+    }
+
+    error(str) {
+        this._write("[error] " + str, "log-error");
+    };
+
+    _write(str, className) {
+        let textElement = document.createElement('h4');
+        textElement.setAttribute("class", className);
+        textElement.textContent = str;
+        this.container.appendChild(textElement);
+        this.container.scrollIntoView(false);
+    }
+}
+
+// TODO: new by another object(s)
+var sideex_log = new Log(document.getElementById("logcontainer"));
+var help_log = new Log(document.getElementById("refercontainer"));
 
 document.getElementById("clear-log").addEventListener("click", function() {
-    document.getElementById("logcontainer").innerHTML = "";
+    var container = document.getElementById("logcontainer");
+    while (container.firstChild) {
+        container.removeChild(container.firstChild);
+    }
 }, false);
