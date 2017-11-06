@@ -16,14 +16,19 @@
  */
 
 $(document).ready(function() {
+
     $(".tablesorter").tablesorter();
 
-    $(".QA_img").click(function() {
+    $("#help").click(function() {
         browser.tabs.create({
             url: "http://sideex.org/",
             windowId: contentWindowId
         });
     });
+
+    $("#options").click(function() {
+        browser.runtime.openOptionsPage();		
+    });	
 
     //init dropdown width
     $("#command-dropdown").css({
@@ -119,6 +124,7 @@ $(document).ready(function() {
     }).slider("pips", {
         rest: "label", labels: ["Fast", "", "", "", "", "Slow"]
     });
+
 });
 
 var dropdown = function(node) {

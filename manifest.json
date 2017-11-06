@@ -17,7 +17,8 @@
         "contextMenus",
         "downloads",
         "webNavigation",
-        "notifications"
+        "notifications",
+        "storage"
     ],
 
     "content_security_policy": "script-src 'self'; object-src 'self'",
@@ -25,7 +26,7 @@
     "content_scripts": [
         {
             "matches": ["<all_urls>"],
-            "js": ["atoms.js", "utils.js", "selenium-browserbot.js", "escape.js", "selenium-api.js", "locatorBuilders.js", "record-api.js", "record.js", "commands-api.js", "targetSelecter.js"],
+            "js": ["atoms.js", "utils.js", "storage.js", "selenium-browserbot.js", "escape.js", "selenium-api.js", "locatorBuilders.js", "record-api.js", "record.js", "commands-api.js", "targetSelecter.js"],
             "match_about_blank": true,
             "all_frames": true
         },
@@ -49,5 +50,9 @@
         "default_title": "SideeX"
     },
 
-    "web_accessible_resources": ["prompt.js"]
+    "web_accessible_resources": ["prompt.js"],
+    "options_ui": 
+    {
+        "page": "options.html"	
+    }
 }
