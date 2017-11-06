@@ -1,25 +1,16 @@
 var triggerKeyEvent = function(element, eventType, keySequence, canBubble, controlKeyDown, altKeyDown, shiftKeyDown, metaKeyDown) {
-    var keycode = keySequence[0].code;
-    canBubble = (typeof(canBubble) == undefined) ? true : canBubble;
-    if (element.fireEvent && element.ownerDocument && element.ownerDocument.createEventObject) { // IE
-        var keyEvent = createEventObject(element, controlKeyDown, altKeyDown, shiftKeyDown, metaKeyDown);
-        keyEvent.keyCode = keycode;
-        element.fireEvent('on' + eventType, keyEvent);
-    } else {
-        var evt;
-        evt = document.createEvent('Event');
-        evt.initEvent(eventType, true, true);
-        evt.view = window;
-        evt.altKey = altKeyDown;
-        evt.ctrlKey = controlKeyDown;
-        evt.shiftKey = shiftKeyDown;
-        evt.metaKey = metaKeyDown;
-        evt.keyCode = keycode;
-        evt.bubbles = true;
-        
-        element.dispatchEvent(evt);
-    }
-
+    var keycode = keySequence.code;
+    var evt;
+    evt = document.createEvent('Event');
+    evt.initEvent(eventType, true, true);
+    evt.view = window;
+    evt.altKey = altKeyDown;
+    evt.ctrlKey = controlKeyDown;
+    evt.shiftKey = shiftKeyDown;
+    evt.metaKey = metaKeyDown;
+    evt.keyCode = keycode;
+    evt.bubbles = true;
+    element.dispatchEvent(evt);
 };
 
 var findElement = function(locator){
