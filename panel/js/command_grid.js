@@ -200,7 +200,7 @@ function attachEvent(start, end) {
             // notice that "textNode" also is a node
             document.getElementById("command-command").value = getCommandName(ref);
             scrape(document.getElementById("command-command").value);
-            document.getElementById("command-target").value = getCommandTarget(ref);
+            document.getElementById("command-target").value = getCommandTarget(ref, true);
             document.getElementById("target-dropdown").innerHTML = escapeHTML(ref.getElementsByTagName("td")[1].getElementsByTagName("datalist")[0].innerHTML);
             document.getElementById("command-target-list").innerHTML = escapeHTML(ref.getElementsByTagName("td")[1].getElementsByTagName("datalist")[0].innerHTML);
             document.getElementById("command-value").value = getCommandValue(ref);
@@ -222,7 +222,7 @@ function attachEvent(start, end) {
             // notice that "textNode" also is a node
             document.getElementById("command-command").value = getCommandName(ref);
             scrape(document.getElementById("command-command").value);
-            document.getElementById("command-target").value = getCommandTarget(ref);
+            document.getElementById("command-target").value = getCommandTarget(ref, true);
             document.getElementById("command-target-list").innerHTML = escapeHTML(ref.getElementsByTagName("td")[1].getElementsByTagName("datalist")[0].innerHTML);
             document.getElementById("command-value").value = getCommandValue(ref);
         }, false);
@@ -394,11 +394,15 @@ function addCommand(command_name, command_target_array, command_value, auto, ins
             tooLongStr = command_name;
         } else if (k == 1) {
             tooLongStr = command_target_array[0][0];
+            if (tooLongStr.startsWith("tac=")) {
+                var cutPoint = tooLongStr.indexOf("::[tac]::");
+                tooLongStr = tooLongStr.substring(0, cutPoint);
+            }
         } else {
             tooLongStr = command_value;
         }
-        var adjust = adjustTooLongStr(tooLongStr, getTdShowValueNode(new_record, k));
-        getTdShowValueNode(new_record, k).appendChild(document.createTextNode(adjust));
+        //var adjust = adjustTooLongStr(tooLongStr, getTdShowValueNode(new_record, k));
+        getTdShowValueNode(new_record, k).appendChild(document.createTextNode(tooLongStr));
     }
 
     // store command grid to testCase

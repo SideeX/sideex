@@ -1620,7 +1620,7 @@ BrowserBot.prototype.findElement = function(locator, win) {
     if (element == null) {
         if (locator.startsWith("tac=")) {
             var cutPoint = locator.indexOf("::[tac]::");
-            var trimLocator = locator.substring(0, cutPoint) + "::[tac]::...";
+            var trimLocator = locator.substring(0, cutPoint);
             throw new SeleniumError("Element " + trimLocator + " not found");
         } else throw new SeleniumError("Element " + locator + " not found");
     }
@@ -1884,9 +1884,9 @@ BrowserBot.prototype.locateElementByTac = function(locator, inDocument, inWindow
         tacMethod.fixOldXpath();
     }
 
-    var newXpath = tacMethod.locate();
+    var xpath = tacMethod.locate();
 
-    if (tacMethod.getMaxTacSimilarity() >= tacMethod.getThreshold()) {
+    if (xpath != null) {
         var newElement = this.xpathEvaluator.selectSingleNode(inDocument, newXpath, null,
                         inDocument.createNSResolver
                             ? inDocument.createNSResolver(inDocument.documentElement)

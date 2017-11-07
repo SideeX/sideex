@@ -27,11 +27,10 @@ $("#command-command").on("input", function(event) {
 
         var command_command = event.target.value;
         div = getTdShowValueNode(document.getElementById(temp), 0);
-        var command_command_adjust = adjustTooLongStr(command_command, div);
         if (div.childNodes && div.childNodes[0]) {
             div.removeChild(div.childNodes[0]);
         }
-        div.appendChild(document.createTextNode(command_command_adjust));
+        div.appendChild(document.createTextNode(command_command));
 
         // store command grid to testCase
         var s_case = getSelectedCase();
@@ -47,25 +46,23 @@ $("#command-target").on("input", function(event) {
     if (temp) {
         var div = getTdRealValueNode(document.getElementById(temp), 1);
         // set innerHTML = ""
-        if (div.childNodes && div.childNodes[0]) {
-            div.removeChild(div.childNodes[0]);
-        }
-        div.appendChild(document.createTextNode(event.target.value));
+        if (!(div.childNodes[0].textContent.startsWith("tac=") && event.target.value.startsWith("tac="))) {
+            if (div.childNodes && div.childNodes[0]) {
+                div.removeChild(div.childNodes[0]);
+            }
+            div.appendChild(document.createTextNode(event.target.value));
 
-        var command_target = event.target.value;
-        div = getTdShowValueNode(document.getElementById(temp), 1);
-        var command_target_adjust = "";
-        if (command_target.startsWith("tac=")) {
-            var cutPoint = command_target.indexOf("::[tac]::");
-            var new_command_target = command_target.substring(0, cutPoint) + "::[tac]::...";
-            command_target_adjust = adjustTooLongStr(new_command_target, div);
-        } else {
-            command_target_adjust = adjustTooLongStr(command_target, div);
+            var command_target = event.target.value;
+            div = getTdShowValueNode(document.getElementById(temp), 1);
+            if (command_target.startsWith("tac=")) {
+                var cutPoint = command_target.indexOf("::[tac]::");
+                command_target = command_target.substring(0, cutPoint);
+            }
+            if (div.childNodes && div.childNodes[0]) {
+                div.removeChild(div.childNodes[0]);
+            }
+            div.appendChild(document.createTextNode(command_target));
         }
-        if (div.childNodes && div.childNodes[0]) {
-            div.removeChild(div.childNodes[0]);
-        }
-        div.appendChild(document.createTextNode(command_target_adjust));
 
         // store command grid to testCase
         var s_case = getSelectedCase();
@@ -88,11 +85,10 @@ $("#command-value").on("input", function(event) {
 
         var command_value = event.target.value;
         div = getTdShowValueNode(document.getElementById(temp), 2);
-        var command_value_adjust = adjustTooLongStr(command_value, div);
         if (div.childNodes && div.childNodes[0]) {
             div.removeChild(div.childNodes[0]);
         }
-        div.appendChild(document.createTextNode(command_value_adjust));
+        div.appendChild(document.createTextNode(command_value));
 
         // store command grid to testCase
         var s_case = getSelectedCase();

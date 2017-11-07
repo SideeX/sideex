@@ -17,6 +17,32 @@
 
 $(document).ready(function() {
 
+    var userid = browser.runtime.id;
+    var tac = false;
+
+    /**
+     * Only used to count the TAC locator usages.
+     */
+    browser.storage.sync.get("tac")
+        .then((res) => {
+            if (res.tac) {
+                tac = res.tac;
+                if (tac) {
+                    $.ajax({
+                        url: 'http://log.sideex.org/usage/tacUsageCount.php',
+                        type: 'POST',
+                        data: {
+                            userid: userid
+                        }
+                    });
+                }
+            } else {
+                browser.storage.sync.set({
+                    tac: tac
+                });
+            }
+        });
+
     $(".tablesorter").tablesorter();
 
     $("#help").click(function() {

@@ -381,9 +381,7 @@ function executeCommand(index) {
     var commandValue = getCommandValue(commands[id]);
 
     if (commandTarget.startsWith("tac=")) {
-        var cutPoint = commandTarget.indexOf("::[tac]::");
-        var newCommandTarget = commandTarget.substring(0, cutPoint) + "::[tac]::...";
-        sideex_log.info("Executing: | " + commandName + " | " + newCommandTarget + " | " + commandValue + " |");
+        sideex_log.info("Executing: | " + commandName + " | " + getCommandTarget(commands[id], true) + " | " + commandValue + " |");
     } else {
         sideex_log.info("Executing: | " + commandName + " | " + commandTarget + " | " + commandValue + " |");
     }	
@@ -508,9 +506,7 @@ function executionLoop() {
     return delay($('#slider').slider("option", "value")).then(function () {
         if (isExtCommand(commandName)) {
             if (commandTarget.startsWith("tac=")) {
-                var cutPoint = commandTarget.indexOf("::[tac]::");
-                var newCommandTarget = commandTarget.substring(0, cutPoint) + "::[tac]::...";
-                sideex_log.info("Executing: | " + commandName + " | " + newCommandTarget + " | " + commandValue + " |");
+                sideex_log.info("Executing: | " + commandName + " | " + getCommandTarget(commands[currentPlayingCommandIndex], true) + " | " + commandValue + " |");
             } else {
                 sideex_log.info("Executing: | " + commandName + " | " + commandTarget + " | " + commandValue + " |");
             }
@@ -752,9 +748,7 @@ function doCommand() {
 
     if (implicitCount == 0) {
         if (commandTarget.startsWith("tac=")) {
-            var cutPoint = commandTarget.indexOf("::[tac]::");
-            var newCommandTarget = commandTarget.substring(0, cutPoint) + "::[tac]::...";
-            sideex_log.info("Executing: | " + commandName + " | " + newCommandTarget + " | " + commandValue + " |");
+            sideex_log.info("Executing: | " + commandName + " | " + getCommandTarget(commands[currentPlayingCommandIndex], true) + " | " + commandValue + " |");
         } else {
             sideex_log.info("Executing: | " + commandName + " | " + commandTarget + " | " + commandValue + " |");
         }

@@ -48,7 +48,7 @@ $(document).ready(function() {
             ui.item.addClass('selectedRecord');
             // do not forget that textNode is also a node 
             document.getElementById("command-command").value = getCommandName(ui.item[0]);
-            document.getElementById("command-target").value = getCommandTarget(ui.item[0]);
+            document.getElementById("command-target").value = getCommandTarget(ui.item[0], true);
             document.getElementById("command-value").value = getCommandValue(ui.item[0]);
 
             // store command grid to testCase 
