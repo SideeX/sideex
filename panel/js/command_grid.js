@@ -30,23 +30,23 @@ function getTdShowValueNode(node, index) {
 
 function getCommandName(tr, for_show) {
     if (for_show) {
-        return unescapeHtml(getTdShowValueNode(tr, 0).innerHTML);
+        return getTdShowValueNode(tr, 0).textContent;
     }
-    return unescapeHtml(getTdRealValueNode(tr, 0).innerHTML);
+    return getTdRealValueNode(tr, 0).textContent;
 }
 
 function getCommandTarget(tr, for_show) {
     if (for_show) {
-        return unescapeHtml(getTdShowValueNode(tr, 1).innerHTML);
+        return getTdShowValueNode(tr, 1).textContent;
     }
-    return unescapeHtml(getTdRealValueNode(tr, 1).innerHTML);
+    return getTdRealValueNode(tr, 1).textContent;
 }
 
 function getCommandValue(tr, for_show) {
     if (for_show) {
-        return unescapeHtml(getTdShowValueNode(tr, 2).innerHTML);
+        return getTdShowValueNode(tr, 2).textContent;
     }
-    return unescapeHtml(getTdRealValueNode(tr, 2).innerHTML);
+    return getTdRealValueNode(tr, 2).textContent;
 }
 
 function getRecordsNum() {
@@ -205,8 +205,8 @@ function attachEvent(start, end) {
             if (targetList.options[0].text.startsWith("tac=")) {
                 targetList.options[0].text = "auto-located-by-tac";
             }
-            document.getElementById("target-dropdown").innerHTML = escapeHTML(targetList.innerHTML);
-            document.getElementById("command-target-list").innerHTML = escapeHTML(ref.getElementsByTagName("td")[1].getElementsByTagName("datalist")[0].innerHTML);
+            assignChildNodes(document.getElementById("target-dropdown"), targetList, true);
+            assignChildNodes(document.getElementById("command-target-list"), ref.getElementsByTagName("td")[1].getElementsByTagName("datalist")[0], true);
             document.getElementById("command-value").value = getCommandValue(ref);
         }, false);
 
@@ -227,7 +227,12 @@ function attachEvent(start, end) {
             document.getElementById("command-command").value = getCommandName(ref);
             scrape(document.getElementById("command-command").value);
             document.getElementById("command-target").value = getCommandTarget(ref, true);
-            document.getElementById("command-target-list").innerHTML = escapeHTML(ref.getElementsByTagName("td")[1].getElementsByTagName("datalist")[0].innerHTML);
+            var targetList = ref.getElementsByTagName("td")[1].getElementsByTagName("datalist")[0].cloneNode(true);
+            if (targetList.options[0].text.startsWith("tac=")) {
+                targetList.options[0].text = "auto-located-by-tac";
+            }
+            assignChildNodes(document.getElementById("target-dropdown"), targetList, true);
+            assignChildNodes(document.getElementById("command-target-list"), ref.getElementsByTagName("td")[1].getElementsByTagName("datalist")[0], true);
             document.getElementById("command-value").value = getCommandValue(ref);
         }, false);
     }
@@ -309,7 +314,6 @@ function addCommand(command_name, command_target_array, command_value, auto, ins
     var new_record = document.createElement("tr");
     new_record.setAttribute("class", "");
     new_record.setAttribute("style", "");
-    new_record.appendChild(document.createTextNode("\n    "));
 
     // create td node
     for (var i = 0; i < 3; ++i) {
@@ -321,14 +325,11 @@ function addCommand(command_name, command_target_array, command_value, auto, ins
         new_record.appendChild(td);
         if (i == 0) {
             div_hidden.appendChild(document.createTextNode(command_name));
-            new_record.appendChild(document.createTextNode("\n    "));
         } else if (i == 1) {
             // use textNode to avoid tac's tag problem (textNode's content will be pure text, does not be parsed as html)
             div_hidden.appendChild(document.createTextNode(command_target_array[0][0]));
-            new_record.appendChild(document.createTextNode("\n    "));
         } else {
             div_hidden.appendChild(document.createTextNode(command_value));
-            new_record.appendChild(document.createTextNode("\n"));
         }
         td.appendChild(div_hidden);
         td.appendChild(div_show);
