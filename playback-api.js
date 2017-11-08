@@ -134,8 +134,8 @@ window.onload = function() {
         }
     })
     playButton.addEventListener("click", function() {
-        document.getElementById("result-runs").innerHTML = "0";
-        document.getElementById("result-failures").innerHTML = "0";
+        document.getElementById("result-runs").textContent = "0";
+        document.getElementById("result-failures").textContent = "0";
         recorder.detach();
         initAllSuite();
         setCaseScrollTop(getSelectedCase());
@@ -147,15 +147,15 @@ window.onload = function() {
     pauseButton.addEventListener("click", pause);
     resumeButton.addEventListener("click", resume);
     playSuiteButton.addEventListener("click", function() {
-        document.getElementById("result-runs").innerHTML = "0";
-        document.getElementById("result-failures").innerHTML = "0";
+        document.getElementById("result-runs").textContent = "0";
+        document.getElementById("result-failures").textContent = "0";
         recorder.detach();
         initAllSuite();
         playSuite(0);
     });
     playSuitesButton.addEventListener("click", function() {
-        document.getElementById("result-runs").innerHTML = "0";
-        document.getElementById("result-failures").innerHTML = "0";
+        document.getElementById("result-runs").textContent = "0";
+        document.getElementById("result-failures").textContent = "0";
         recorder.detach();
         initAllSuite();
         playSuites(0);
@@ -256,8 +256,8 @@ function stop() {
     switchPS();
     sideex_log.info("Stop executing");
     initAllSuite();
-    document.getElementById("result-runs").innerHTML = "0";
-    document.getElementById("result-failures").innerHTML = "0";
+    document.getElementById("result-runs").textContent = "0";
+    document.getElementById("result-failures").textContent = "0";
     finalizePlayingProgress();
 }
 
@@ -464,7 +464,7 @@ function executionLoop() {
     if (currentPlayingCommandIndex + 1 >= commands.length) {
         if (!caseFailed) {
              setColor(currentTestCaseId, "success");
-            document.getElementById("result-runs").innerHTML = parseInt(document.getElementById("result-runs").innerHTML) + 1;
+            document.getElementById("result-runs").textContent = parseInt(document.getElementById("result-runs").textContent) + 1;
             declaredVars = {};
             sideex_log.info("Test case passed");
         } else {
@@ -614,7 +614,7 @@ function catchPlayingError(reason) {
             setColor(currentPlayingCommandIndex + 1, "fail");
         }
         setColor(currentTestCaseId, "fail");
-        document.getElementById("result-failures").innerHTML = parseInt(document.getElementById("result-failures").innerHTML) + 1;
+        document.getElementById("result-failures").textContent = parseInt(document.getElementById("result-failures").textContent) + 1;
         sideex_log.info("Test case failed");
 
         /* Clear the flag, reset to recording phase */
@@ -822,7 +822,7 @@ function doCommand() {
                 sideex_log.error(result.result);
                 setColor(currentPlayingCommandIndex + 1, "fail");
                 setColor(currentTestCaseId, "fail");
-                document.getElementById("result-failures").innerHTML = parseInt(document.getElementById("result-failures").innerHTML) + 1;
+                document.getElementById("result-failures").textContent = parseInt(document.getElementById("result-failures").textContent) + 1;
                 if (commandName.includes("verify") && result.result.includes("did not match")) {
                     setColor(currentPlayingCommandIndex + 1, "fail");
                 } else {
