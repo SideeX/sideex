@@ -1619,7 +1619,9 @@ BrowserBot.prototype.findElement = function(locator, win) {
     var element = this.findElementOrNull(locator, win);
     if (element == null) {
         if (locator.startsWith("tac=")) {
-            throw new SeleniumError("Element not found");
+            throw new SeleniumError("Element located by TAC not found");
+        } else if (locator == "auto-located-by-tac") {
+            throw new SeleniumError("The value \"auto-located-by-tac\" only can be automatically generated when recording a command");
         } else throw new SeleniumError("Element " + locator + " not found");
     }
     return core.firefox.unwrap(element);
