@@ -1619,9 +1619,7 @@ BrowserBot.prototype.findElement = function(locator, win) {
     var element = this.findElementOrNull(locator, win);
     if (element == null) {
         if (locator.startsWith("tac=")) {
-            var cutPoint = locator.indexOf("::[tac]::");
-            var trimLocator = locator.substring(0, cutPoint);
-            throw new SeleniumError("Element " + trimLocator + " not found");
+            throw new SeleniumError("Element not found");
         } else throw new SeleniumError("Element " + locator + " not found");
     }
     return core.firefox.unwrap(element);
@@ -1887,7 +1885,7 @@ BrowserBot.prototype.locateElementByTac = function(locator, inDocument, inWindow
     var xpath = tacMethod.locate();
 
     if (xpath != null) {
-        var newElement = this.xpathEvaluator.selectSingleNode(inDocument, newXpath, null,
+        var newElement = this.xpathEvaluator.selectSingleNode(inDocument, xpath, null,
                         inDocument.createNSResolver
                             ? inDocument.createNSResolver(inDocument.documentElement)
                             : this._namespaceResolver);

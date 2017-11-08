@@ -117,10 +117,15 @@ function notification(command, target, value) {
         "type": "basic",
         "iconUrl": "/icons/icons-48.png",
         "title": "Command Recorded",
-        "message": "command: " + String(command) + "\ntarget: " + String(target[0][0]) + "\nvalue: " + String(value) 
+        "message": "command: " + String(command) + "\ntarget: " + tacPreprocess(String(target[0][0])) + "\nvalue: " + String(value) 
     });
 
     setTimeout(function() {
         browser.notifications.clear(tempCount);
     }, 1500);
+}
+
+function tacPreprocess(target) {
+    if (target.startsWith("tac=")) return "auto-located-by-tac";
+    return target;
 }

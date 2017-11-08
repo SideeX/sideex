@@ -46,17 +46,21 @@ $("#command-target").on("input", function(event) {
     if (temp) {
         var div = getTdRealValueNode(document.getElementById(temp), 1);
         // set innerHTML = ""
-        if (!(div.childNodes[0].textContent.startsWith("tac=") && event.target.value.startsWith("tac="))) {
+        if (!(div.childNodes[0].textContent.startsWith("tac=") && event.target.value.includes("tac"))) {
+            var real_command_target = event.target.value;
+            if (real_command_target == "auto-located-by-tac") {
+                var real_tac = document.getElementById(temp).getElementsByTagName("td")[1].getElementsByTagName("datalist")[0].options[0].text;
+                real_command_target = real_tac;
+            }
             if (div.childNodes && div.childNodes[0]) {
                 div.removeChild(div.childNodes[0]);
             }
-            div.appendChild(document.createTextNode(event.target.value));
+            div.appendChild(document.createTextNode(real_command_target));
 
             var command_target = event.target.value;
-            div = getTdShowValueNode(document.getElementById(temp), 1);
-            if (command_target.startsWith("tac=")) {
-                var cutPoint = command_target.indexOf("::[tac]::");
-                command_target = command_target.substring(0, cutPoint);
+            div = getTdShowValueNode(document.getElementById(temp), 1); 
+            if (command_target.includes("tac")) {
+                command_target = "auto-located-by-tac";
             }
             if (div.childNodes && div.childNodes[0]) {
                 div.removeChild(div.childNodes[0]);
