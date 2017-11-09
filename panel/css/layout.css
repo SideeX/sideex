@@ -835,10 +835,26 @@ i.case-plus {
 }
 i.suite-plus {
     padding-top: 5px;
-    margin: 5px 43%;
+    margin: 5px 40%;
     color: rgb(228, 228, 228);
 }
+i.suite-open {
+    padding-top: 5px;
+    margin: 5px 40%;
+    color: rgb(228, 228, 228);
+}
+div.suite-fun {
+    display: flex;
+    background-color: white;
+    border-radius: 5px;
+}
+div.suite-open {
+    flex: 1;
+    background-color: white;
+    border-radius: 5px;
+}
 div.suite-plus {
+    flex: 1;
     background-color: white;
     border-radius: 5px;
 }
@@ -857,6 +873,9 @@ div.message:hover {
     box-shadow: 0 4px 10px 0 rgba(0, 0, 0, 0.19);
 }
 div.suite-plus:hover {
+    box-shadow: 0 4px 10px 0 rgba(0, 0, 0, 0.19);
+}
+div.suite-open:hover {
     box-shadow: 0 4px 10px 0 rgba(0, 0, 0, 0.19);
 }
 .message .selectedCase {
