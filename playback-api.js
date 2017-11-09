@@ -195,6 +195,9 @@ window.onload = function() {
     showElementButton.addEventListener("click", function(){
         try{
             var targetValue = document.getElementById("command-target").value;
+            if (targetValue == "auto-located-by-tac") {
+                targetValue = document.getElementById("command-target-list").options[0].text;
+            }
             browser.tabs.query({
                 active: true,
                 windowId: contentWindowId

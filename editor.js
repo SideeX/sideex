@@ -36,6 +36,7 @@ function handleMessage(message, sender, sendResponse) {
         var target = message.target;
         // show first locator by default
         var locatorString = target[0][0];
+        if (locatorString.startsWith("tac=")) locatorString = "auto-located-by-tac";
 
         var locatorList = document.createElement("datalist");
         for (var m = 0; m < message.target.length; ++m) {
