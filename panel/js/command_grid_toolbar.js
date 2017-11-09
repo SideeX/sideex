@@ -349,10 +349,9 @@ document.addEventListener("keydown", function(event) {
             // and this should be careful
             event.preventDefault();
             event.stopPropagation();
-            
-            if(keyNum == 46) { 
-                return; 
-            } 
+        }
+        if(keyNum == 46) { 
+            return;
         }
     } else {
         // NOTE: lock the browser default shortcuts
