@@ -321,6 +321,12 @@ document.getElementById("grid-paste").addEventListener("click", function() {
     pasteCommand();
 }, false);
 
+document.getElementById("command-container").addEventListener("click", function(event) { 
+    document.getElementById("command-command").blur(); 
+    document.getElementById("command-target").blur(); 
+    document.getElementById("command-value").blur(); 
+});
+
 // Hot key setting
 document.addEventListener("keydown", function(event) {
     var keyNum;
@@ -343,6 +349,10 @@ document.addEventListener("keydown", function(event) {
             // and this should be careful
             event.preventDefault();
             event.stopPropagation();
+            
+            if(keyNum == 46) { 
+                return; 
+            } 
         }
     } else {
         // NOTE: lock the browser default shortcuts
