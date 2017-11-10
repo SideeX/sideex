@@ -205,8 +205,8 @@ function attachEvent(start, end) {
             if (targetList.options[0].text.startsWith("tac=")) {
                 targetList.options[0].text = "auto-located-by-tac";
             }
-            assignChildNodes(document.getElementById("target-dropdown"), targetList, true);
-            assignChildNodes(document.getElementById("command-target-list"), ref.getElementsByTagName("td")[1].getElementsByTagName("datalist")[0], true);
+            assignChildNodes(document.getElementById("target-dropdown"), targetList, false);
+            assignChildNodes(document.getElementById("command-target-list"), ref.getElementsByTagName("td")[1].getElementsByTagName("datalist")[0], true, true);
             document.getElementById("command-value").value = getCommandValue(ref);
         }, false);
 
@@ -231,8 +231,8 @@ function attachEvent(start, end) {
             if (targetList.options[0].text.startsWith("tac=")) {
                 targetList.options[0].text = "auto-located-by-tac";
             }
-            assignChildNodes(document.getElementById("target-dropdown"), targetList, true);
-            assignChildNodes(document.getElementById("command-target-list"), ref.getElementsByTagName("td")[1].getElementsByTagName("datalist")[0], true);
+            assignChildNodes(document.getElementById("target-dropdown"), targetList, false);
+            assignChildNodes(document.getElementById("command-target-list"), ref.getElementsByTagName("td")[1].getElementsByTagName("datalist")[0], true, true);
             document.getElementById("command-value").value = getCommandValue(ref);
         }, false);
     }

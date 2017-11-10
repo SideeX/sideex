@@ -26,25 +26,33 @@ function emptyNode(node) {
 }
 
 /**
- * Clone and append all child nodes from a node to another.
+ * Clone or cut child nodes of a node, and then append to another node.
  * @param {Node} dest - A node which child nodes should be appended to.
  * @param {Node} src - A node which is the source of child nodes.
- * @param {boolean} deep - Determine if descendants of child nodes should also be cloned.
+ * @param {boolean} clone - Determine if child nodes should be cloned instead of moved.
+ * @param {boolean} deep - If cloned, determine if descendants of child nodes should also be cloned.
  */
-function appendChildNodes(dest, src, deep) {
-    let children = src.childNodes;
-    for (let i = 0; i < children.length; i++) {
-        dest.appendChild(children[i].cloneNode(deep));
+function appendChildNodes(dest, src, clone, deep) {
+    if (clone) {
+        let children = src.childNodes;
+        for (let i = 0; i < children.length; i++) {
+            dest.appendChild(children[i].cloneNode(deep));
+        }
+    } else {
+        while(src.firstChild) {
+            dest.appendChild(src.firstChild);
+        }
     }
 }
 
 /**
- * Clear all child nodes of a node and clone child nodes from another node.
+ * Clear all child nodes of a node and clone or move child nodes from another node.
  * @param {Node} dest - A node which child nodes should be copied to.
  * @param {Node} src - A node which is the source of child nodes.
- * @param {boolean} deep - Determine if descendants of child nodes should also be cloned.
+ * @param {boolean} clone - Determine if child nodes should be cloned instead of moved.
+ * @param {boolean} deep - If cloned, determine if descendants of child nodes should also be cloned.
  */
-function assignChildNodes(dest, src, deep) {
+function assignChildNodes(dest, src, clone, deep) {
     emptyNode(dest);
-    appendChildNodes(dest, src, deep);
+    appendChildNodes(dest, src, clone, deep);
 }
