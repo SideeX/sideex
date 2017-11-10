@@ -26,7 +26,6 @@ function setSelectedSuite(id) {
     cleanSelected();
     $("#" + id).addClass('selectedSuite');
     clean_panel();
-    // document.getElementById("records-grid").innerHTML = "";
 }
 
 function setSelectedCase(id) {
@@ -82,7 +81,7 @@ function appendContextMenu(node, isCase) {
         var add_case = document.createElement("li");
         a = document.createElement("a");
         a.setAttribute("href", "#");
-        a.innerHTML = "Add New Test Case";
+        a.textContent = "Add New Test Case";
         add_case.appendChild(a);
         add_case.addEventListener("click", function(event) {
             event.stopPropagation();
@@ -93,7 +92,7 @@ function appendContextMenu(node, isCase) {
         var remove_case = document.createElement("li");
         a = document.createElement("a");
         a.setAttribute("href", "#");
-        a.innerHTML = "Remove Test Case";
+        a.textContent = "Remove Test Case";
         remove_case.appendChild(a);
         remove_case.addEventListener("click", function(event) {
             event.stopPropagation();
@@ -104,7 +103,7 @@ function appendContextMenu(node, isCase) {
         var rename_case = document.createElement("li");
         a = document.createElement("a");
         a.setAttribute("href", "#");
-        a.innerHTML = "Rename Test Case";
+        a.textContent = "Rename Test Case";
         rename_case.appendChild(a);
         rename_case.addEventListener("click", function(event) {
             event.stopPropagation();
@@ -119,7 +118,7 @@ function appendContextMenu(node, isCase) {
         var open_suite = document.createElement("li");
         a = document.createElement("a");
         a.setAttribute("href", "#");
-        a.innerHTML = "Open Test Suites";
+        a.textContent = "Open Test Suites";
         open_suite.appendChild(a);
         open_suite.addEventListener("click", function(event) {
             event.stopPropagation();
@@ -130,7 +129,7 @@ function appendContextMenu(node, isCase) {
         var add_suite = document.createElement("li");
         a = document.createElement("a");
         a.setAttribute("href", "#");
-        a.innerHTML = "Add New Test Suite";
+        a.textContent = "Add New Test Suite";
         add_suite.appendChild(a);
         add_suite.addEventListener("click", function(event) {
             event.stopPropagation();
@@ -141,7 +140,7 @@ function appendContextMenu(node, isCase) {
         var save_suite = document.createElement("li");
         a = document.createElement("a");
         a.setAttribute("href", "#");
-        a.innerHTML = "Save Test Suite As...";
+        a.textContent = "Save Test Suite As...";
         save_suite.appendChild(a);
         save_suite.addEventListener("click", function(event) {
             event.stopPropagation();
@@ -152,7 +151,7 @@ function appendContextMenu(node, isCase) {
         var close_suite = document.createElement("li");
         a = document.createElement("a");
         a.setAttribute("href", "#");
-        a.innerHTML = "Close Test Suite";
+        a.textContent = "Close Test Suite";
         close_suite.appendChild(a);
         close_suite.addEventListener("click", function(event) {
             event.stopPropagation();
@@ -163,7 +162,7 @@ function appendContextMenu(node, isCase) {
         var add_case = document.createElement("li");
         a = document.createElement("a");
         a.setAttribute("href", "#");
-        a.innerHTML = "Add New Test Case";
+        a.textContent = "Add New Test Case";
         add_case.appendChild(a);
         add_case.addEventListener("click", function(event) {
             event.stopPropagation();
@@ -174,7 +173,7 @@ function appendContextMenu(node, isCase) {
         var rename_suite = document.createElement("li");
         a = document.createElement("a");
         a.setAttribute("href", "#");
-        a.innerHTML = "Rename Test Suite";
+        a.textContent = "Rename Test Suite";
         rename_suite.appendChild(a);
         rename_suite.addEventListener("click", function(event) {
             event.stopPropagation();
@@ -205,7 +204,7 @@ function addTestCase(title, id) {
     }
 
     var p = document.createElement("p");
-    p.innerHTML = escapeHTML(title);
+    p.textContent = title;
     p.setAttribute("id", id);
     p.setAttribute("contextmenu", "menu" + id);
 
@@ -287,7 +286,7 @@ function addTestCase(title, id) {
 
 function addTestSuite(title, id) {
     var text = document.createElement("strong");
-    text.innerHTML = escapeHTML(title);
+    text.textContent = title;
     var div = document.createElement("div");
     div.setAttribute("id", id);
     div.setAttribute("contextmenu", "menu" + id);
@@ -313,7 +312,6 @@ function addTestSuite(title, id) {
             cleanSelected();
             this.classList.add("selectedSuite");
             clean_panel();
-            // document.getElementById("records-grid").innerHTML = "";
         }
     }, false);
 
@@ -430,7 +428,6 @@ document.getElementById("close-testSuite").addEventListener('click', function(ev
                 disableButton("playSuites");
             }    
         }
-        // document.getElementById("records-grid").innerHTML = "";
     }
 }, false);
 
@@ -472,6 +469,5 @@ document.getElementById("delete-testCase").addEventListener('click', function() 
                 disableButton("playback");
             }
         }
-        // document.getElementById("records-grid").innerHTML = "";
     }
 }, false);

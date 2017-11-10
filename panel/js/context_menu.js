@@ -42,7 +42,7 @@ $(document).on("contextmenu", function(event) {
             exe.setAttribute("id", "tempChild");
             a = document.createElement("a");
             a.setAttribute("href", "#");
-            a.innerHTML = "Execute This Command";
+            a.textContent = "Execute This Command";
             exe.appendChild(a);
             var index = temp.id.split("-")[1];
             exe.addEventListener("click", function(event) {

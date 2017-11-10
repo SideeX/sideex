@@ -30,8 +30,5 @@ var sideex_log = new Log(document.getElementById("logcontainer"));
 var help_log = new Log(document.getElementById("refercontainer"));
 
 document.getElementById("clear-log").addEventListener("click", function() {
-    var container = document.getElementById("logcontainer");
-    while (container.firstChild) {
-        container.removeChild(container.firstChild);
-    }
+    emptyNode(document.getElementById("logcontainer"));
 }, false);

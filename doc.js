@@ -53,7 +53,7 @@ function scrape(word){
             
 
     wordPosition=searchCommand(word,commandTd);
-        document.getElementById("refercontainer").innerHTML = "";
+        emptyNode(document.getElementById("refercontainer"));
        
         if(wordPosition!=-1){
             if(targetTd[wordPosition]=="X")
