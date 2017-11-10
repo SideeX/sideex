@@ -161,7 +161,17 @@ class BackgroundRecorder {
         if (this.openedTabIds[testCaseId][details.sourceTabId] != undefined) {
             this.openedTabNames[testCaseId]["win_ser_" + this.openedTabCount[testCaseId]] = details.tabId;
             this.openedTabIds[testCaseId][details.tabId] = "win_ser_" + this.openedTabCount[testCaseId];
-            this.setOpenedWindow(details.windowId);
+            if (details.windowId != undefined) {
+                this.setOpenedWindow(details.windowId);
+            } else {
+                // Google Chrome does not support windowId.
+                // Retrieve windowId from tab information.
+                let self = this;
+                browser.tabs.get(details.tabId)
+                .then(function(tabInfo) {
+                    self.setOpenedWindow(tabInfo.windowId);
+                });
+            }
             this.openedTabCount[testCaseId]++;
         }
     };
