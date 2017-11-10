@@ -397,7 +397,7 @@ function addCommand(command_name, command_target_array, command_value, auto, ins
         if (k == 0) {
             tooLongStr = command_name;
         } else if (k == 1) {
-            tooLongStr = command_target_array[0][0];
+            tooLongStr = command_target_array[0][0].toString();
             if (tooLongStr.startsWith("tac=")) {
                 tooLongStr = "auto-located-by-tac";
             }
