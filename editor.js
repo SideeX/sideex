@@ -36,6 +36,7 @@ function handleMessage(message, sender, sendResponse) {
         var target = message.target;
         // show first locator by default
         var locatorString = target[0][0];
+        if (locatorString.startsWith("tac=")) locatorString = "auto-located-by-tac";
 
         var locatorList = document.createElement("datalist");
         for (var m = 0; m < message.target.length; ++m) {
@@ -117,10 +118,15 @@ function notification(command, target, value) {
         "type": "basic",
         "iconUrl": "/icons/icons-48.png",
         "title": "Command Recorded",
-        "message": "command: " + String(command) + "\ntarget: " + String(target[0][0]) + "\nvalue: " + String(value) 
+        "message": "command: " + String(command) + "\ntarget: " + tacPreprocess(String(target[0][0])) + "\nvalue: " + String(value) 
     });
 
     setTimeout(function() {
         browser.notifications.clear(tempCount);
     }, 1500);
+}
+
+function tacPreprocess(target) {
+    if (target.startsWith("tac=")) return "auto-located-by-tac";
+    return target;
 }

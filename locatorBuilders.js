@@ -16,6 +16,7 @@
 
 function LocatorBuilders(window) {
     this.window = window;
+    updateInitialStatus();
     //this.log = new Log("LocatorBuilders");
 }
 
