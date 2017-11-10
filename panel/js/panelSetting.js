@@ -118,9 +118,9 @@ $(document).ready(function() {
 
     $("#slider").slider({
         min: 0,
-        max: 10000,
+        max: 3000,
         value: 0,
-        step: 2000
+        step: 600
     }).slider("pips", {
         rest: "label", labels: ["Fast", "", "", "", "", "Slow"]
     });

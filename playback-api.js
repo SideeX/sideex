@@ -806,8 +806,8 @@ function doCommand() {
             if (result.result != "success") {
                 // implicit
                 if (result.result.match(/Element[\s\S]*?not found/)) {
-                    if (implicitTime && (Date.now() - implicitTime > 30000)) {
-                        sideex_log.error("Implicit Wait timed out after 30000ms");
+                    if (implicitTime && (Date.now() - implicitTime > 10000)) {
+                        sideex_log.error("Implicit Wait timed out after 10000ms");
                         implicitCount = 0;
                         implicitTime = "";
                     } else {
