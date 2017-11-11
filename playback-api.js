@@ -49,6 +49,7 @@ window.onload = function() {
     var showElementButton = document.getElementById("showElementButton")
     var selectElementButton = document.getElementById("selectElementButton");
     var suitePlus = document.getElementById("suite-plus");
+    var suiteOpen = document.getElementById("suite-open");
     /*var recordButton = document.getElementById("record");*/
     //element.addEventListener("click",play);
     //Tim
@@ -63,8 +64,10 @@ window.onload = function() {
         scrape(document.getElementById("command-command").value);
     });
    
-    suitePlus.addEventListener("mouseover", mouseOnAndOutSuitePlus);
-    suitePlus.addEventListener("mouseout", mouseOnAndOutSuitePlus);
+    suitePlus.addEventListener("mouseover", mouseOnSuiteTitleIcon);
+    suitePlus.addEventListener("mouseout", mouseOutSuiteTitleIcon);
+    suiteOpen.addEventListener("mouseover", mouseOnSuiteTitleIcon);
+    suiteOpen.addEventListener("mouseout", mouseOutSuiteTitleIcon);
     
     var logLi=document.getElementById("history-log");
     var referenceLi=document.getElementById("reference-log");

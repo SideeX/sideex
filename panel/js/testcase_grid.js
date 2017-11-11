@@ -330,8 +330,7 @@ function addTestSuite(title, id) {
     if (s_suite) {
         s_suite.parentNode.insertBefore(div, s_suite.nextSibling);
     } else {
-        // document.getElementById("testCase-grid").appendChild(div);
-        document.getElementById("testCase-grid").insertBefore(div, document.getElementById("suite-plus"));
+        document.getElementById("testCase-grid").appendChild(div);
     }
 
     cleanSelected();
@@ -509,7 +508,6 @@ document.getElementById("delete-testCase").addEventListener('click', function() 
 function clickCasePlusIcon(event) {
     event.stopPropagation();
     event.target.parentNode.parentNode.click();
-    console.log("parent: ", event.target.parentNode);
     document.getElementById('add-testCase').click();
 }
 
@@ -523,4 +521,9 @@ function clickSuitePlusIcon(event) {
     document.getElementById("add-testSuite").click();
 }
 
+function clickSuiteOpenIcon(event) {
+    document.getElementById("load-testSuite-hidden").click();
+}
+
 document.getElementById("suite-plus").addEventListener("click", clickSuitePlusIcon);
+document.getElementById("suite-open").addEventListener("click", clickSuiteOpenIcon);
