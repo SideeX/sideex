@@ -491,7 +491,6 @@ section#main {
 .module_right {}
 
 #main .module header h3 {
-    display: block;
     width: 90%;
     float: left;
 }
@@ -813,8 +812,8 @@ ul.tabs li:hover a {
 
 div.test-suite-title {
     display: flex;
-    border-bottom: solid 1px;
-    background-color: #D0D1D4;
+    border-bottom: solid 1px rgb(167, 167, 167);
+    background-color: rgb(223, 223, 223);
 }
 strong.test-suite-title {
     flex: 9;
@@ -827,41 +826,47 @@ i.fa-download {
     flex: 1;
     margin-top: 5px;
     margin-left: 5px;
-    color: #D0D1D4;
+    color: rgb(223, 223, 223);
 }
 i.case-plus {
     flex: 1;
     margin-top: 5px;
-    color: #D0D1D4;
+    color: rgb(223, 223, 223);
 }
 i.suite-plus {
-    padding-top: 5px;
-    margin: 5px 40%;
-    color: rgb(228, 228, 228);
+    font-size: 18px;
+    margin-top: 0px;
+    color: rgb(167, 167, 167);
 }
 i.suite-open {
-    padding-top: 5px;
-    margin: 5px 40%;
-    color: rgb(228, 228, 228);
+    font-size: 18px;
+    margin-top: 0px;
+    color: rgb(167, 167, 167);
+}
+h3.suite-container-title {
+    display: flex;
+}
+div.suite-container-title {
+    flex: 5;
 }
 div.suite-fun {
     display: flex;
-    background-color: white;
-    border-radius: 5px;
+    flex: 1;
+    margin-right: 10px;
 }
 div.suite-open {
     flex: 1;
-    background-color: white;
+    padding: 0px 3px;
     border-radius: 5px;
 }
 div.suite-plus {
     flex: 1;
-    background-color: white;
+    padding: 0px 3px;
     border-radius: 5px;
 }
 
 .message {
-    border: solid 1px;
+    border: solid 1px rgb(167, 167, 167);
     border-radius: 5px;
     width: inherit;
     cursor: pointer;
