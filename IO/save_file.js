@@ -171,27 +171,25 @@ document.getElementById('save-testSuite').addEventListener('click', function(eve
 }, false);
 
 function savelog(){
-    var now=new Date();
-    var date=now.getDate();
-    var month=now.getMonth()+1;
-    var year=now.getFullYear();
-    var seconds=now.getSeconds();
-    var minutes=now.getMinutes();
-    var hours=now.getHours();
-    f_name= year+'-'+month+'-'+date+' '+hours+'-'+minutes+'-'+seconds+'.log';    
-   
-    var logcontext="";
-    var logcontainer=document.getElementById('logcontainer');
-    for(var i=1;i<=logcontainer.children.length;i++){
-        logcontext=logcontext+logcontainer.childNodes[i].textContent+'\n';            
-      }
-    link=makeTextFile(logcontext);
+    var now = new Date();
+    var date = now.getDate();
+    var month = now.getMonth()+1;
+    var year = now.getFullYear();
+    var seconds = now.getSeconds();
+    var minutes = now.getMinutes();
+    var hours = now.getHours();
+    f_name = year + '-' + month + '-' + date + '-' + hours + '-' + minutes + '-' + seconds + '.log';
+    var logcontext = "";
+    var logcontainer = ocument.getElementById('logcontainer');
+    for(var i = 1;i <= ogcontainer.children.length; i++ ){
+        logcontext = logcontext+logcontainer.childNodes[i].textContent + '\n' ;
+    }
+    link = makeTextFile(logcontext);
 
     var downloading = browser.downloads.download({
         filename: f_name,
         url: link,
         saveAs: true,
         conflictAction: 'overwrite'
-    });    
-    
+    });
 }
