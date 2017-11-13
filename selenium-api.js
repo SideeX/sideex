@@ -399,6 +399,12 @@ Selenium.prototype.doVerifyTitle = function(value) {
     }
 };
 
+Selenium.prototype.doVerifyValue = function(locator, value) {
+    if (this.getValue(locator) !== value) {
+        throw new Error("Actual value '" + this.getValue(locator) + "' did not match '" + value + "'");
+    }
+};
+
 Selenium.prototype.doAssertText = function(locator, value) {
     var element = this.browserbot.findElement(locator);
     if (getText(element) !== value) {
@@ -409,6 +415,12 @@ Selenium.prototype.doAssertText = function(locator, value) {
 Selenium.prototype.doAssertTitle = function(value) {
     if (normalizeSpaces(this.getTitle()) !== value) {
         throw new Error("Actual value '" + normalizeSpaces(this.getTitle()) + "' did not match '" + value + "'");
+    }
+};
+
+Selenium.prototype.doAssertValue = function(locator, value) {
+    if (this.getValue(locator) !== value) {
+        throw new Error("Actual value '" + this.getValue(locator) + "' did not match '" + value + "'");
     }
 };
 
@@ -423,6 +435,10 @@ Selenium.prototype.doStoreText = function(locator, varName) {
 
 Selenium.prototype.doStoreTitle = function(value, varName) {
     browser.runtime.sendMessage({ "storeStr": value, "storeVar": varName });
+};
+
+Selenium.prototype.doStoreValue = function(locator, varName) {
+    browser.runtime.sendMessage({ "storeStr": this.getValue(locator), "storeVar": varName });
 };
 
 Selenium.prototype.doEcho = function(value) {

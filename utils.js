@@ -288,7 +288,7 @@ function getInputValue(inputElement) {
         }
     }
     if (inputElement.value == null) {
-        throw new SeleniumError("This element has no value; is it really a form field?");
+        //throw new SeleniumError("This element has no value; is it really a form field?");
     }
     return inputElement.value;
 }

@@ -271,6 +271,9 @@ class BackgroundRecorder {
                 }, 100);
             })
             return;
+        } else if(message.command.includes("Value") && typeof message.value === 'undefined') {
+            sideex_log.error("Error: this element doesn't have attribute 'value'");
+            return;
         }
 
         //handle choose ok/cancel confirm
