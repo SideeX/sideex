@@ -36,7 +36,7 @@ function handleMessage(message, sender, sendResponse) {
         var target = message.target;
         // show first locator by default
         var locatorString = target[0][0];
-        if (locatorString.startsWith("tac=")) locatorString = "auto-located-by-tac";
+        if (locatorString.includes("d-XPath")) locatorString = "auto-located-by-tac";
 
         // Update toolbar
         document.getElementById("command-target").value = locatorString;
@@ -134,6 +134,6 @@ function notification(command, target, value) {
 }
 
 function tacPreprocess(target) {
-    if (target.startsWith("tac=")) return "auto-located-by-tac";
+    if (target.includes("d-XPath")) return "auto-located-by-tac";
     return target;
 }

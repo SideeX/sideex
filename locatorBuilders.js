@@ -656,7 +656,7 @@ LocatorBuilders.add('tac', function(e) {
         } else {
             p = "/" + c.tagName.toLowerCase() + p;
             if (true) {
-                var tac = "tac=" + p + "::[tac]::" + dc;
+                var tac = p + "::[d-XPath]::" + dc;
                 return tac;
             }
         }

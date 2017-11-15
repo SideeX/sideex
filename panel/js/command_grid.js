@@ -202,7 +202,7 @@ function attachEvent(start, end) {
             scrape(document.getElementById("command-command").value);
             document.getElementById("command-target").value = getCommandTarget(ref, true);
             var targetList = ref.getElementsByTagName("td")[1].getElementsByTagName("datalist")[0].cloneNode(true);
-            if (targetList.options[0].text.startsWith("tac=")) {
+            if (targetList.options[0].text.includes("d-XPath")) {
                 targetList.options[0].text = "auto-located-by-tac";
             }
             assignChildNodes(document.getElementById("target-dropdown"), targetList, false);
@@ -228,7 +228,7 @@ function attachEvent(start, end) {
             scrape(document.getElementById("command-command").value);
             document.getElementById("command-target").value = getCommandTarget(ref, true);
             var targetList = ref.getElementsByTagName("td")[1].getElementsByTagName("datalist")[0].cloneNode(true);
-            if (targetList.options[0].text.startsWith("tac=")) {
+            if (targetList.options[0].text.includes("d-XPath")) {
                 targetList.options[0].text = "auto-located-by-tac";
             }
             assignChildNodes(document.getElementById("target-dropdown"), targetList, false);
@@ -399,7 +399,7 @@ function addCommand(command_name, command_target_array, command_value, auto, ins
             tooLongStr = command_name;
         } else if (k == 1) {
             tooLongStr = command_target_array[0][0].toString();
-            if (tooLongStr.startsWith("tac=")) {
+            if (tooLongStr.includes("d-XPath")) {
                 tooLongStr = "auto-located-by-tac";
             }
         } else {

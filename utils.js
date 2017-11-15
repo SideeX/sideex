@@ -1059,9 +1059,8 @@ function getAncestorOrSelfWithJavascriptHref(element) {
  * @param locator  the locator to parse
  */
 function parse_locator(locator) {
-    if (locator.startsWith("tac=")) {
-        var actualLocator = locator.substring(4);
-        return { type: 'tac', string: actualLocator };
+    if (locator.includes("d-XPath")) {
+        return { type: 'tac', string: locator };
     } else {
         var result = locator.match(/^([A-Za-z]+)=.+/);
         if (result) {

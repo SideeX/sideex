@@ -1618,7 +1618,7 @@ BrowserBot.prototype.findElementOrNull = function(locator, win) {
 BrowserBot.prototype.findElement = function(locator, win) {
     var element = this.findElementOrNull(locator, win);
     if (element == null) {
-        if (locator.startsWith("tac=")) {
+        if (locator.includes("d-XPath")) {
             throw new SeleniumError("Element located by TAC not found");
         } else if (locator == "auto-located-by-tac") {
             throw new SeleniumError("The value \"auto-located-by-tac\" only can be automatically generated when recording a command");
@@ -1848,7 +1848,7 @@ BrowserBot.prototype.locateElementByLinkText.prefix = "link";
 
 BrowserBot.prototype.locateElementByTac = function(locator, inDocument, inWindow){
 /*
-    var filters = locator.split('::[tac]::');
+    var filters = locator.split('::[d-XPath]::');
     var ox = filters[0];
     var od = filters[1];
 
@@ -1880,11 +1880,11 @@ BrowserBot.prototype.locateElementByTac = function(locator, inDocument, inWindow
 
     var tacMethod = new Tac(ox, od, nd);
 	
-    if (!tacMethod.testOldXpath()) {
-        tacMethod.fixOldXpath();
+    if (!tacMethod.tox()) {
+        tacMethod.fox();
     }
 
-    var xpath = tacMethod.locate();
+    var xpath = tacMethod.lct();
 
     if (xpath != null) {
         var newElement = this.xpathEvaluator.selectSingleNode(inDocument, xpath, null,

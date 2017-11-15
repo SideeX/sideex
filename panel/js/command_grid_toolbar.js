@@ -46,7 +46,7 @@ $("#command-target").on("input", function(event) {
     if (temp) {
         var div = getTdRealValueNode(document.getElementById(temp), 1);
         // Check hidden value and target value
-        if (!(div.childNodes[0].textContent.startsWith("tac=") && event.target.value.includes("tac"))) {
+        if (!(div.childNodes[0].textContent.includes("d-XPath") && event.target.value.includes("tac"))) {
             var real_command_target = event.target.value;
             if (real_command_target == "auto-located-by-tac") {
                 // Real tac value is hidden

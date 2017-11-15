@@ -387,7 +387,7 @@ function executeCommand(index) {
     var commandTarget = getCommandTarget(commands[id]);
     var commandValue = getCommandValue(commands[id]);
 
-    if (commandTarget.startsWith("tac=")) {
+    if (commandTarget.includes("d-XPath")) {
         sideex_log.info("Executing: | " + commandName + " | " + getCommandTarget(commands[id], true) + " | " + commandValue + " |");
     } else {
         sideex_log.info("Executing: | " + commandName + " | " + commandTarget + " | " + commandValue + " |");
@@ -512,7 +512,7 @@ function executionLoop() {
 
     return delay($('#slider').slider("option", "value")).then(function () {
         if (isExtCommand(commandName)) {
-            if (commandTarget.startsWith("tac=")) {
+            if (commandTarget.includes("d-XPath")) {
                 sideex_log.info("Executing: | " + commandName + " | " + getCommandTarget(commands[currentPlayingCommandIndex], true) + " | " + commandValue + " |");
             } else {
                 sideex_log.info("Executing: | " + commandName + " | " + commandTarget + " | " + commandValue + " |");
@@ -754,7 +754,7 @@ function doCommand() {
     //console.log("in common");
 
     if (implicitCount == 0) {
-        if (commandTarget.startsWith("tac=")) {
+        if (commandTarget.includes("d-XPath")) {
             sideex_log.info("Executing: | " + commandName + " | " + getCommandTarget(commands[currentPlayingCommandIndex], true) + " | " + commandValue + " |");
         } else {
             sideex_log.info("Executing: | " + commandName + " | " + commandTarget + " | " + commandValue + " |");
