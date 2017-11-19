@@ -70,10 +70,9 @@ function handleMessage(message, sender, sendResponse) {
 
             // Update target view, show first locator by default
             var node = getTdShowValueNode(selectedRecord, 1);
-            var adjustedString = adjustTooLongStr(locatorString, node);
             if (node.childNodes && node.childNodes[0])
                 node.removeChild(node.childNodes[0]);
-            node.appendChild(document.createTextNode(adjustedString));
+            node.appendChild(document.createTextNode(locatorString));
 
             // Update hidden actual locator value
             node = getTdRealValueNode(selectedRecord, 1);

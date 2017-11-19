@@ -274,28 +274,6 @@ function getSelectedRecords() {
     }
 }
 
-function getStringLengthInPx(str) {
-    var d = document.createElement("div");
-    d.appendChild(document.createTextNode(str));
-    d.style = "position:absolute;visibility:hidden;";
-    d.id = "d_getpx";
-    document.body.appendChild(d);
-    var px = document.getElementById("d_getpx").clientWidth;
-    document.body.removeChild(document.getElementById("d_getpx"));
-    return px;
-}
-
-function adjustTooLongStr(str, node) {
-    var l = str.length;
-    var strPx = getStringLengthInPx(str);
-    if (strPx > node.clientWidth - 12) {
-        // set how many chars should be displayed
-        var num = Math.floor((node.clientWidth - 12)/(strPx/l));
-        str = str.substring(0, num);
-    }
-    return str;
-}
-
 function addCommand(command_name, command_target_array, command_value, auto, insertCommand) {
     // create default test suite and case if necessary
     var s_suite = getSelectedSuite(),
@@ -394,19 +372,19 @@ function addCommand(command_name, command_target_array, command_value, auto, ins
 
     // set div_show's innerHTML here, because we need div's clientWidth 
     for (var k = 0; k < 3; ++k) {
-        var tooLongStr;
+        var string;
         if (k == 0) {
-            tooLongStr = command_name;
+            string = command_name;
         } else if (k == 1) {
-            tooLongStr = command_target_array[0][0].toString();
-            if (tooLongStr.includes("d-XPath")) {
-                tooLongStr = "auto-located-by-tac";
+            // some target is not a pure string, so we need to change the type to string
+            string = command_target_array[0][0].toString();
+            if (string.includes("d-XPath")) {
+                string = "auto-located-by-tac";
             }
         } else {
-            tooLongStr = command_value;
+            string = command_value;
         }
-        //var adjust = adjustTooLongStr(tooLongStr, getTdShowValueNode(new_record, k));
-        getTdShowValueNode(new_record, k).appendChild(document.createTextNode(tooLongStr));
+        getTdShowValueNode(new_record, k).appendChild(document.createTextNode(string));
     }
 
     // store command grid to testCase
