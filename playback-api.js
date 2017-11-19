@@ -138,6 +138,7 @@ window.onload = function() {
         }
     })
     playButton.addEventListener("click", function() {
+        emptyNode(document.getElementById("logcontainer"));
         document.getElementById("result-runs").textContent = "0";
         document.getElementById("result-failures").textContent = "0";
         recorder.detach();
@@ -151,6 +152,7 @@ window.onload = function() {
     pauseButton.addEventListener("click", pause);
     resumeButton.addEventListener("click", resume);
     playSuiteButton.addEventListener("click", function() {
+        emptyNode(document.getElementById("logcontainer"));
         document.getElementById("result-runs").textContent = "0";
         document.getElementById("result-failures").textContent = "0";
         recorder.detach();
@@ -158,6 +160,7 @@ window.onload = function() {
         playSuite(0);
     });
     playSuitesButton.addEventListener("click", function() {
+        emptyNode(document.getElementById("logcontainer"));
         document.getElementById("result-runs").textContent = "0";
         document.getElementById("result-failures").textContent = "0";
         recorder.detach();

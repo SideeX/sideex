@@ -181,7 +181,7 @@ function savelog() {
     var f_name = year + '-' + month + '-' + date + '-' + hours + '-' + minutes + '-' + seconds + '.log';
     var logcontext = "";
     var logcontainer = document.getElementById('logcontainer');
-    for (var i = 1; i <= logcontainer.children.length; i++) {
+    for (var i = 0; i < logcontainer.childNodes.length; i++) {
         logcontext = logcontext + logcontainer.childNodes[i].textContent + '\n' ;
     }
     var link = makeTextFile(logcontext);
