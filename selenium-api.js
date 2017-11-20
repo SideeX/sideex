@@ -430,7 +430,10 @@ Selenium.prototype.doStore = function(value, varName) {
 
 Selenium.prototype.doStoreText = function(locator, varName) {
     var element = this.browserbot.findElement(locator);
-    browser.runtime.sendMessage({ "storeStr": getText(element), "storeVar": varName });
+    var text = getText(element);
+    if(text === '')
+        throw new Error("Error: This element does not have property 'Text'. Please change to use storeValue command.");
+    browser.runtime.sendMessage({ "storeStr": text, "storeVar": varName });
 };
 
 Selenium.prototype.doStoreTitle = function(value, varName) {
@@ -438,6 +441,9 @@ Selenium.prototype.doStoreTitle = function(value, varName) {
 };
 
 Selenium.prototype.doStoreValue = function(locator, varName) {
+    var val = this.getValue(locator);
+    if(typeof val === 'undefined')
+        throw new Error("Error: This element does not have property 'value'. Please change to use storeText command.");
     browser.runtime.sendMessage({ "storeStr": this.getValue(locator), "storeVar": varName });
 };
 
