@@ -3712,9 +3712,12 @@ Selenium.prototype.doShowElement = function(locator){
     try{
         var element = this.browserbot.findElement(locator);
         var origin_backgroundColor = element.style.backgroundColor;
-        element.style.backgroundColor = "yellow";
+        var origin_border = element.style.border;
+        element.style.backgroundColor = "rgba(250,250,128,0.4)";
+        element.style.border = "solid black 1px"
         setTimeout(function() {
             element.style.backgroundColor = origin_backgroundColor;
+            element.style.border = origin_border;
         }, 500);
         return true;
     } catch (e) {

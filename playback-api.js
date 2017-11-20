@@ -244,6 +244,12 @@ function enableClick() {
     document.getElementById('command-container').style.pointerEvents = 'auto';
 }
 
+function cleanCommandToolBar() {
+    $("#command-command").val("");
+    $("#command-target").val("");
+    $("#command-value").val("");
+}
+
 function play() {
     initializePlayingProgress()
         .then(executionLoop)
@@ -324,6 +330,7 @@ function resume() {
 }
 
 function initAllSuite() {
+    cleanCommandToolBar();
     var suites = document.getElementById("testCase-grid").getElementsByClassName("message");
     var length = suites.length;
     for (var k = 0; k < suites.length; ++k) {
@@ -557,6 +564,7 @@ function finalizePlayingProgress() {
 
 document.addEventListener("dblclick", function(event) {
     var temp = event.target;
+    cleanCommandToolBar();
     while (temp.tagName.toLowerCase() != "body") {
         if (/records-(\d)+/.test(temp.id)) {
             var index = temp.id.split("-")[1];

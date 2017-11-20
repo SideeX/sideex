@@ -50,7 +50,7 @@ $("#command-target").on("input", function(event) {
             var real_command_target = event.target.value;
             if (real_command_target == "auto-located-by-tac") {
                 // Real tac value is hidden
-                var real_tac = document.getElementById(temp).getElementsByTagName("td")[1].getElementsByTagName("datalist")[0].options[0].text;
+                var real_tac = getTargetDatalist(document.getElementById(temp)).options[0].text;
                 if (real_tac == "") real_tac = "auto-located-by-tac";
                 real_command_target = real_tac;
             }
@@ -68,6 +68,8 @@ $("#command-target").on("input", function(event) {
                 div.removeChild(div.childNodes[0]);
             }
             div.appendChild(document.createTextNode(command_target));
+            let datalist = getTargetDatalist(document.getElementById(temp));
+            datalist.getElementsByTagName("option")[0].text = event.target.value;
         }
 
         // store command grid to testCase
