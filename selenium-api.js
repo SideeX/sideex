@@ -399,6 +399,12 @@ Selenium.prototype.doVerifyTitle = function(value) {
     }
 };
 
+Selenium.prototype.doVerifyValue = function(locator, value) {
+    if (this.getValue(locator) !== value) {
+        throw new Error("Actual value '" + this.getValue(locator) + "' did not match '" + value + "'");
+    }
+};
+
 Selenium.prototype.doAssertText = function(locator, value) {
     var element = this.browserbot.findElement(locator);
     if (getText(element) !== value) {
@@ -412,23 +418,42 @@ Selenium.prototype.doAssertTitle = function(value) {
     }
 };
 
+Selenium.prototype.doAssertValue = function(locator, value) {
+    if (this.getValue(locator) !== value) {
+        throw new Error("Actual value '" + this.getValue(locator) + "' did not match '" + value + "'");
+    }
+};
+
 Selenium.prototype.doStore = function(value, varName) {
     browser.runtime.sendMessage({ "storeStr": value, "storeVar": varName });
 };
 
 Selenium.prototype.doStoreText = function(locator, varName) {
     var element = this.browserbot.findElement(locator);
-    browser.runtime.sendMessage({ "storeStr": getText(element), "storeVar": varName });
+    var text = getText(element);
+    if(text === '')
+        throw new Error("Error: This element does not have property 'Text'. Please change to use storeValue command.");
+    browser.runtime.sendMessage({ "storeStr": text, "storeVar": varName });
 };
 
 Selenium.prototype.doStoreTitle = function(value, varName) {
     browser.runtime.sendMessage({ "storeStr": value, "storeVar": varName });
 };
 
+Selenium.prototype.doStoreValue = function(locator, varName) {
+    var val = this.getValue(locator);
+    if(typeof val === 'undefined')
+        throw new Error("Error: This element does not have property 'value'. Please change to use storeText command.");
+    browser.runtime.sendMessage({ "storeStr": this.getValue(locator), "storeVar": varName });
+};
+
 Selenium.prototype.doEcho = function(value) {
     browser.runtime.sendMessage({ "echoStr": value });
 };
 
+Selenium.prototype.doStoreEval = function(value, varName) {
+    browser.runtime.sendMessage({ "storeStr": this.getEval(value), "storeVar": varName });
+};
 
 // © Yu-Xian Chen, SideeX Team
 Selenium.prototype.doWaitPreparation = function() {

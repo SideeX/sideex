@@ -253,6 +253,12 @@ class BackgroundRecorder {
                     current.className += ' selected';
                 }
             }
+        } else if(message.command.includes("Value") && typeof message.value === 'undefined') {
+            sideex_log.error("Error: This element does not have property 'value'. Please change to use storeText command.");
+            return;
+        } else if(message.command.includes("Text") && message.value === '') {
+            sideex_log.error("Error: This element does not have property 'Text'. Please change to use storeValue command.");
+            return;
         } else if (message.command.includes("store")) {
             // In Google Chrome, window.prompt() must be triggered in
             // an actived tabs of front window, so we let panel window been focused
@@ -271,7 +277,7 @@ class BackgroundRecorder {
                 }, 100);
             })
             return;
-        }
+        } 
 
         //handle choose ok/cancel confirm
         if (message.insertBeforeLastCommand) {

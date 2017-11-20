@@ -219,6 +219,7 @@ function genCommandDatalist() {
         "selectWindow",
         "sendKeys",
         "store",
+        "storeEval",
         "storeText",
         "storeTitle",
         "submit",
