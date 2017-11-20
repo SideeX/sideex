@@ -451,6 +451,9 @@ Selenium.prototype.doEcho = function(value) {
     browser.runtime.sendMessage({ "echoStr": value });
 };
 
+Selenium.prototype.doStoreEval = function(value, varName) {
+    browser.runtime.sendMessage({ "storeStr": this.getEval(value), "storeVar": varName });
+};
 
 // © Yu-Xian Chen, SideeX Team
 Selenium.prototype.doWaitPreparation = function() {
