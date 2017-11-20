@@ -16,6 +16,7 @@
  */
 
 var tempCommand = [];
+var isOnCommandContainer = false;
  
 // Trigger action when the contexmenu is about to be shown
 $(document).on("contextmenu", function(event) {
@@ -111,6 +112,23 @@ document.getElementById("command-container").addEventListener("click", function(
     document.getElementById("command-value").blur();
 });
 
+// let hot key (Ctrl + C/V) only enable on command container
+document.getElementById("command-container").addEventListener("click", function(event) {
+    event.stopPropagation();
+    isOnCommandContainer = true;
+})
+
+document.addEventListener("click", function(event) {
+    isOnCommandContainer = false;
+});
+
+function stopNativeEvent(event) {
+    // NOTE: lock the browser default shortcuts
+    // and this should be careful
+    event.preventDefault();
+    event.stopPropagation();
+}
+
 // Hot key setting
 document.addEventListener("keydown", function(event) {
     var keyNum;
@@ -120,7 +138,7 @@ document.addEventListener("keydown", function(event) {
         keyNum = event.which;
     }
 
-    if (keyNum == 123) {
+    if (keyNum == 123) { // enable F12
         return;
     } else if (event.target.tagName.toLowerCase() == "input") {
         // to avoid typing in input
@@ -129,60 +147,72 @@ document.addEventListener("keydown", function(event) {
                 // enable Ctrl + A, C, V, X
                 return;
             }
-            // NOTE: lock the browser default shortcuts
-            // and this should be careful
-            event.preventDefault();
-            event.stopPropagation();
+            stopNativeEvent(event);
         }
-        if(keyNum == 46) { 
+        if(keyNum == 46) { // enable del
             return;
         }
-    } else {
-        // NOTE: lock the browser default shortcuts
-        // and this should be careful
-        event.preventDefault();
-        event.stopPropagation();
     }
 
-    // Hot key
-    if(keyNum == 46){ // Hot key: del
-        let selectedTr = getSelectedRecords();
-        for (let i=selectedTr.length-1 ; i>=0 ; i--) {
-            deleteCommand(selectedTr[i].id);
-        }
-    } else if (keyNum == 38) { // Hot key: up arrow
-        selectForeRecord();
-    } else if (keyNum == 40) { // Hot key: down arrow
-        selectNextRecord();
+    // Hot keys
+    switch (keyNum) {
+        case 38: // up arrow
+            selectForeRecord();
+            break;
+        case 40: // down arrow
+            selectNextRecord();
+            break;
+        case 46: // del
+            let selectedTr = getSelectedRecords();
+            for (let i=selectedTr.length-1 ; i>=0 ; i--) {
+                deleteCommand(selectedTr[i].id);
+            }
+            break;
+        default:
+            break;
     }
 
-    // hot keys: Ctrl + [KEY]
+    // Hot keys: Ctrl + [KEY]
     if (event.ctrlKey) {
-        if (keyNum == 67) { // Ctrl + C
-            copyCommand();
-        } else if (keyNum == 86) { // Ctrl + V
-            pasteCommand();
-        } else if (keyNum == 83) { // Ctrl + S
-            $("#save-testSuite").click();
-        } else if (keyNum == 65) { // Ctrl + A
-            var recordNode = document.getElementById("records-grid").getElementsByTagName("TR");
-            for (let i=0 ; i<recordNode.length ; i++) {
-                recordNode[i].classList.add("selectedRecord");
+        if (isOnCommandContainer) {
+            stopNativeEvent(event);
+            if (keyNum == 67) { // Ctrl + C
+                copyCommand();
+            } else if (keyNum == 86) { // Ctrl + V
+                pasteCommand();
             }
-        } else if (keyNum == 80) { // Ctrl + P
-            $("#playback").click();
-        } else if (keyNum === 66) { // Ctrl + T
-            setBreakpoint(getSelectedRecord());
-        } else if (keyNum == 73) { // Ctrl + I
-            $("#grid-add").click();
-        } else if (keyNum == 88) { // Ctrl + X
-            copyCommand();
-            let selectedRecords = getSelectedRecords();
-            for(let i=selectedRecords.length-1 ; i>=0 ; i--){
-                deleteCommand(selectedRecords[i].id);
-            }
-        } else if (keyNum == 79) { // Ctrl + O
-            $('#load-testSuite-hidden').click();
+        }
+        switch (keyNum) {
+            case 65: // Ctrl + A
+                var recordNode = document.getElementById("records-grid").getElementsByTagName("TR");
+                for (let i=0 ; i<recordNode.length ; i++) {
+                    recordNode[i].classList.add("selectedRecord");
+                }
+                break;
+            case 66: // Ctrl + T
+                setBreakpoint(getSelectedRecord());
+                break;
+            case 73: // Ctrl + I
+                $("#grid-add").click();
+                break;
+            case 79: // Ctrl + O
+                $('#load-testSuite-hidden').click();
+                break;
+            case 80: // Ctrl + P
+                $("#playback").click();
+                break;
+            case 83: // Ctrl + S
+                $("#save-testSuite").click();
+                break;
+            case 88: // Ctrl + X
+                copyCommand();
+                let selectedRecords = getSelectedRecords();
+                for(let i=selectedRecords.length-1 ; i>=0 ; i--){
+                    deleteCommand(selectedRecords[i].id);
+                }
+                break;
+            default:
+                break;
         }
     }
 }, false);
