@@ -795,11 +795,11 @@ function doCommand() {
         }, 500);
     });
     return p.then(function() {
-            if(commandValue.substr(0,2) === "${" && commandValue.substr(commandValue.length-1) === "}"){
-                commandValue = xlateArgument(commandValue);
+            if(commandValue.indexOf("${") !== -1){
+                commandValue = convertVariableToString(commandValue);
             }
-            if(commandTarget.substr(0,2) === "${" && commandTarget.substr(commandTarget.length-1) === "}"){
-                commandTarget = xlateArgument(commandTarget);
+            if(commandTarget.indexOf("${") !== -1){
+                commandTarget = convertVariableToString(commandTarget);
             }
             if (isWindowMethodCommand(commandName))
             {
@@ -874,4 +874,20 @@ function enableButton(buttonId) {
 
 function disableButton(buttonId) {
     document.getElementById(buttonId).disabled = true;
+}
+
+function convertVariableToString(variable){
+    let frontIndex = variable.indexOf("${");
+    let newStr = "";
+    while(frontIndex !== -1){
+        let prefix = variable.substring(0,frontIndex);
+        let suffix = variable.substring(frontIndex);
+        let tailIndex = suffix.indexOf("}");
+        let suffix_front = suffix.substring(0,tailIndex + 1);
+        let suffix_tail = suffix.substring(tailIndex + 1);
+        newStr += prefix + xlateArgument(suffix_front);
+        variable = suffix_tail;
+        frontIndex = variable.indexOf("${");
+    }
+    return newStr + variable;
 }
