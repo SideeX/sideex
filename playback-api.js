@@ -560,6 +560,7 @@ document.addEventListener("dblclick", function(event) {
     while (temp.tagName.toLowerCase() != "body") {
         if (/records-(\d)+/.test(temp.id)) {
             var index = temp.id.split("-")[1];
+            recorder.detach();
             executeCommand(index);
         }
         if (temp.id == "command-grid") {
