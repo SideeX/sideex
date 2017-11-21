@@ -196,6 +196,7 @@ function genCommandDatalist() {
         "assertPrompt",
         "assertText",
         "assertTitle",
+        "assertValue",
         "chooseCancelOnNextConfirmation",
         "chooseCancelOnNextPrompt",
         "chooseOkOnNextConfirmation",
@@ -222,10 +223,12 @@ function genCommandDatalist() {
         "storeEval",
         "storeText",
         "storeTitle",
+        "storeValue",
         "submit",
         "type",
         "verifyText",
-        "verifyTitle"
+        "verifyTitle",
+        "verifyValue"
     ];
 
     var datalistHTML = "";
