@@ -1414,12 +1414,6 @@ BrowserBot.prototype._registerAllLocatorFunctions = function() {
         return this.locateElementByIdentifier(locator, inDocument, inWindow);
     };
 
-    /**
-     * Only used for TAC locator.
-     */
-    this.locationStrategies['tac'] = function(locator, inDocument, inWindow) {
-        return this.locateElementByTac(locator, inDocument, inWindow);
-    };	
 };
 
 BrowserBot.prototype.getDocument = function() {
@@ -1845,58 +1839,6 @@ BrowserBot.prototype.locateElementByLinkText = function(linkText, inDocument, in
 };
 
 BrowserBot.prototype.locateElementByLinkText.prefix = "link";
-
-BrowserBot.prototype.locateElementByTac = function(locator, inDocument, inWindow){
-/*
-    var filters = locator.split('::[d-XPath]::');
-    var ox = filters[0];
-    var od = filters[1];
-
-    var ae = inDocument.getElementsByTagName("*");
-    var aes = ae.length;
-    for (var i = 0; i < aes; i++) {
-        if (ae[i] == null) {
-            continue;
-        }
-		
-        var s = inWindow.getComputedStyle(ae[i]);
-        if (s.display == "none" || s.visibility == "hidden") {
-            var nah = inDocument.createAttribute("hidden-annotated-by-tac");
-            ae[i].setAttributeNode(nah);	
-        }
-    }
-
-    var nd = inDocument.cloneNode(true);
-
-    for (var i = 0; i < aes; i++) {
-        if (ae[i] == null) {
-            continue;
-        }
-
-        if (ae[i].hasAttribute("hidden-annotated-by-tac")) {
-            ae[i].removeAttribute("hidden-annotated-by-tac");
-        }
-    }
-
-    var tacMethod = new Tac(ox, od, nd);
-	
-    if (!tacMethod.tox()) {
-        tacMethod.fox();
-    }
-
-    var xpath = tacMethod.lct();
-
-    if (xpath != null) {
-        var newElement = this.xpathEvaluator.selectSingleNode(inDocument, xpath, null,
-                        inDocument.createNSResolver
-                            ? inDocument.createNSResolver(inDocument.documentElement)
-                            : this._namespaceResolver);
-
-        return newElement;
-    }
-*/
-	return null;
-};
 
 /**
  * Returns an attribute based on an attribute locator. This is made up of an element locator
