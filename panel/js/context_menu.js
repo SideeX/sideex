@@ -174,14 +174,10 @@ document.addEventListener("keydown", function(event) {
 
     // Hot keys: Ctrl + [KEY]
     if (event.ctrlKey) {
-        if (isOnCommandContainer) {
-            stopNativeEvent(event);
-            if (keyNum == 67) { // Ctrl + C
-                copyCommand();
-            } else if (keyNum == 86) { // Ctrl + V
-                pasteCommand();
-            }
+        if (!isOnCommandContainer && (keyNum == 67 || keyNum == 86)) {
+            return;
         }
+        stopNativeEvent(event);
         switch (keyNum) {
             case 65: // Ctrl + A
                 var recordNode = document.getElementById("records-grid").getElementsByTagName("TR");
@@ -191,6 +187,9 @@ document.addEventListener("keydown", function(event) {
                 break;
             case 66: // Ctrl + T
                 setBreakpoint(getSelectedRecord());
+                break;
+            case 67: // Ctrl + C
+                copyCommand();
                 break;
             case 73: // Ctrl + I
                 $("#grid-add").click();
@@ -203,6 +202,9 @@ document.addEventListener("keydown", function(event) {
                 break;
             case 83: // Ctrl + S
                 $("#save-testSuite").click();
+                break;
+            case 86: // Ctrl + V
+                pasteCommand();
                 break;
             case 88: // Ctrl + X
                 copyCommand();
