@@ -109,9 +109,11 @@ function appendContextMenu(node, isCase) {
             event.stopPropagation();
             var s_case = getSelectedCase();
             var n_title = prompt("Please enter the Test Case's name", sideex_testCase[s_case.id].title);
-            // get text node
-            s_case.childNodes[0].textContent = n_title;
-            sideex_testCase[s_case.id].title = n_title;
+            if (n_title) {
+                // get text node
+                s_case.childNodes[0].textContent = n_title;
+                sideex_testCase[s_case.id].title = n_title;
+            }
         }, false);
         ul.appendChild(rename_case);
     } else {
@@ -179,12 +181,14 @@ function appendContextMenu(node, isCase) {
             event.stopPropagation();
             var s_suite = getSelectedSuite();
             var n_title = prompt("Please enter the Test Suite's name", sideex_testSuite[s_suite.id].title);
-            // get text node
-            s_suite.childNodes[0].textContent = n_title;
-            sideex_testSuite[s_suite.id].title = n_title;
-            sideex_testSuite[s_suite.id].file_name = n_title + ".html";
-            $(s_suite).find("strong").addClass("modified");
-            closeConfirm(true);
+            if (n_title) {
+                // get text node
+                s_suite.childNodes[0].textContent = n_title;
+                sideex_testSuite[s_suite.id].title = n_title;
+                sideex_testSuite[s_suite.id].file_name = n_title + ".html";
+                $(s_suite).find("strong").addClass("modified");
+                closeConfirm(true);
+            }
         }, false);
         ul.appendChild(rename_suite);
     }

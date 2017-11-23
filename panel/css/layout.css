@@ -710,9 +710,6 @@ ul.tabs {
     -webkit-border-radius: 5px;
     -moz-border-radius: 5px;
     border-radius: 5px;
-    -webkit-box-shadow: 0 1px 0 #fff;
-    -moz-box-shadow: 0 1px 0 #fff;
-    text-shadow: 0 1px 0 #fff;
     font-weight: bold;
 }
 ul.tabs2 li {
@@ -776,8 +773,6 @@ html ul.tabs #clear-log a {
     -webkit-radius: 5px;
     -moz-border-radius: 5px;
     border-radius: 5px;
-    border: 1px solid  #ccc;
-    box-shadow: 0 1px 0 #fff;
 }
 html ul.tabs #save-log,
 html ul.tabs #save-log a {
@@ -785,8 +780,6 @@ html ul.tabs #save-log a {
     -webkit-radius: 5px;
     -moz-border-radius: 5px;
     border-radius: 5px;
-    border: 1px solid  #ccc;
-    box-shadow: 0 1px 0 #fff;
 }
 html ul.tabs2 li:active {
     background: #F1F2F4;

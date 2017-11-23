@@ -3706,14 +3706,17 @@ Selenium.prototype.doAssertConfirmation = function(value) {
 // Added show element by SideeX comitters (Copyright 2017)
 Selenium.prototype.doShowElement = function(locator){
     try{
-        var element = this.browserbot.findElement(locator);
-        var origin_backgroundColor = element.style.backgroundColor;
-        var origin_border = element.style.border;
-        element.style.backgroundColor = "rgba(250,250,128,0.4)";
-        element.style.border = "solid black 1px"
+        var element = this.browserbot.findElement(locator, window);
+        var div = document.createElement("div");
+        var r = element.getBoundingClientRect();
+        if (r.left >= 0 && r.top >= 0 && r.width > 0 && r.height > 0) {
+            var style = "pointer-events: none; position: absolute; box-shadow: 0 0 0 1px black; outline: 1px dashed white; outline-offset: -1px; background-color: rgba(250,250,128,0.4); z-index: 100;";
+            var pos = "top:" + (r.top + window.scrollY) + "px; left:" + (r.left + window.scrollX) + "px; width:" + r.width + "px; height:" + r.height + "px;";
+            div.setAttribute("style", style + pos);
+        }
+        document.body.insertBefore(div, document.body.firstChild);
         setTimeout(function() {
-            element.style.backgroundColor = origin_backgroundColor;
-            element.style.border = origin_border;
+            document.body.removeChild(div);
         }, 500);
         return true;
     } catch (e) {
