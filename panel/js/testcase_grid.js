@@ -221,6 +221,7 @@ function addTestCase(title, id) {
 
     cleanSelected();
     p.classList.add("selectedCase");
+    p.classList.add("test-case-title");
     p.parentNode.classList.add("selectedSuite");
 
     if (sideex_testCase[id]) { // load file
@@ -289,13 +290,41 @@ function addTestCase(title, id) {
 }
 
 function addTestSuite(title, id) {
+    // set test suite title div
+    var textDiv = document.createElement("div");
+    textDiv.classList.add("test-suite-title");
+
+    // add save icon
+    var saveIcon = document.createElement("i");
+    saveIcon.classList.add("fa");
+    saveIcon.classList.add("fa-download");
+    saveIcon.setAttribute("aria-hidden", "true");
+    saveIcon.addEventListener("click", clickSaveIcon);
+    textDiv.appendChild(saveIcon);
+
+    // set test suite title
     var text = document.createElement("strong");
-    text.textContent = title;
+    text.classList.add("test-suite-title");
+    text.innerHTML = escapeHTML(title);
+    textDiv.appendChild(text);
+
+    // add plus icon
+    var plusIcon = document.createElement("i");
+    plusIcon.classList.add("fa");
+    plusIcon.classList.add("fa-plus");
+    plusIcon.classList.add("case-plus");
+    plusIcon.setAttribute("aria-hidden", "true");
+    plusIcon.addEventListener("click", clickCasePlusIcon);
+    textDiv.appendChild(plusIcon);
+
+    // set test suite div
     var div = document.createElement("div");
     div.setAttribute("id", id);
     div.setAttribute("contextmenu", "menu" + id);
     div.setAttribute("class", "message");
-    div.appendChild(text);
+    div.addEventListener("mouseover", mouseOnAndOutTestSuite);
+    div.addEventListener("mouseout", mouseOnAndOutTestSuite);
+    div.appendChild(textDiv);
 
     var s_suite = getSelectedSuite();
     if (s_suite) {
@@ -475,3 +504,26 @@ document.getElementById("delete-testCase").addEventListener('click', function() 
         }
     }
 }, false);
+
+function clickCasePlusIcon(event) {
+    event.stopPropagation();
+    event.target.parentNode.parentNode.click();
+    document.getElementById('add-testCase').click();
+}
+
+function clickSaveIcon(event) {
+    event.stopPropagation();
+    event.target.parentNode.parentNode.click();
+    document.getElementById('save-testSuite').click();
+}
+
+function clickSuitePlusIcon(event) {
+    document.getElementById("add-testSuite").click();
+}
+
+function clickSuiteOpenIcon(event) {
+    document.getElementById("load-testSuite-hidden").click();
+}
+
+document.getElementById("suite-plus").addEventListener("click", clickSuitePlusIcon);
+document.getElementById("suite-open").addEventListener("click", clickSuiteOpenIcon);
