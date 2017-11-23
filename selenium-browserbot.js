@@ -2446,6 +2446,28 @@ BrowserBot.prototype.getAlertMessage = function() {
     return response;
 }
 
+BrowserBot.prototype.getRunScriptMessage = function() {
+    let self = this;
+    let response = new Promise(function(resolve, reject) {
+        let count = 0;
+        let interval = setInterval(function() {
+            if (!self.runScriptResponse) {
+                count++;
+                if (count > 4) {
+                    resolve("No error!!!!");
+                    clearInterval(interval);
+                }
+            } else {
+                resolve(self.runScriptMessage);
+                self.runScriptResponse = false;
+                self.runScriptMessage = null;
+                clearInterval(interval);
+            }
+        }, 200);
+    })
+    return response;
+}
+
 /*****************************************************************/
 /* BROWSER-SPECIFIC FUNCTIONS ONLY AFTER THIS LINE */
 
