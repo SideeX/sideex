@@ -3039,22 +3039,18 @@ Selenium.prototype.doDeleteAllVisibleCookies = function() {
 }*/
 
 Selenium.prototype.doRunScript = function(script) {
-    /**
-     * Creates a new "script" tag in the body of the current test window, and
-     * adds the specified text into the body of the command.  Scripts run in
-     * this way can often be debugged more easily than scripts executed using
-     * Selenium's "getEval" command.  Beware that JS exceptions thrown in these script
-     * tags aren't managed by Selenium, so you should probably wrap your script
-     * in try/catch blocks if there is any chance that the script will throw
-     * an exception.
-     * @param script the JavaScript snippet to run
-     */
-    var win = this.browserbot.getCurrentWindow();
-    var doc = win.document;
-    var scriptTag = doc.createElement("script");
-    scriptTag.type = "text/javascript"
-    scriptTag.text = script;
-    doc.body.appendChild(scriptTag);
+
+    window.postMessage({
+        direction: "from-content-runscript",
+        script: script
+    }, "*");
+    return this.browserbot.getRunScriptMessage().then(function(actualMessage) {
+        console.log(actualMessage);
+       if (actualMessage != "No error!!!!")
+            return Promise.reject(actualMessage);
+       else
+            return Promise.resolve(true);
+    });
 }
 
 Selenium.prototype.doAddLocationStrategy = function(strategyName, functionDefinition) {
