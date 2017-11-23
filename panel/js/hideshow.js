@@ -53,3 +53,62 @@ $(document).ready(function() {
 
     });
 });
+
+function mouseOnAndOutTestSuite(event) {
+    //event.stopPropagation();
+    var element = event.target;
+    while (true) {
+        if (element == undefined) {
+            return;
+        }
+        if (element.id.includes("suite") && !element.id.includes("menu")) {
+            break;
+        }
+
+        element = element.parentNode;
+    }
+
+    // console.log("element: ", element);
+    let display = undefined;
+    if (event.type == "mouseover") {
+        display = true;
+    } else if (event.type == "mouseout") {
+        display = false;
+    }
+    setIconDisplay(display, element);
+}
+
+function setIconDisplay(display, element) {
+    let plus = element.getElementsByClassName("fa fa-download")[0];
+    let download = element.getElementsByClassName("fa fa-plus")[0];
+    let color = display ? "rgb(156, 155, 155)": "rgb(223, 223, 223)";
+    plus.style.color = color;
+    download.style.color = color;
+}
+
+function mouseOnSuiteTitleIcon(event) {
+    let tempElement = getMouseActionElement(event.target);
+    if (tempElement == null) {
+        return;
+    }
+    tempElement.style.color = "rgb(106, 105, 105)";
+}
+
+function mouseOutSuiteTitleIcon(event) {
+    let tempElement = getMouseActionElement(event.target);
+    if (tempElement == null) {
+        return;
+    }
+    tempElement.style.color = "rgb(167, 167, 167)";
+}
+
+function getMouseActionElement(target) {
+    let tagName = target.tagName;
+    if ( tagName == "DIV") {
+        // NOTE: id will be suite-open or suite-plus
+        return $("i." + target.id)[0];
+    } else if (tagName == "I") {
+        return target;
+    }
+    return null;
+}
