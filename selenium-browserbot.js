@@ -2449,7 +2449,7 @@ BrowserBot.prototype.getAlertMessage = function() {
     })
     return response;
 }
-
+// © Ming-Hung Hsu, SideeX Team
 BrowserBot.prototype.getRunScriptMessage = function() {
     let self = this;
     let response = new Promise(function(resolve, reject) {

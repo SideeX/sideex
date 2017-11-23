@@ -385,49 +385,49 @@ Selenium.prototype.reset = function() {
     this.browserbot.selectWindow("null");
     this.browserbot.resetPopups();
 };
-
+// © Ming-Hung Hsu, SideeX Team
 Selenium.prototype.doVerifyText = function(locator, value) {
     var element = this.browserbot.findElement(locator);
     if (getText(element) !== value) {
         throw new Error("Actual value '" + getText(element) + "' did not match '" + value + "'");
     }
 };
-
+// © Ming-Hung Hsu, SideeX Team
 Selenium.prototype.doVerifyTitle = function(value) {
     if (normalizeSpaces(this.getTitle()) !== value) {
         throw new Error("Actual value '" + normalizeSpaces(this.getTitle()) + "' did not match '" + value + "'");
     }
 };
-
+// © Ming-Hung Hsu, SideeX Team
 Selenium.prototype.doVerifyValue = function(locator, value) {
     if (this.getValue(locator) !== value) {
         throw new Error("Actual value '" + this.getValue(locator) + "' did not match '" + value + "'");
     }
 };
-
+// © Ming-Hung Hsu, SideeX Team
 Selenium.prototype.doAssertText = function(locator, value) {
     var element = this.browserbot.findElement(locator);
     if (getText(element) !== value) {
         throw new Error("Actual value '" + getText(element) + "' did not match '" + value + "'");
     }
 };
-
+// © Ming-Hung Hsu, SideeX Team
 Selenium.prototype.doAssertTitle = function(value) {
     if (normalizeSpaces(this.getTitle()) !== value) {
         throw new Error("Actual value '" + normalizeSpaces(this.getTitle()) + "' did not match '" + value + "'");
     }
 };
-
+// © Ming-Hung Hsu, SideeX Team
 Selenium.prototype.doAssertValue = function(locator, value) {
     if (this.getValue(locator) !== value) {
         throw new Error("Actual value '" + this.getValue(locator) + "' did not match '" + value + "'");
     }
 };
-
+// © Ming-Hung Hsu, SideeX Team
 Selenium.prototype.doStore = function(value, varName) {
     browser.runtime.sendMessage({ "storeStr": value, "storeVar": varName });
 };
-
+// © Ming-Hung Hsu, SideeX Team
 Selenium.prototype.doStoreText = function(locator, varName) {
     var element = this.browserbot.findElement(locator);
     var text = getText(element);
@@ -435,22 +435,22 @@ Selenium.prototype.doStoreText = function(locator, varName) {
         throw new Error("Error: This element does not have property 'Text'. Please change to use storeValue command.");
     browser.runtime.sendMessage({ "storeStr": text, "storeVar": varName });
 };
-
+// © Ming-Hung Hsu, SideeX Team
 Selenium.prototype.doStoreTitle = function(value, varName) {
     browser.runtime.sendMessage({ "storeStr": value, "storeVar": varName });
 };
-
+// © Ming-Hung Hsu, SideeX Team
 Selenium.prototype.doStoreValue = function(locator, varName) {
     var val = this.getValue(locator);
     if(typeof val === 'undefined')
         throw new Error("Error: This element does not have property 'value'. Please change to use storeText command.");
     browser.runtime.sendMessage({ "storeStr": this.getValue(locator), "storeVar": varName });
 };
-
+// © Ming-Hung Hsu, SideeX Team
 Selenium.prototype.doEcho = function(value) {
     browser.runtime.sendMessage({ "echoStr": value });
 };
-
+// © Ming-Hung Hsu, SideeX Team
 Selenium.prototype.doStoreEval = function(value, varName) {
     browser.runtime.sendMessage({ "storeStr": this.getEval(value), "storeVar": varName });
 };
@@ -3038,7 +3038,7 @@ Selenium.prototype.doDeleteAllVisibleCookies = function() {
     }
     //LOG.setLogLevelThreshold(logLevel);
 }*/
-
+// © Ming-Hung Hsu, SideeX Team
 Selenium.prototype.doRunScript = function(script) {
 
     window.postMessage({
