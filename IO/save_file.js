@@ -140,9 +140,10 @@ function downloadSuite(s_suite,callback) {
                         download = download[0];
                         f_name = download.filename.split(/\\|\//).pop();
                         sideex_testSuite[s_suite.id].file_name = f_name;
+                        sideex_testSuite[s_suite.id].title = f_name.substring(0, f_name.lastIndexOf("."));
                         $(s_suite).find(".modified").removeClass("modified");
                         closeConfirm(false);
-                        s_suite.getElementsByTagName("STRONG")[0].textContent = f_name.substring(0, f_name.lastIndexOf("."));
+                        s_suite.getElementsByTagName("STRONG")[0].textContent = sideex_testSuite[s_suite.id].title;
                         if (callback) {
                             callback();
                         }
