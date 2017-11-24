@@ -183,7 +183,7 @@ function appendContextMenu(node, isCase) {
             var n_title = prompt("Please enter the Test Suite's name", sideex_testSuite[s_suite.id].title);
             if (n_title) {
                 // get text node
-                s_suite.childNodes[0].textContent = n_title;
+                s_suite.getElementsByTagName("STRONG")[0].textContent = n_title;
                 sideex_testSuite[s_suite.id].title = n_title;
                 sideex_testSuite[s_suite.id].file_name = n_title + ".html";
                 $(s_suite).find("strong").addClass("modified");
