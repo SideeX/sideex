@@ -140,9 +140,10 @@ function downloadSuite(s_suite,callback) {
                         download = download[0];
                         f_name = download.filename.split(/\\|\//).pop();
                         sideex_testSuite[s_suite.id].file_name = f_name;
+                        sideex_testSuite[s_suite.id].title = f_name.substring(0, f_name.lastIndexOf("."));
                         $(s_suite).find(".modified").removeClass("modified");
                         closeConfirm(false);
-                        s_suite.childNodes[0].textContent = f_name.substring(0, f_name.lastIndexOf("."));
+                        s_suite.getElementsByTagName("STRONG")[0].textContent = sideex_testSuite[s_suite.id].title;
                         if (callback) {
                             callback();
                         }
@@ -169,3 +170,27 @@ document.getElementById('save-testSuite').addEventListener('click', function(eve
     var s_suite = getSelectedSuite();
     downloadSuite(s_suite);
 }, false);
+
+function savelog() {
+    var now = new Date();
+    var date = now.getDate();
+    var month = now.getMonth()+1;
+    var year = now.getFullYear();
+    var seconds = now.getSeconds();
+    var minutes = now.getMinutes();
+    var hours = now.getHours();
+    var f_name = year + '-' + month + '-' + date + '-' + hours + '-' + minutes + '-' + seconds + '.log';
+    var logcontext = "";
+    var logcontainer = document.getElementById('logcontainer');
+    for (var i = 0; i < logcontainer.childNodes.length; i++) {
+        logcontext = logcontext + logcontainer.childNodes[i].textContent + '\n' ;
+    }
+    var link = makeTextFile(logcontext);
+
+    var downloading = browser.downloads.download({
+        filename: f_name,
+        url: link,
+        saveAs: true,
+        conflictAction: 'overwrite'
+    });
+}

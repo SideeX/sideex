@@ -1413,6 +1413,7 @@ BrowserBot.prototype._registerAllLocatorFunctions = function() {
         }
         return this.locateElementByIdentifier(locator, inDocument, inWindow);
     };
+
 };
 
 BrowserBot.prototype.getDocument = function() {
@@ -1568,7 +1569,6 @@ BrowserBot.prototype.recursivelyDeleteCookie = function(cookieName, domain, path
  * in the specified document, using various lookup protocols
  */
 BrowserBot.prototype.findElementRecursive = function(locatorType, locatorString, inDocument, inWindow) {
-
     var element = this.findElementBy(locatorType, locatorString, inDocument, inWindow);
     if (element != null) {
         return element;
@@ -1577,12 +1577,15 @@ BrowserBot.prototype.findElementRecursive = function(locatorType, locatorString,
     for (var i = 0; i < inWindow.frames.length; i++) {
         // On some browsers, the document object is undefined for third-party
         // frames.  Make sure the document is valid before continuing.
-        if (inWindow.frames[i].document) {
-            element = this.findElementRecursive(locatorType, locatorString, inWindow.frames[i].document, inWindow.frames[i]);
-
-            if (element != null) {
-                return element;
+        try {
+            if (inWindow.frames[i].document) {
+                element = this.findElementRecursive(locatorType, locatorString, inWindow.frames[i].document, inWindow.frames[i]);
+                if (element != null) {
+                    return element;
+                }
             }
+        } catch (e) {
+            return null;
         }
     }
 };
@@ -1597,6 +1600,8 @@ BrowserBot.prototype.findElementOrNull = function(locator, win) {
         win = this.getCurrentWindow();
     }
     // var element = this.findElementRecursive(locator.type, locator.string, win.document, win);
+    // NOTE: Because we do go into frame by selectFrame commands, we do not find
+    // element go into frame by findElementRecursive operations.
     var element = this.findElementBy(locator.type, locator.string, win.document, win);
     element = core.firefox.unwrap(element);
 
@@ -1610,7 +1615,13 @@ BrowserBot.prototype.findElementOrNull = function(locator, win) {
 
 BrowserBot.prototype.findElement = function(locator, win) {
     var element = this.findElementOrNull(locator, win);
-    if (element == null) throw new SeleniumError("Element " + locator + " not found");
+    if (element == null) {
+        if (locator.includes("d-XPath")) {
+            throw new SeleniumError("Element located by TAC not found");
+        } else if (locator == "auto-located-by-tac") {
+            throw new SeleniumError("The value \"auto-located-by-tac\" only can be automatically generated when recording a command");
+        } else throw new SeleniumError("Element " + locator + " not found");
+    }
     return core.firefox.unwrap(element);
 };
 
@@ -2435,6 +2446,28 @@ BrowserBot.prototype.getAlertMessage = function() {
                 clearInterval(interval);
             }
         }, 500);
+    })
+    return response;
+}
+// © Ming-Hung Hsu, SideeX Team
+BrowserBot.prototype.getRunScriptMessage = function() {
+    let self = this;
+    let response = new Promise(function(resolve, reject) {
+        let count = 0;
+        let interval = setInterval(function() {
+            if (!self.runScriptResponse) {
+                count++;
+                if (count > 4) {
+                    resolve("No error!!!!");
+                    clearInterval(interval);
+                }
+            } else {
+                resolve(self.runScriptMessage);
+                self.runScriptResponse = false;
+                self.runScriptMessage = null;
+                clearInterval(interval);
+            }
+        }, 200);
     })
     return response;
 }

@@ -2,7 +2,7 @@
     "description": "SideeX (An Extended Version of Selenium IDE): An Open Source Record-Playback-Style Web Application Testing Tool",
     "manifest_version": 2,
     "name": "SideeX: An Extended Version of Selenium IDE",
-    "version": "2.3.1",
+    "version": "2.3.2",
     "homepage_url": "http://sideex.org/",
     "icons":
     {
@@ -17,7 +17,8 @@
         "contextMenus",
         "downloads",
         "webNavigation",
-        "notifications"
+        "notifications",
+        "storage"
     ],
 
     "content_security_policy": "script-src 'self'; object-src 'self'",
@@ -31,7 +32,7 @@
         },
         {
             "matches": ["<all_urls>"],
-            "js": ["browser-polyfill.js", "prompt-injecter.js"],
+            "js": ["browser-polyfill.js", "prompt-injecter.js", "runScript-injecter.js"],
             "match_about_blank": true,
             "all_frames": true,
             "run_at": "document_start"
@@ -49,5 +50,5 @@
         "default_title": "SideeX"
     },
 
-    "web_accessible_resources": ["prompt.js"]
+    "web_accessible_resources": ["prompt.js", "runScript.js"]
 }

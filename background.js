@@ -110,6 +110,12 @@ function createMenus() {
         contexts: ["all"]
     });
     browser.contextMenus.create({
+        id: "verifyValue",
+        title: "verifyValue",
+        documentUrlPatterns: ["<all_urls>"],
+        contexts: ["all"]
+    });
+    browser.contextMenus.create({
         id: "assertText",
         title: "assertText",
         documentUrlPatterns: ["<all_urls>"],
@@ -122,6 +128,12 @@ function createMenus() {
         contexts: ["all"]
     });
     browser.contextMenus.create({
+        id: "assertValue",
+        title: "assertValue",
+        documentUrlPatterns: ["<all_urls>"],
+        contexts: ["all"]
+    });
+    browser.contextMenus.create({
         id: "storeText",
         title: "storeText",
         documentUrlPatterns: ["<all_urls>"],
@@ -130,6 +142,12 @@ function createMenus() {
     browser.contextMenus.create({
         id: "storeTitle",
         title: "storeTitle",
+        documentUrlPatterns: ["<all_urls>"],
+        contexts: ["all"]
+    });
+    browser.contextMenus.create({
+        id: "storeValue",
+        title: "storeValue",
         documentUrlPatterns: ["<all_urls>"],
         contexts: ["all"]
     });

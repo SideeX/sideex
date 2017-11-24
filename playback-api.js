@@ -48,17 +48,26 @@ window.onload = function() {
     var playSuitesButton = document.getElementById("playSuites");
     var showElementButton = document.getElementById("showElementButton")
     var selectElementButton = document.getElementById("selectElementButton");
+    var suitePlus = document.getElementById("suite-plus");
+    var suiteOpen = document.getElementById("suite-open");
     /*var recordButton = document.getElementById("record");*/
     //element.addEventListener("click",play);
     //Tim
     var referContainer=document.getElementById("refercontainer");
     var logContainer=document.getElementById("logcontainer");
+    var saveLogButton=document.getElementById("save-log");
+    
+    
+    saveLogButton.addEventListener("click",savelog);
     referContainer.style.display="none";
     $('#command-command').on('input change', function() {
         scrape(document.getElementById("command-command").value);
     });
    
-    
+    suitePlus.addEventListener("mouseover", mouseOnSuiteTitleIcon);
+    suitePlus.addEventListener("mouseout", mouseOutSuiteTitleIcon);
+    suiteOpen.addEventListener("mouseover", mouseOnSuiteTitleIcon);
+    suiteOpen.addEventListener("mouseout", mouseOutSuiteTitleIcon);
     
     var logLi=document.getElementById("history-log");
     var referenceLi=document.getElementById("reference-log");
@@ -134,8 +143,9 @@ window.onload = function() {
         }
     })
     playButton.addEventListener("click", function() {
-        document.getElementById("result-runs").innerHTML = "0";
-        document.getElementById("result-failures").innerHTML = "0";
+        emptyNode(document.getElementById("logcontainer"));
+        document.getElementById("result-runs").textContent = "0";
+        document.getElementById("result-failures").textContent = "0";
         recorder.detach();
         initAllSuite();
         setCaseScrollTop(getSelectedCase());
@@ -147,15 +157,17 @@ window.onload = function() {
     pauseButton.addEventListener("click", pause);
     resumeButton.addEventListener("click", resume);
     playSuiteButton.addEventListener("click", function() {
-        document.getElementById("result-runs").innerHTML = "0";
-        document.getElementById("result-failures").innerHTML = "0";
+        emptyNode(document.getElementById("logcontainer"));
+        document.getElementById("result-runs").textContent = "0";
+        document.getElementById("result-failures").textContent = "0";
         recorder.detach();
         initAllSuite();
         playSuite(0);
     });
     playSuitesButton.addEventListener("click", function() {
-        document.getElementById("result-runs").innerHTML = "0";
-        document.getElementById("result-failures").innerHTML = "0";
+        emptyNode(document.getElementById("logcontainer"));
+        document.getElementById("result-runs").textContent = "0";
+        document.getElementById("result-failures").textContent = "0";
         recorder.detach();
         initAllSuite();
         playSuites(0);
@@ -195,6 +207,9 @@ window.onload = function() {
     showElementButton.addEventListener("click", function(){
         try{
             var targetValue = document.getElementById("command-target").value;
+            if (targetValue == "auto-located-by-tac") {
+                targetValue = document.getElementById("command-target-list").options[0].text;
+            }
             browser.tabs.query({
                 active: true,
                 windowId: contentWindowId
@@ -234,6 +249,12 @@ function enableClick() {
     document.getElementById('command-container').style.pointerEvents = 'auto';
 }
 
+function cleanCommandToolBar() {
+    $("#command-command").val("");
+    $("#command-target").val("");
+    $("#command-value").val("");
+}
+
 function play() {
     initializePlayingProgress()
         .then(executionLoop)
@@ -253,8 +274,8 @@ function stop() {
     switchPS();
     sideex_log.info("Stop executing");
     initAllSuite();
-    document.getElementById("result-runs").innerHTML = "0";
-    document.getElementById("result-failures").innerHTML = "0";
+    document.getElementById("result-runs").textContent = "0";
+    document.getElementById("result-failures").textContent = "0";
     finalizePlayingProgress();
 }
 
@@ -314,6 +335,7 @@ function resume() {
 }
 
 function initAllSuite() {
+    cleanCommandToolBar();
     var suites = document.getElementById("testCase-grid").getElementsByClassName("message");
     var length = suites.length;
     for (var k = 0; k < suites.length; ++k) {
@@ -380,7 +402,11 @@ function executeCommand(index) {
     var commandTarget = getCommandTarget(commands[id]);
     var commandValue = getCommandValue(commands[id]);
 
-    sideex_log.info("Executing: | " + commandName + " | " + commandTarget + " | " + commandValue + " |");
+    if (commandTarget.includes("d-XPath")) {
+        sideex_log.info("Executing: | " + commandName + " | " + getCommandTarget(commands[id], true) + " | " + commandValue + " |");
+    } else {
+        sideex_log.info("Executing: | " + commandName + " | " + commandTarget + " | " + commandValue + " |");
+    }	
 
     initializePlayingProgress(true);
 
@@ -457,7 +483,7 @@ function executionLoop() {
     if (currentPlayingCommandIndex + 1 >= commands.length) {
         if (!caseFailed) {
              setColor(currentTestCaseId, "success");
-            document.getElementById("result-runs").innerHTML = parseInt(document.getElementById("result-runs").innerHTML) + 1;
+            document.getElementById("result-runs").textContent = parseInt(document.getElementById("result-runs").textContent) + 1;
             declaredVars = {};
             sideex_log.info("Test case passed");
         } else {
@@ -501,7 +527,11 @@ function executionLoop() {
 
     return delay($('#slider').slider("option", "value")).then(function () {
         if (isExtCommand(commandName)) {
-            sideex_log.info("Executing: | " + commandName + " | " + commandTarget + " | " + commandValue + " |");
+            if (commandTarget.includes("d-XPath")) {
+                sideex_log.info("Executing: | " + commandName + " | " + getCommandTarget(commands[currentPlayingCommandIndex], true) + " | " + commandValue + " |");
+            } else {
+                sideex_log.info("Executing: | " + commandName + " | " + commandTarget + " | " + commandValue + " |");
+            }
             let upperCase = commandName.charAt(0).toUpperCase() + commandName.slice(1);
             return (extCommand["do" + upperCase](commandTarget, commandValue))
                .then(function() {
@@ -539,9 +569,11 @@ function finalizePlayingProgress() {
 
 document.addEventListener("dblclick", function(event) {
     var temp = event.target;
+    cleanCommandToolBar();
     while (temp.tagName.toLowerCase() != "body") {
         if (/records-(\d)+/.test(temp.id)) {
             var index = temp.id.split("-")[1];
+            recorder.detach();
             executeCommand(index);
         }
         if (temp.id == "command-grid") {
@@ -603,7 +635,7 @@ function catchPlayingError(reason) {
             setColor(currentPlayingCommandIndex + 1, "fail");
         }
         setColor(currentTestCaseId, "fail");
-        document.getElementById("result-failures").innerHTML = parseInt(document.getElementById("result-failures").innerHTML) + 1;
+        document.getElementById("result-failures").textContent = parseInt(document.getElementById("result-failures").textContent) + 1;
         sideex_log.info("Test case failed");
 
         /* Clear the flag, reset to recording phase */
@@ -739,7 +771,11 @@ function doCommand() {
     //console.log("in common");
 
     if (implicitCount == 0) {
-        sideex_log.info("Executing: | " + commandName + " | " + commandTarget + " | " + commandValue + " |");
+        if (commandTarget.includes("d-XPath")) {
+            sideex_log.info("Executing: | " + commandName + " | " + getCommandTarget(commands[currentPlayingCommandIndex], true) + " | " + commandValue + " |");
+        } else {
+            sideex_log.info("Executing: | " + commandName + " | " + commandTarget + " | " + commandValue + " |");
+        }
     }
 
     if (!isPlaying) {
@@ -772,11 +808,11 @@ function doCommand() {
         }, 500);
     });
     return p.then(function() {
-            if(commandValue.substr(0,2) === "${" && commandValue.substr(commandValue.length-1) === "}"){
-                commandValue = xlateArgument(commandValue);
+            if(commandValue.indexOf("${") !== -1){
+                commandValue = convertVariableToString(commandValue);
             }
-            if(commandTarget.substr(0,2) === "${" && commandTarget.substr(commandTarget.length-1) === "}"){
-                commandTarget = xlateArgument(commandTarget);
+            if(commandTarget.indexOf("${") !== -1){
+                commandTarget = convertVariableToString(commandTarget);
             }
             if (isWindowMethodCommand(commandName))
             {
@@ -807,7 +843,7 @@ function doCommand() {
                 sideex_log.error(result.result);
                 setColor(currentPlayingCommandIndex + 1, "fail");
                 setColor(currentTestCaseId, "fail");
-                document.getElementById("result-failures").innerHTML = parseInt(document.getElementById("result-failures").innerHTML) + 1;
+                document.getElementById("result-failures").textContent = parseInt(document.getElementById("result-failures").textContent) + 1;
                 if (commandName.includes("verify") && result.result.includes("did not match")) {
                     setColor(currentPlayingCommandIndex + 1, "fail");
                 } else {
@@ -851,4 +887,20 @@ function enableButton(buttonId) {
 
 function disableButton(buttonId) {
     document.getElementById(buttonId).disabled = true;
+}
+
+function convertVariableToString(variable){
+    let frontIndex = variable.indexOf("${");
+    let newStr = "";
+    while(frontIndex !== -1){
+        let prefix = variable.substring(0,frontIndex);
+        let suffix = variable.substring(frontIndex);
+        let tailIndex = suffix.indexOf("}");
+        let suffix_front = suffix.substring(0,tailIndex + 1);
+        let suffix_tail = suffix.substring(tailIndex + 1);
+        newStr += prefix + xlateArgument(suffix_front);
+        variable = suffix_tail;
+        frontIndex = variable.indexOf("${");
+    }
+    return newStr + variable;
 }

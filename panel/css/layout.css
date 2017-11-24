@@ -24,7 +24,7 @@ body {
     background: #F8F8F8;
     font-size: 12px;
     width: 100%;
-    min-width: 679px;
+    min-width: 725px;
     min-height: 690px;
     overflow: hidden;
 }
@@ -491,7 +491,6 @@ section#main {
 .module_right {}
 
 #main .module header h3 {
-    display: block;
     width: 90%;
     float: left;
 }
@@ -523,9 +522,9 @@ section#main {
 
 .module_content {
     margin-top: 0px;
-    margin-right: 20px;
-    margin-left: 20px;
     margin-bottom: 1px;
+    margin-left: 3px;
+    margin-right: 3px;
     color: #666;
 }
 
@@ -710,11 +709,6 @@ ul.tabs {
     -webkit-border-radius: 5px;
     -moz-border-radius: 5px;
     border-radius: 5px;
-    -webkit-box-shadow: 0 1px 0 #fff;
-    -moz-box-shadow: 0 1px 0 #fff;
-    text-shadow: 0 1px 0 #fff;
-    border: 1px solid #ccc;
-    box-shadow: 0 1px 0 #fff;  
     font-weight: bold;
 }
 ul.tabs2 li {
@@ -772,15 +766,19 @@ html ul.tabs2:nth-child(2) a {
     border-bottom-left-radius: 5px;
 }
 
-html ul.tabs li:last-child,
-html ul.tabs li:last-child a {
+html ul.tabs #clear-log,
+html ul.tabs #clear-log a {
     cursor: pointer;
-    -webkit-border-top-right-radius: 5px;
-    -webkit-border-bottom-right-radius: 5px;
-    -moz-border-radius-topright: 5px;
-    -moz-border-radius-bottomright: 5px;
-    border-top-right-radius: 5px;
-    border-bottom-right-radius: 5px;
+    -webkit-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+}
+html ul.tabs #save-log,
+html ul.tabs #save-log a {
+    cursor: pointer;
+    -webkit-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
 }
 html ul.tabs2 li:active {
     background: #F1F2F4;
@@ -811,14 +809,80 @@ ul.tabs li:hover a {
 
 /* Messages */
 
+div.test-suite-title {
+    display: flex;
+    border-bottom: solid 1px rgb(220, 220, 220);
+    background-color: rgb(223, 223, 223);
+}
+strong.test-suite-title {
+    flex: 9;
+}
+p.test-case-title {
+    padding-left: 20px;
+    padding-right: 20px;
+}
+i.fa-download {
+    flex: 1;
+    margin-top: 5px;
+    margin-left: 5px;
+    color: rgb(223, 223, 223);
+}
+i.case-plus {
+    flex: 1;
+    margin-top: 5px;
+    color: rgb(223, 223, 223);
+}
+i.suite-plus {
+    font-size: 18px;
+    margin-top: 0px;
+    color: rgb(167, 167, 167);
+}
+i.suite-open {
+    font-size: 18px;
+    margin-top: 0px;
+    color: rgb(167, 167, 167);
+}
+h3.suite-container-title {
+    display: flex;
+}
+div.suite-container-title {
+    flex: 5;
+}
+div.suite-fun {
+    display: flex;
+    flex: 1;
+    margin-right: 10px;
+}
+div.suite-open {
+    flex: 1;
+    padding: 0px 3px;
+    border-radius: 5px;
+}
+div.suite-plus {
+    flex: 1;
+    padding: 0px 3px;
+    border-radius: 5px;
+}
+
 .message {
-    border-bottom: 1px dotted #cccccc;
+    border: solid 1px rgba(220, 220, 220, 1);
+    border-radius: 5px;
+    width: inherit;
     cursor: pointer;
     margin-top: 5px;
     line-height: 20px;
     min-height: 30px;
 }
 
+div.message:hover {
+    box-shadow: 0 4px 10px 0 rgba(0, 0, 0, 0.19);
+}
+div.suite-plus:hover {
+    box-shadow: 0 4px 10px 0 rgba(0, 0, 0, 0.19);
+}
+div.suite-open:hover {
+    box-shadow: 0 4px 10px 0 rgba(0, 0, 0, 0.19);
+}
 .message .selectedCase {
     text-decoration: underline;
 }
@@ -827,14 +891,14 @@ ul.tabs li:hover a {
 
 .message .success {
     background-repeat: no-repeat;
-    background-position: 0px 3px;
+    background-position: 20px 3px;
     background-image: url(../images/icn_alert_success.png);
     background-size: 13px auto;
 }
 
 .message .fail {
     background-repeat: no-repeat;
-    background-position: 0px 4px;
+    background-position: 20px 4px;
     background-image: url(../images/icn_alert_error.png);
     background-size: 13px auto;
 }
@@ -1188,7 +1252,7 @@ input[type=submit].btn_post_message:hover {
 }
 
 #main .module_content h2 {
-    color: #444444;
+    color: #444444; 
     text-transform: none;
     text-shadow: 0 1px 0 #fff;
     font-size: 18px;
@@ -1392,9 +1456,19 @@ button.active {
     margin-left: 20px;
 }
 
-.QA_img {
-    float: right;
+.toolBar_img {
+    width: 35px;
+    height: 35px;
+    margin-top: 5px;
     margin-right: 30px;
+    float: right;
+    -webkit-filter: invert(80%);
+    filter: invert(80%);	
+}
+
+.toolBar_img:hover{
+    -webkit-filter: invert(100%);
+    filter: invert(100%);	
 }
 
 span.hotKey {

@@ -26,7 +26,6 @@ function setSelectedSuite(id) {
     cleanSelected();
     $("#" + id).addClass('selectedSuite');
     clean_panel();
-    // document.getElementById("records-grid").innerHTML = "";
 }
 
 function setSelectedCase(id) {
@@ -82,7 +81,7 @@ function appendContextMenu(node, isCase) {
         var add_case = document.createElement("li");
         a = document.createElement("a");
         a.setAttribute("href", "#");
-        a.innerHTML = "Add New Test Case";
+        a.textContent = "Add New Test Case";
         add_case.appendChild(a);
         add_case.addEventListener("click", function(event) {
             event.stopPropagation();
@@ -93,7 +92,7 @@ function appendContextMenu(node, isCase) {
         var remove_case = document.createElement("li");
         a = document.createElement("a");
         a.setAttribute("href", "#");
-        a.innerHTML = "Remove Test Case";
+        a.textContent = "Remove Test Case";
         remove_case.appendChild(a);
         remove_case.addEventListener("click", function(event) {
             event.stopPropagation();
@@ -104,22 +103,24 @@ function appendContextMenu(node, isCase) {
         var rename_case = document.createElement("li");
         a = document.createElement("a");
         a.setAttribute("href", "#");
-        a.innerHTML = "Rename Test Case";
+        a.textContent = "Rename Test Case";
         rename_case.appendChild(a);
         rename_case.addEventListener("click", function(event) {
             event.stopPropagation();
             var s_case = getSelectedCase();
             var n_title = prompt("Please enter the Test Case's name", sideex_testCase[s_case.id].title);
-            // get text node
-            s_case.childNodes[0].textContent = n_title;
-            sideex_testCase[s_case.id].title = n_title;
+            if (n_title) {
+                // get text node
+                s_case.childNodes[0].textContent = n_title;
+                sideex_testCase[s_case.id].title = n_title;
+            }
         }, false);
         ul.appendChild(rename_case);
     } else {
         var open_suite = document.createElement("li");
         a = document.createElement("a");
         a.setAttribute("href", "#");
-        a.innerHTML = "Open Test Suites";
+        a.textContent = "Open Test Suites";
         open_suite.appendChild(a);
         open_suite.addEventListener("click", function(event) {
             event.stopPropagation();
@@ -130,7 +131,7 @@ function appendContextMenu(node, isCase) {
         var add_suite = document.createElement("li");
         a = document.createElement("a");
         a.setAttribute("href", "#");
-        a.innerHTML = "Add New Test Suite";
+        a.textContent = "Add New Test Suite";
         add_suite.appendChild(a);
         add_suite.addEventListener("click", function(event) {
             event.stopPropagation();
@@ -141,7 +142,7 @@ function appendContextMenu(node, isCase) {
         var save_suite = document.createElement("li");
         a = document.createElement("a");
         a.setAttribute("href", "#");
-        a.innerHTML = "Save Test Suite As...";
+        a.textContent = "Save Test Suite As...";
         save_suite.appendChild(a);
         save_suite.addEventListener("click", function(event) {
             event.stopPropagation();
@@ -152,7 +153,7 @@ function appendContextMenu(node, isCase) {
         var close_suite = document.createElement("li");
         a = document.createElement("a");
         a.setAttribute("href", "#");
-        a.innerHTML = "Close Test Suite";
+        a.textContent = "Close Test Suite";
         close_suite.appendChild(a);
         close_suite.addEventListener("click", function(event) {
             event.stopPropagation();
@@ -163,7 +164,7 @@ function appendContextMenu(node, isCase) {
         var add_case = document.createElement("li");
         a = document.createElement("a");
         a.setAttribute("href", "#");
-        a.innerHTML = "Add New Test Case";
+        a.textContent = "Add New Test Case";
         add_case.appendChild(a);
         add_case.addEventListener("click", function(event) {
             event.stopPropagation();
@@ -174,18 +175,20 @@ function appendContextMenu(node, isCase) {
         var rename_suite = document.createElement("li");
         a = document.createElement("a");
         a.setAttribute("href", "#");
-        a.innerHTML = "Rename Test Suite";
+        a.textContent = "Rename Test Suite";
         rename_suite.appendChild(a);
         rename_suite.addEventListener("click", function(event) {
             event.stopPropagation();
             var s_suite = getSelectedSuite();
             var n_title = prompt("Please enter the Test Suite's name", sideex_testSuite[s_suite.id].title);
-            // get text node
-            s_suite.childNodes[0].textContent = n_title;
-            sideex_testSuite[s_suite.id].title = n_title;
-            sideex_testSuite[s_suite.id].file_name = n_title + ".html";
-            $(s_suite).find("strong").addClass("modified");
-            closeConfirm(true);
+            if (n_title) {
+                // get text node
+                s_suite.getElementsByTagName("STRONG")[0].textContent = n_title;
+                sideex_testSuite[s_suite.id].title = n_title;
+                sideex_testSuite[s_suite.id].file_name = n_title + ".html";
+                $(s_suite).find("strong").addClass("modified");
+                closeConfirm(true);
+            }
         }, false);
         ul.appendChild(rename_suite);
     }
@@ -205,7 +208,7 @@ function addTestCase(title, id) {
     }
 
     var p = document.createElement("p");
-    p.innerHTML = escapeHTML(title);
+    p.textContent = title;
     p.setAttribute("id", id);
     p.setAttribute("contextmenu", "menu" + id);
 
@@ -218,6 +221,7 @@ function addTestCase(title, id) {
 
     cleanSelected();
     p.classList.add("selectedCase");
+    p.classList.add("test-case-title");
     p.parentNode.classList.add("selectedSuite");
 
     if (sideex_testCase[id]) { // load file
@@ -286,13 +290,41 @@ function addTestCase(title, id) {
 }
 
 function addTestSuite(title, id) {
+    // set test suite title div
+    var textDiv = document.createElement("div");
+    textDiv.classList.add("test-suite-title");
+
+    // add save icon
+    var saveIcon = document.createElement("i");
+    saveIcon.classList.add("fa");
+    saveIcon.classList.add("fa-download");
+    saveIcon.setAttribute("aria-hidden", "true");
+    saveIcon.addEventListener("click", clickSaveIcon);
+    textDiv.appendChild(saveIcon);
+
+    // set test suite title
     var text = document.createElement("strong");
+    text.classList.add("test-suite-title");
     text.innerHTML = escapeHTML(title);
+    textDiv.appendChild(text);
+
+    // add plus icon
+    var plusIcon = document.createElement("i");
+    plusIcon.classList.add("fa");
+    plusIcon.classList.add("fa-plus");
+    plusIcon.classList.add("case-plus");
+    plusIcon.setAttribute("aria-hidden", "true");
+    plusIcon.addEventListener("click", clickCasePlusIcon);
+    textDiv.appendChild(plusIcon);
+
+    // set test suite div
     var div = document.createElement("div");
     div.setAttribute("id", id);
     div.setAttribute("contextmenu", "menu" + id);
     div.setAttribute("class", "message");
-    div.appendChild(text);
+    div.addEventListener("mouseover", mouseOnAndOutTestSuite);
+    div.addEventListener("mouseout", mouseOnAndOutTestSuite);
+    div.appendChild(textDiv);
 
     var s_suite = getSelectedSuite();
     if (s_suite) {
@@ -313,7 +345,6 @@ function addTestSuite(title, id) {
             cleanSelected();
             this.classList.add("selectedSuite");
             clean_panel();
-            // document.getElementById("records-grid").innerHTML = "";
         }
     }, false);
 
@@ -340,6 +371,11 @@ function addTestSuite(title, id) {
     // enable play button
     enableButton("playSuites");
     enableButton("playSuite");
+}
+
+function modifyCaseSuite() {
+    getSelectedCase().classList.add("modified");
+    getSelectedSuite().getElementsByTagName("strong")[0].classList.add("modified");
 }
 
 document.getElementById("add-testSuite").addEventListener("click", function(event) {
@@ -425,7 +461,6 @@ document.getElementById("close-testSuite").addEventListener('click', function(ev
                 disableButton("playSuites");
             }    
         }
-        // document.getElementById("records-grid").innerHTML = "";
     }
 }, false);
 
@@ -467,6 +502,28 @@ document.getElementById("delete-testCase").addEventListener('click', function() 
                 disableButton("playback");
             }
         }
-        // document.getElementById("records-grid").innerHTML = "";
     }
 }, false);
+
+function clickCasePlusIcon(event) {
+    event.stopPropagation();
+    event.target.parentNode.parentNode.click();
+    document.getElementById('add-testCase').click();
+}
+
+function clickSaveIcon(event) {
+    event.stopPropagation();
+    event.target.parentNode.parentNode.click();
+    document.getElementById('save-testSuite').click();
+}
+
+function clickSuitePlusIcon(event) {
+    document.getElementById("add-testSuite").click();
+}
+
+function clickSuiteOpenIcon(event) {
+    document.getElementById("load-testSuite-hidden").click();
+}
+
+document.getElementById("suite-plus").addEventListener("click", clickSuitePlusIcon);
+document.getElementById("suite-open").addEventListener("click", clickSuiteOpenIcon);

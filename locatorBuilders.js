@@ -105,9 +105,13 @@ LocatorBuilders.prototype.buildAll = function(el) {
                 //Samit: The following is a quickfix for above commented code to stop exceptions on almost every locator builder
                 //TODO: the builderName should NOT be used as a strategy name, create a feature to allow locatorBuilders to specify this kind of behaviour
                 //TODO: Useful if a builder wants to capture a different element like a parent. Use the this.elementEquals
-                var fe = this.findElement(locator);
-                if ((e == fe) || (coreLocatorStrategies[finderName] && coreLocatorStrategies[finderName].is_fuzzy_match && coreLocatorStrategies[finderName].is_fuzzy_match(fe, e))) {
-                    locators.push([locator, finderName]);
+                if (finderName != 'tac') {
+                    var fe = this.findElement(locator);
+                    if ((e == fe) || (coreLocatorStrategies[finderName] && coreLocatorStrategies[finderName].is_fuzzy_match && coreLocatorStrategies[finderName].is_fuzzy_match(fe, e))) {
+                        locators.push([locator, finderName]);
+                    }
+                } else {
+                    locators.splice(0, 0, [locator, finderName]);
                 }
             }
         } catch (e) {
@@ -537,7 +541,3 @@ LocatorBuilders.add('xpath:position', function(e, opt_contextNode) {
     }
     return null;
 });
-
-// Samit: Warning: The old method of setting the order using LocatorBuilders.order is now deprecated
-// You can change the priority of builders by setting LocatorBuilders.order.
-//LocatorBuilders.order = ['ui', 'id', 'link', 'name', 'css', 'dom:name', 'xpath:link', 'xpath:img', 'xpath:attributes', 'xpath:idRelative', 'xpath:href', 'dom:index', 'xpath:position'];

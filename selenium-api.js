@@ -385,50 +385,75 @@ Selenium.prototype.reset = function() {
     this.browserbot.selectWindow("null");
     this.browserbot.resetPopups();
 };
-
+// © Ming-Hung Hsu, SideeX Team
 Selenium.prototype.doVerifyText = function(locator, value) {
     var element = this.browserbot.findElement(locator);
     if (getText(element) !== value) {
         throw new Error("Actual value '" + getText(element) + "' did not match '" + value + "'");
     }
 };
-
+// © Ming-Hung Hsu, SideeX Team
 Selenium.prototype.doVerifyTitle = function(value) {
     if (normalizeSpaces(this.getTitle()) !== value) {
         throw new Error("Actual value '" + normalizeSpaces(this.getTitle()) + "' did not match '" + value + "'");
     }
 };
-
+// © Ming-Hung Hsu, SideeX Team
+Selenium.prototype.doVerifyValue = function(locator, value) {
+    if (this.getValue(locator) !== value) {
+        throw new Error("Actual value '" + this.getValue(locator) + "' did not match '" + value + "'");
+    }
+};
+// © Ming-Hung Hsu, SideeX Team
 Selenium.prototype.doAssertText = function(locator, value) {
     var element = this.browserbot.findElement(locator);
     if (getText(element) !== value) {
         throw new Error("Actual value '" + getText(element) + "' did not match '" + value + "'");
     }
 };
-
+// © Ming-Hung Hsu, SideeX Team
 Selenium.prototype.doAssertTitle = function(value) {
     if (normalizeSpaces(this.getTitle()) !== value) {
         throw new Error("Actual value '" + normalizeSpaces(this.getTitle()) + "' did not match '" + value + "'");
     }
 };
-
+// © Ming-Hung Hsu, SideeX Team
+Selenium.prototype.doAssertValue = function(locator, value) {
+    if (this.getValue(locator) !== value) {
+        throw new Error("Actual value '" + this.getValue(locator) + "' did not match '" + value + "'");
+    }
+};
+// © Ming-Hung Hsu, SideeX Team
 Selenium.prototype.doStore = function(value, varName) {
     browser.runtime.sendMessage({ "storeStr": value, "storeVar": varName });
 };
-
+// © Ming-Hung Hsu, SideeX Team
 Selenium.prototype.doStoreText = function(locator, varName) {
     var element = this.browserbot.findElement(locator);
-    browser.runtime.sendMessage({ "storeStr": getText(element), "storeVar": varName });
+    var text = getText(element);
+    if(text === '')
+        throw new Error("Error: This element does not have property 'Text'. Please change to use storeValue command.");
+    browser.runtime.sendMessage({ "storeStr": text, "storeVar": varName });
 };
-
+// © Ming-Hung Hsu, SideeX Team
 Selenium.prototype.doStoreTitle = function(value, varName) {
     browser.runtime.sendMessage({ "storeStr": value, "storeVar": varName });
 };
-
+// © Ming-Hung Hsu, SideeX Team
+Selenium.prototype.doStoreValue = function(locator, varName) {
+    var val = this.getValue(locator);
+    if(typeof val === 'undefined')
+        throw new Error("Error: This element does not have property 'value'. Please change to use storeText command.");
+    browser.runtime.sendMessage({ "storeStr": this.getValue(locator), "storeVar": varName });
+};
+// © Ming-Hung Hsu, SideeX Team
 Selenium.prototype.doEcho = function(value) {
     browser.runtime.sendMessage({ "echoStr": value });
 };
-
+// © Ming-Hung Hsu, SideeX Team
+Selenium.prototype.doStoreEval = function(value, varName) {
+    browser.runtime.sendMessage({ "storeStr": this.getEval(value), "storeVar": varName });
+};
 
 // © Yu-Xian Chen, SideeX Team
 Selenium.prototype.doWaitPreparation = function() {
@@ -2823,6 +2848,7 @@ Selenium.prototype.replaceVariables = function(str) {
     // Find all of the matching variable references
     var match = stringResult.match(/\$\{\w+\}/g);
     if (!match) {
+
         return stringResult;
     }
 
@@ -3012,24 +3038,20 @@ Selenium.prototype.doDeleteAllVisibleCookies = function() {
     }
     //LOG.setLogLevelThreshold(logLevel);
 }*/
-
+// © Ming-Hung Hsu, SideeX Team
 Selenium.prototype.doRunScript = function(script) {
-    /**
-     * Creates a new "script" tag in the body of the current test window, and
-     * adds the specified text into the body of the command.  Scripts run in
-     * this way can often be debugged more easily than scripts executed using
-     * Selenium's "getEval" command.  Beware that JS exceptions thrown in these script
-     * tags aren't managed by Selenium, so you should probably wrap your script
-     * in try/catch blocks if there is any chance that the script will throw
-     * an exception.
-     * @param script the JavaScript snippet to run
-     */
-    var win = this.browserbot.getCurrentWindow();
-    var doc = win.document;
-    var scriptTag = doc.createElement("script");
-    scriptTag.type = "text/javascript"
-    scriptTag.text = script;
-    doc.body.appendChild(scriptTag);
+
+    window.postMessage({
+        direction: "from-content-runscript",
+        script: script
+    }, "*");
+    return this.browserbot.getRunScriptMessage().then(function(actualMessage) {
+        console.log(actualMessage);
+       if (actualMessage != "No error!!!!")
+            return Promise.reject(actualMessage);
+       else
+            return Promise.resolve(true);
+    });
 }
 
 Selenium.prototype.doAddLocationStrategy = function(strategyName, functionDefinition) {
@@ -3685,11 +3707,17 @@ Selenium.prototype.doAssertConfirmation = function(value) {
 // Added show element by SideeX comitters (Copyright 2017)
 Selenium.prototype.doShowElement = function(locator){
     try{
-        var element = this.browserbot.findElement(locator);
-        var origin_backgroundColor = element.style.backgroundColor;
-        element.style.backgroundColor = "yellow";
+        var element = this.browserbot.findElement(locator, window);
+        var div = document.createElement("div");
+        var r = element.getBoundingClientRect();
+        if (r.left >= 0 && r.top >= 0 && r.width > 0 && r.height > 0) {
+            var style = "pointer-events: none; position: absolute; box-shadow: 0 0 0 1px black; outline: 1px dashed white; outline-offset: -1px; background-color: rgba(250,250,128,0.4); z-index: 100;";
+            var pos = "top:" + (r.top + window.scrollY) + "px; left:" + (r.left + window.scrollX) + "px; width:" + r.width + "px; height:" + r.height + "px;";
+            div.setAttribute("style", style + pos);
+        }
+        document.body.insertBefore(div, document.body.firstChild);
         setTimeout(function() {
-            element.style.backgroundColor = origin_backgroundColor;
+            document.body.removeChild(div);
         }, 500);
         return true;
     } catch (e) {

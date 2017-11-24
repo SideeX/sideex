@@ -16,14 +16,45 @@
  */
 
 $(document).ready(function() {
+
+    var userid = browser.runtime.id;
+    var tac = false;
+
+    /**
+     * Only used to count the TAC locator usages.
+     */
+    browser.storage.sync.get("tac")
+        .then((res) => {
+            if (res.tac) {
+                tac = res.tac;
+                if (tac) {
+                    $.ajax({
+                        url: 'http://log.sideex.org/usage/tacUsageCount.php',
+                        type: 'POST',
+                        data: {
+                            userid: userid
+                        }
+                    });
+                }
+            } else {
+                browser.storage.sync.set({
+                    tac: tac
+                });
+            }
+        });
+
     $(".tablesorter").tablesorter();
 
-    $(".QA_img").click(function() {
+    $("#help").click(function() {
         browser.tabs.create({
             url: "http://sideex.org/",
             windowId: contentWindowId
         });
     });
+
+    $("#options").click(function() {
+        browser.runtime.openOptionsPage();		
+    });	
 
     //init dropdown width
     $("#command-dropdown").css({
@@ -44,7 +75,7 @@ $(document).ready(function() {
     //dropdown when click the down icon
     $(".fa-chevron-down").click(function() {
         dropdown($("#" + $(this).attr("id") + "dropdown"));
-        $(".w3-show").bind("mouseleave", function() {
+        $(".w3-show").on("mouseleave", function() {
             dropdown($(this));
         });
     });
@@ -62,7 +93,7 @@ $(document).ready(function() {
                     $t_fixed.find("tbody").remove().end().addClass("fixed").insertBefore($this);
                     $t_fixed.find("th").each(function(index) {
                         var $self = $(this);
-                        $this.find("th").eq(index).bind("DOMAttrModified", function(e) {
+                        $this.find("th").eq(index).on("DOMAttrModified", function(e) {
                             $self.css("width", $(this).outerWidth() + "px");
                         });
                     });
@@ -119,18 +150,19 @@ $(document).ready(function() {
     }).slider("pips", {
         rest: "label", labels: ["Fast", "", "", "", "", "Slow"]
     });
+
 });
 
 var dropdown = function(node) {
     if (!node.hasClass("w3-show")) {
         node.addClass("w3-show");
         setTimeout(function() {
-            $(document).bind("click", clickWhenDropdownHandler);
+            $(document).on("click", clickWhenDropdownHandler);
         }, 200);
     } else {
-        $(".w3-show").unbind("mouseleave");
+        $(".w3-show").off("mouseleave");
         node.removeClass("w3-show");
-        $(document).unbind("click", clickWhenDropdownHandler);
+        $(document).off("click", clickWhenDropdownHandler);
     }
 };
 
@@ -144,14 +176,14 @@ var clickWhenDropdownHandler = function(e) {
 
 function closeConfirm(bool) {
     if (bool) {
-        $(window).bind("beforeunload", function(e) {
+        $(window).on("beforeunload", function(e) {
             var confirmationMessage = "You have a modified suite!";
             e.returnValue = confirmationMessage; // Gecko, Trident, Chrome 34+
             return confirmationMessage; // Gecko, WebKit, Chrome <34
         });
     } else {
         if (!$("#testCase-grid").find(".modified").length)
-            $(window).unbind("beforeunload");
+            $(window).off("beforeunload");
     }
 }
 
@@ -164,6 +196,7 @@ function genCommandDatalist() {
         "assertPrompt",
         "assertText",
         "assertTitle",
+        "assertValue",
         "chooseCancelOnNextConfirmation",
         "chooseCancelOnNextPrompt",
         "chooseOkOnNextConfirmation",
@@ -187,12 +220,15 @@ function genCommandDatalist() {
         "selectWindow",
         "sendKeys",
         "store",
+        "storeEval",
         "storeText",
         "storeTitle",
+        "storeValue",
         "submit",
         "type",
         "verifyText",
-        "verifyTitle"
+        "verifyTitle",
+        "verifyValue"
     ];
 
     var datalistHTML = "";

@@ -1,3 +1,5 @@
+<!DOCTYPE html>
+
 <!--
 /*
 * Copyright 2017 SideeX committers
@@ -17,7 +19,6 @@
 */
 -->
 
-<!doctype html>
 <html lang="en">
 
 <head>
@@ -33,6 +34,7 @@
     <link rel="stylesheet" href="panel/css/ie.css" type="text/css" media="screen" />
     <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
+    <script type="text/javascript" src="panel/js/utils.js"></script>
     <script type="text/javascript" src="panel/js/jquery-3.2.1.min.js"></script>
     <script type="text/javascript" src="panel/js/jquery-ui.min.js"></script>
     <script type="text/javascript" src="panel/js/jquery-ui-slider-pips.js"></script>
@@ -51,9 +53,7 @@
     <header id="header">
         <hgroup>
             <img class="logo_img" src="./icons/logo.png"></img>
-            <a href="#">
-                <img class="QA_img" src="./icons/QA.png"></img>
-            </a>
+            <a href="#"><img id="help" class="toolBar_img" src="./icons/help.png"></img></a>
         </hgroup>
     </header>
     <!-- end of header bar -->
@@ -105,27 +105,17 @@
                 <div id="slider"></div>
                 <div id="middle-container" class="module">
                     <header>
-                        <h3>Test case</h3>
+                        <h3 class="suite-container-title">
+                            <div class="suite-container-title">Test Suites</div>
+                            <div id="suite-fun" class="suite-fun">
+                                <div id="suite-open" class="suite-open"><i id="suite-open-icon" class="fa fa-folder-open-o suite-open" aria-hidden="true"></i></div>
+                                <div id="suite-plus" class="suite-plus"><i id="suite-plus-icon" class="fa fa-plus suite-plus" aria-hidden="true"></i></div>
+                            </div>
+                        </h3>
                     </header>
                     <div id="testCase-container" class="case_list">
                         <!-- Sug: Add animation when dragdrop -->
                         <div id="testCase-grid" class="module_content">
-                            <!--<div class="message"><strong>Suite</strong>
-                                <p>Case</p>
-                                <p class="modified">Case</p>
-                            </div>
-                            <div class="message"><strong>Suite</strong>
-                                <p>Case</p>
-                            </div>
-                            <div class="message"><strong>Suite</strong>
-                                <p>Case</p>
-                            </div>
-                            <div class="message"><strong>Suite</strong>
-                                <p>Case</p>
-                            </div>
-                            <div class="message"><strong>Suite</strong>
-                                <p>Case</p>
-                            </div>-->
                         </div>
                     </div>
                 </div>
@@ -263,7 +253,8 @@
                     <li id="history-log"><a>Log</a></li>
                     <li id="reference-log"><a>Reference</a></li>
                     </ul>
-                    <ul class="tabs">                       
+                    <ul class="tabs">
+                        <li id="save-log"><a>Save</a></li>
                         <li id="clear-log"><a>Clear</a></li>
                     </ul>
                     
@@ -297,9 +288,7 @@
     <script src="initial.js"></script>
     <script src="escape.js"></script>
     <script src="editor.js"></script>
-    <script src="locatorBuilders.js"></script>
     <script src="formatCommand.js"></script>
-    <!-- playback -->
     <script type="text/javascript" src="playback-api.js"></script>
 </body>
 

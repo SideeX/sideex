@@ -288,7 +288,7 @@ function getInputValue(inputElement) {
         }
     }
     if (inputElement.value == null) {
-        throw new SeleniumError("This element has no value; is it really a form field?");
+        //throw new SeleniumError("This element has no value; is it really a form field?");
     }
     return inputElement.value;
 }
@@ -1059,13 +1059,17 @@ function getAncestorOrSelfWithJavascriptHref(element) {
  * @param locator  the locator to parse
  */
 function parse_locator(locator) {
-    var result = locator.match(/^([A-Za-z]+)=.+/);
-    if (result) {
-        var type = result[1].toLowerCase();
-        var actualLocator = locator.substring(type.length + 1);
-        return { type: type, string: actualLocator };
+    if (locator.includes("d-XPath")) {
+        return { type: 'tac', string: locator };
+    } else {
+        var result = locator.match(/^([A-Za-z]+)=.+/);
+        if (result) {
+            var type = result[1].toLowerCase();
+            var actualLocator = locator.substring(type.length + 1);
+            return { type: type, string: actualLocator };
+        }
+        return { type: 'implicit', string: locator };
     }
-    return { type: 'implicit', string: locator };
 }
 
 /**

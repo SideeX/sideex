@@ -36,13 +36,21 @@ function handleMessage(message, sender, sendResponse) {
         var target = message.target;
         // show first locator by default
         var locatorString = target[0][0];
+        if (locatorString.includes("d-XPath")) locatorString = "auto-located-by-tac";
+
+        // Update toolbar
+        document.getElementById("command-target").value = locatorString;
+        var target_dropdown = document.getElementById("target-dropdown");
+        var command_target_list = document.getElementById("command-target-list");
+        emptyNode(target_dropdown);
+        emptyNode(command_target_list);
 
         var locatorList = document.createElement("datalist");
         for (var m = 0; m < message.target.length; ++m) {
             var option = document.createElement("option");
-            option.appendChild(document.createTextNode(message.target[m][0]));
-            option.text = message.target[m][0];
-            locatorList.appendChild(option);
+            option.textContent = message.target[m][0];
+            target_dropdown.appendChild(option.cloneNode(true));
+            command_target_list.appendChild(option);
         }
 
         var selectedRecordId = getSelectedRecord();
@@ -50,17 +58,21 @@ function handleMessage(message, sender, sendResponse) {
         // If selecting a command, change the target inside.
         if (selectedRecordId != "") {
             var selectedRecord = document.getElementById(selectedRecordId);
-            var originalLocatorlist = selectedRecord.getElementsByTagName("td")[1].getElementsByTagName("datalist")[0];
+            var datalist = selectedRecord.getElementsByTagName("td")[1].getElementsByTagName("datalist")[0];
 
             // Update locator data list
-            originalLocatorlist.innerHTML = escapeHTML(locatorList.innerHTML);
+            emptyNode(datalist);
+            for (var m = 0; m < message.target.length; ++m) {
+                var option = document.createElement("option");
+                option.textContent = message.target[m][0];
+                datalist.appendChild(option);
+            }
 
             // Update target view, show first locator by default
-            var adjustedString = adjustTooLongStr(locatorString, getTdShowValueNode(selectedRecord, 1));
             var node = getTdShowValueNode(selectedRecord, 1);
             if (node.childNodes && node.childNodes[0])
                 node.removeChild(node.childNodes[0]);
-            node.appendChild(document.createTextNode(adjustedString));
+            node.appendChild(document.createTextNode(locatorString));
 
             // Update hidden actual locator value
             node = getTdRealValueNode(selectedRecord, 1);
@@ -72,11 +84,6 @@ function handleMessage(message, sender, sendResponse) {
             // If selecting a blank command;
             addCommandAuto("", target, "");
         }
-
-        // Update toolbar
-        document.getElementById("command-target").value = unescapeHtml(locatorString);
-        document.getElementById("target-dropdown").innerHTML = unescapeHtml(locatorList.innerHTML);
-        document.getElementById("command-target-list").innerHTML = escapeHTML(locatorList.innerHTML);
 
         return;
     }
@@ -117,10 +124,15 @@ function notification(command, target, value) {
         "type": "basic",
         "iconUrl": "/icons/icons-48.png",
         "title": "Command Recorded",
-        "message": "command: " + String(command) + "\ntarget: " + String(target[0][0]) + "\nvalue: " + String(value) 
+        "message": "command: " + String(command) + "\ntarget: " + tacPreprocess(String(target[0][0])) + "\nvalue: " + String(value) 
     });
 
     setTimeout(function() {
         browser.notifications.clear(tempCount);
     }, 1500);
+}
+
+function tacPreprocess(target) {
+    if (target.includes("d-XPath")) return "auto-located-by-tac";
+    return target;
 }

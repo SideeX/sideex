@@ -15,24 +15,13 @@
  *
  */
 
-var sideex_wait = {
-    next_command_wait: false,
-    done: true
-};
+var elementForInjectingScript = document.createElement("script");
+elementForInjectingScript.src = browser.runtime.getURL("runScript.js");
+(document.head || document.documentElement).appendChild(elementForInjectingScript);
 
-var sideex_testCase = {
-    count: 0
-};
-
-var sideex_testSuite = {
-    count: 0
-};
-
-function clean_panel() {
-    emptyNode(document.getElementById("records-grid"));
-    emptyNode(document.getElementById("command-target-list"));
-    emptyNode(document.getElementById("target-dropdown"));
-    document.getElementById("command-command").value = "";
-    document.getElementById("command-target").value = "";
-    document.getElementById("command-value").value = "";
-}
+window.addEventListener("message", function(event) {
+	if (event.source.top == window && event.data && event.data.direction == "from-page-runscript") {
+		selenium.browserbot.runScriptResponse = true;
+		selenium.browserbot.runScriptMessage = event.data.result;
+	}
+});

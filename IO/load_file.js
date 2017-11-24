@@ -58,8 +58,7 @@ function readCase(f) {
                 // do not forget that textNode is a childNode
                 for (var j = 0; j < 3; ++j) {
                     var node = document.getElementById("records-" + i).getElementsByTagName("td")[j];
-                    var adjust = adjustTooLongStr(node.childNodes[0].innerHTML, node.childNodes[1]);
-                    adjust = unescapeHtml(adjust);
+                    var adjust = unescapeHtml(node.childNodes[0].innerHTML);
                     node.childNodes[1].appendChild(document.createTextNode(adjust));
                 }
             }
