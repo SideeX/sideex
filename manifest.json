@@ -1,8 +1,8 @@
 {
-    "description": "SideeX (An Extended Version of Selenium IDE): An Open Source Record-Playback-Style Web Application Testing Tool",
+    "description": "SideeX (Extended Selenium IDE) - A free and open source smart record-playback automated web application testing tool",
     "manifest_version": 2,
-    "name": "SideeX: An Extended Version of Selenium IDE",
-    "version": "2.3.2",
+    "name": "SideeX - Smart Record-Play Browser Automation",
+    "version": "2.3.2.1",
     "homepage_url": "http://sideex.org/",
     "icons":
     {
