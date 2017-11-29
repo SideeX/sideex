@@ -520,11 +520,19 @@ section#main {
     -webkit-border-bottom-right-radius: 5px;
 }
 
-.module_content {
+#testCase-container .module_content {
     margin-top: 0px;
     margin-bottom: 1px;
     margin-left: 3px;
     margin-right: 3px;
+    color: #666;
+}
+
+#tab4 .module_content {
+    margin-top: 0px;
+    margin-bottom: 1px;
+    margin-left: 15px;
+    margin-right: 15px;
     color: #666;
 }
 
@@ -688,19 +696,19 @@ section#main {
     background-color: #f8f8f8;
 }
 ul.tabs2 {
-float:left;
- margin: 3px 10px 0 0;
-padding: 0;
-list-style: none;
-height: 24px;
+    margin: 3px 0 0 5px;
+    padding: 0;
+    float: left;
+    list-style: none;
+    height: 24px;
     /*--Set height of tabs--*/
--webkit-border-radius: 5px;
--moz-border-radius: 5px;
-border-radius: 5px;
-font-weight: bold;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+    font-weight: bold;
 }
 ul.tabs {
-    margin: 3px 10px 0 0;
+    margin: 3px 5px 0 0;
     padding: 0;
     float: right;
     list-style: none;
