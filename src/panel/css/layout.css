@@ -1433,15 +1433,11 @@ button.active {
     overflow-x: hidden;
 }
 
-.fixed {
-    top: 99px;
-    position: fixed;
-    width: auto;
-    z-index: 2;
-}
-
-.fixed td {
-    border: 0px solid !important;
+.fixed th {
+    position: -webkit-sticky;
+    position: sticky;
+    top: 0;
+    background: #F1F1F4 url(../images/secondary_bar.png) repeat-x;
 }
 
 /* Overwrite Confirm Dialog */
