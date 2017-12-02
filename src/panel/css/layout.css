@@ -1561,3 +1561,7 @@ span.hotKey {
 #slider .ui-slider-pip.ui-slider-pip-selected-initial {
     color: #434d5a; 
 }
+
+.is-dragover {
+    background-color: #f2f2f2;
+}

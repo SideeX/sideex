@@ -83,7 +83,7 @@ function readCase(f) {
 
 function readSuite(f) {
     var reader = new FileReader();
-
+    if (!f.name.includes("htm")) return;
     reader.readAsText(f);
 
     reader.onload = function(event) {
@@ -140,3 +140,25 @@ document.getElementById("load-testSuite-show-menu").addEventListener("click", fu
     event.stopPropagation();
     document.getElementById('load-testSuite-hidden').click();
 }, false);
+
+$(document).ready(function() {
+
+    $("#testCase-container").on('drag dragstart dragend dragover dragenter dragleave drop', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+    })
+    .on('dragover dragenter', function() {
+        $("#testCase-container").addClass('is-dragover');
+    })
+    .on('dragleave dragend drop', function() {
+        $("#testCase-container").removeClass('is-dragover');
+    })
+    .on('drop', function(e) {
+        let droppedFiles = e.originalEvent.dataTransfer.files;
+        let droppedFilesLength = droppedFiles.length;
+        for (var i = 0; i < droppedFilesLength; i++) {
+            readSuite(droppedFiles[i]);
+        }
+    });
+
+});
