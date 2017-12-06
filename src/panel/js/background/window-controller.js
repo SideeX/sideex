@@ -240,7 +240,7 @@ class ExtCommand {
         return new Promise(function(resolve, reject) {
             let counter = 0;
             let interval = setInterval(function() {
-                if (ref[inspecting] == undefined || ref[inspecting] == false) {
+                if (ref[inspecting] === undefined || ref[inspecting] === false) {
                     counter++;
                     if (counter > self.waitTimes) {
                         reject("Timeout");
