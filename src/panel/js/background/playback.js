@@ -217,17 +217,21 @@ window.onload = function() {
                 if (tabs.length === 0) {
                     console.log("No match tabs");
                 } else {
-                    browser.tabs.sendMessage(tabs[0].id, {
-                        showElement: true,
-                        targetValue: targetValue
-                    }).then(function(response) {
-                        if (response){
-                            console.log(response.result);
-                            if (!response.result) {
-                                sideex_log.error("Element not found");
+                    browser.webNavigation.getAllFrames({tabId: tabs[0].id})
+                        .then(function(framesInfo){
+                            var frameIds = [];
+                            for (let i = 0; i < framesInfo.length; i++) {
+                                frameIds.push(framesInfo[i].frameId)
                             }
-                        }
-                    });
+                            frameIds.sort();
+                            var infos = {
+                                "index": 0,
+                                "tabId": tabs[0].id,
+                                "frameIds": frameIds,
+                                "targetValue": targetValue
+                            };
+                            sendShowElementMessage(infos);
+                        });
                 }
             });
         } catch (e) {
@@ -235,6 +239,47 @@ window.onload = function() {
         }
     });
 };
+
+/**
+ * Send the show element message to content script.
+ * @param {Object} infos - a necessary infomation object.
+ *  - key index {Int}
+ *  - key tabId {Int}
+ *  - key frameIds {Array}
+ *  - key targetValue {String}
+ */
+function sendShowElementMessage(infos) {
+    browser.tabs.sendMessage(infos.tabId, {
+        showElement: true,
+        targetValue: infos.targetValue
+    }, {
+        frameId: infos.frameIds[infos.index]
+    }).then(function(response) {
+        if (response){
+            if (!response.result) {
+                prepareSendNextFrame(infos);
+            } else {
+                let text = infos.index == 0 ? "top" : index.toString() + "(id)";
+                sideex_log.info("Element is found in " + text + " frame.");
+            }
+        }
+    }).catch(function(error) {
+        if(error.message == "Could not establish connection. Receiving end does not exist.") {
+            prepareSendNextFrame(infos);
+        } else {
+            sideex_log.error("Unknown error");
+        }
+    });
+}
+
+function prepareSendNextFrame(infos) {
+    if (infos.index == infos.frameIds.length) {
+        sideex_log.error("Element is not found.");
+    } else {
+        infos.index++;
+        sendShowElementMessage(infos);
+    }
+}
 
 // TODO: rename it, should be enableClick()
 function disableClick() {

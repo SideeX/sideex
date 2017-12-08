@@ -39,7 +39,7 @@ function openPanel(tab) {
     }, 1000);
 
     browser.windows.create({
-        url: browser.runtime.getURL("panel.html"),
+        url: browser.runtime.getURL("panel/index.html"),
         type: "popup",
         height: 730,
         width: 750

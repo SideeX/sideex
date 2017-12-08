@@ -16,7 +16,7 @@
  */
 
 var elementForInjectingScript = document.createElement("script");
-elementForInjectingScript.src = browser.runtime.getURL("runScript.js");
+elementForInjectingScript.src = browser.runtime.getURL("page/runScript.js");
 (document.head || document.documentElement).appendChild(elementForInjectingScript);
 
 window.addEventListener("message", function(event) {

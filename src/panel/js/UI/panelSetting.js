@@ -129,8 +129,6 @@ $(document).ready(function() {
                 init();
             });
         };
-
-        $("#command-grid").fixMe();
     });
 
     $(".fixed").width($("table:not(.fixed)").width());
