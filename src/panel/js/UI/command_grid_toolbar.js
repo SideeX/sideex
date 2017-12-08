@@ -69,14 +69,13 @@ $("#command-target").on("input", function(event) {
             }
             div.appendChild(document.createTextNode(command_target));
             let datalist = getTargetDatalist(document.getElementById(temp));
-            datalist.getElementsByTagName("option")[0].text = event.target.value;
         }
 
         // store command grid to testCase
         var s_case = getSelectedCase();
         if (s_case) {
             sideex_testCase[s_case.id].records = document.getElementById("records-grid").innerHTML;
-			modifyCaseSuite();		
+			modifyCaseSuite();
         }
     }
 });

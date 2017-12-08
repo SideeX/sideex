@@ -257,13 +257,21 @@ function copyCommand() {
     tempCommand = [];
     let ref = getSelectedRecords();
     let targetOptions;
+    let showTarget;
     for (let i=0 ; i<ref.length ; i++) {
+        showTarget = ref[i].getElementsByTagName("td")[1].getElementsByTagName("div")[1].textContent;
         targetOptions = ref[i].getElementsByTagName("td")[1]
             .getElementsByTagName("datalist")[0]
             .getElementsByTagName("option");
         let targetElements = [];
+        let tempTarget;
         for (let j=0 ; j<targetOptions.length ; j++) {
-            targetElements.push([targetOptions[j].text]);
+            tempTarget = targetOptions[j].text;
+            if (showTarget == tempTarget) {
+                targetElements.splice(0, 0, [tempTarget]);
+            } else {
+                targetElements.push([tempTarget]);
+            }
         }
         tempCommand[i] = {
             "command": getCommandName(ref[i]),
@@ -271,6 +279,7 @@ function copyCommand() {
             "target": targetElements,
             "value": getCommandValue(ref[i])
         };
+        console.log("showTarget: ", showTarget);
     }
 }
 
