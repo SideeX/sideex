@@ -289,7 +289,7 @@ LocatorBuilders.prototype.getCSSSubPath = function(e) {
             if (attr == 'id')
                 return '#' + value;
             if (attr == 'class')
-                return e.nodeName.toLowerCase() + '.' + value.replace(" ", ".").replace("..", ".");
+                return e.nodeName.toLowerCase() + '.' + value.replace(/\s+/g, ".").replace("..", ".");
             return e.nodeName.toLowerCase() + '[' + attr + '="' + value + '"]';
         }
     }

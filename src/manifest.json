@@ -2,7 +2,7 @@
     "description": "SideeX (Extended Selenium IDE) - A free and open source smart record-playback automated web application testing tool",
     "manifest_version": 2,
     "name": "SideeX - Smart Record-Play Browser Automation",
-    "version": "2.3.3",
+    "version": "2.3.4",
     "homepage_url": "http://sideex.org/",
     "icons":
     {
@@ -29,7 +29,7 @@
             "js": ["content/atoms.js", "content/utils.js", "content/selenium-browserbot.js",
                    "common/escape.js", "content/selenium-api.js", "content/locatorBuilders.js",
                    "content/recorder.js", "content/recorder-handlers.js", "content/command-receiver.js",
-                   "content/targetSelecter.js"],
+                   "content/targetSelecter.js", "content/sizzle.js"],
             "match_about_blank": true,
             "all_frames": true
         },

@@ -2189,10 +2189,11 @@ function eval_xpath(xpath, inDocument, opts) {
 function eval_css(locator, inDocument) {
     var results = [];
     try {
-        window.Sizzle(locator, inDocument, results);
+        Sizzle(locator, inDocument, results);
     } catch (ignored) {
         // Presumably poor formatting
     }
+    //console.log(results);
     return results;
 }
 
