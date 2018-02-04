@@ -245,11 +245,12 @@ Recorder.addEventHandler('dragAndDrop', 'mousedown', function(event) {
             delete self.mousedown;
         }.bind(this), 200);
 
-        this.selectMouseup = setTimeout(function() {
-            self.selectMousedown = event;
-        }.bind(this), 200);
+        delete this.pointerdown;
+        this.selectMousedown = event;
+        var x = event.clientX - event.target.getBoundingClientRect().x;
+        var y = event.clientY - event.target.getBoundingClientRect().y;
+        this.selectMousedown.relatePosition = [x,y];
     }
-    this.mouseoverQ = [];
 
     if (event.target.nodeName) {
         var tagName = event.target.nodeName.toLowerCase();
@@ -268,12 +269,12 @@ Recorder.addEventHandler('dragAndDrop', 'mousedown', function(event) {
 
 // © Shuo-Heng Shih, SideeX Team
 Recorder.addEventHandler('dragAndDrop', 'mouseup', function(event) {
-    clearTimeout(this.selectMouseup);
-    if (this.selectMousedown) {
-        var x = event.clientX - this.selectMousedown.clientX;
-        var y = event.clientY - this.selectMousedown.clientY;
+    if(this.selectMousedown){
+        var offsetX = event.clientX - this.selectMousedown.clientX;
+        var offsetY = event.clientY - this.selectMousedown.clientY;
 
-        function getSelectionText() {
+        if(offsetX+offsetY!==0){
+            var getSelectionText = function() {
             var text = "";
             var activeEl = window.document.activeElement;
             var activeElTagName = activeEl ? activeEl.tagName.toLowerCase() : null;
@@ -283,24 +284,11 @@ Recorder.addEventHandler('dragAndDrop', 'mouseup', function(event) {
                 text = window.getSelection().toString();
             }
             return text.trim();
-        }
-
-        if (this.selectMousedown && event.button === 0 && (x + y) && (event.clientX < window.document.documentElement.clientWidth && event.clientY < window.document.documentElement.clientHeight) && getSelectionText() === '') {
-            var sourceRelateX = this.selectMousedown.pageX - this.selectMousedown.target.getBoundingClientRect().left - window.scrollX;
-            var sourceRelateY = this.selectMousedown.pageY - this.selectMousedown.target.getBoundingClientRect().top - window.scrollY;
-            var targetRelateX, targetRelateY;
-            if (!!this.mouseoverQ.length && this.mouseoverQ[1].relatedTarget == this.mouseoverQ[0].target && this.mouseoverQ[0].target == event.target) {
-                targetRelateX = event.pageX - this.mouseoverQ[1].target.getBoundingClientRect().left - window.scrollX;
-                targetRelateY = event.pageY - this.mouseoverQ[1].target.getBoundingClientRect().top - window.scrollY;
-                this.record("mouseDownAt", this.locatorBuilders.buildAll(this.selectMousedown.target), sourceRelateX + ',' + sourceRelateY);
-                this.record("mouseMoveAt", this.locatorBuilders.buildAll(this.mouseoverQ[1].target), targetRelateX + ',' + targetRelateY);
-                this.record("mouseUpAt", this.locatorBuilders.buildAll(this.mouseoverQ[1].target), targetRelateX + ',' + targetRelateY);
-            } else {
-                targetRelateX = event.pageX - event.target.getBoundingClientRect().left - window.scrollX;
-                targetRelateY = event.pageY - event.target.getBoundingClientRect().top - window.scrollY;
-                this.record("mouseDownAt", this.locatorBuilders.buildAll(event.target), targetRelateX + ',' + targetRelateY);
-                this.record("mouseMoveAt", this.locatorBuilders.buildAll(event.target), targetRelateX + ',' + targetRelateY);
-                this.record("mouseUpAt", this.locatorBuilders.buildAll(event.target), targetRelateX + ',' + targetRelateY);
+            };
+            if (event.button === 0 && (event.clientX < window.document.documentElement.clientWidth && event.clientY < window.document.documentElement.clientHeight) && getSelectionText() === '') {
+                this.record("mouseDownAt",this.locatorBuilders.buildAll(this.selectMousedown.target),this.selectMousedown.relatePosition[0]+","+this.selectMousedown.relatePosition[1]);
+                this.record("mouseMoveAt",this.locatorBuilders.buildAll(this.selectMousedown.target),(this.selectMousedown.relatePosition[0]+offsetX)+","+(this.selectMousedown.relatePosition[1]+offsetY));
+                this.record("mouseUpAt",this.locatorBuilders.buildAll(this.selectMousedown.target),(this.selectMousedown.relatePosition[0]+offsetX)+","+(this.selectMousedown.relatePosition[1]+offsetY));
             }
         }
     } else {
@@ -324,9 +312,32 @@ Recorder.addEventHandler('dragAndDrop', 'mouseup', function(event) {
     }
     delete this.mousedown;
     delete this.selectMousedown;
-    delete this.mouseoverQ;
-
 }, true);
+// END
+
+// © Shuo-Heng Shih, SideeX Team
+Recorder.addEventHandler('dragAndDrop','pointerdown',function(event){
+    this.pointerdown = event;
+    var x = event.clientX - event.target.getBoundingClientRect().x;
+    var y = event.clientY - event.target.getBoundingClientRect().y;
+    this.pointerdown.relatePosition =  [x,y];
+},true);
+// END
+
+// © Shuo-Heng Shih, SideeX Team
+Recorder.addEventHandler('dragAndDrop','pointerup',function(event){
+    if(this.pointerdown){
+        var offsetX = event.clientX - this.pointerdown.clientX;
+        var offsetY = event.clientY - this.pointerdown.clientY;
+        var sourceRelateX = this.pointerdown.relatePosition[0];
+        var sourceRelateY = this.pointerdown.relatePosition[1];
+        if(event.button === 0 && (offsetX + offsetY) && (event.clientX < window.document.documentElement.clientWidth && event.clientY < window.document.documentElement.clientHeight)){
+            this.record("mouseDownAt", this.locatorBuilders.buildAll(this.pointerdown.target), sourceRelateX+","+sourceRelateY);
+            this.record("mouseMoveAt",this.locatorBuilders.buildAll(this.pointerdown.target),(sourceRelateX+offsetX)+","+(sourceRelateY+offsetY));
+            this.record("mouseUpAt", this.locatorBuilders.buildAll(this.pointerdown.target),(sourceRelateX+offsetX)+","+(sourceRelateY+offsetY));
+        }
+    }
+},true);
 // END
 
 // © Shuo-Heng Shih, SideeX Team

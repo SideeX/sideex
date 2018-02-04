@@ -2293,41 +2293,22 @@ Selenium.prototype.getMouseSpeed = function() {
 }
 
 
-Selenium.prototype.doDragAndDrop = function(locator, movementsString) {
-    /** Drags an element a certain distance and then drops it
+Selenium.prototype.doDragAndDrop = function(locator, coordString) {
+    /** Drags an element on certain position and then drops it according to offset
      * @param locator an element locator
-     * @param movementsString offset in pixels from the current location to which the element should be moved, e.g., "+70,-300"
+     * @param coordString includes 2 pairs XY, related of element and mouse offset "10,10,+100,-100"
+     *        means you grab the element of "10,10" relate to it's "0,0", and drag "+100, -100"
      */
     var element = this.browserbot.findElement(locator);
-    var clientStartXY = getClientXY(element)
-    var clientStartX = clientStartXY[0];
-    var clientStartY = clientStartXY[1];
+    var coords = coordString.split(/,/).map(Number);
 
-    var movements = movementsString.split(/,/);
-    var movementX = Number(movements[0]);
-    var movementY = Number(movements[1]);
-
-    var clientFinishX = ((clientStartX + movementX) < 0) ? 0 : (clientStartX + movementX);
-    var clientFinishY = ((clientStartY + movementY) < 0) ? 0 : (clientStartY + movementY);
-
-    var mouseSpeed = this.mouseSpeed;
-    var move = function(current, dest) {
-        if (current == dest) return current;
-        if (Math.abs(current - dest) < mouseSpeed) return dest;
-        return (current < dest) ? current + mouseSpeed : current - mouseSpeed;
-    }
+    var clientStartX = element.getBoundingClientRect().x+coords[0];
+    var clientStartY = element.getBoundingClientRect().y+coords[1];
+    var clientFinishX = clientStartX+coords[2];
+    var clientFinishY = clientStartY+coords[3];
+    var target = this.browserbot.getDocument().elementFromPoint(clientFinishX,clientFinishY);
 
     this.browserbot.triggerMouseEvent(element, 'mousedown', true, clientStartX, clientStartY);
-    this.browserbot.triggerMouseEvent(element, 'mousemove', true, clientStartX, clientStartY);
-    var clientX = clientStartX;
-    var clientY = clientStartY;
-
-    while ((clientX != clientFinishX) || (clientY != clientFinishY)) {
-        clientX = move(clientX, clientFinishX);
-        clientY = move(clientY, clientFinishY);
-        this.browserbot.triggerMouseEvent(element, 'mousemove', true, clientX, clientY);
-    }
-
     this.browserbot.triggerMouseEvent(element, 'mousemove', true, clientFinishX, clientFinishY);
     this.browserbot.triggerMouseEvent(element, 'mouseup', true, clientFinishX, clientFinishY);
 };
