@@ -25,12 +25,24 @@ window.onerror = function(msg){
 	}
 };
 window.addEventListener("message", function(event) {
-	if (event.source == window && event.data && event.data.direction == "from-content-runscript") {
-		isWanted = true;
-		var doc = window.document;
-		var scriptTag = doc.createElement("script");
-		scriptTag.type = "text/javascript"
-		scriptTag.text = event.data.script;
-		doc.body.appendChild(scriptTag);
+	if (event.source == window && event.data) {
+		switch (event.data.direction) {
+			case "from-content-runscript":
+				isWanted = true;
+				var doc = window.document;
+				var scriptTag = doc.createElement("script");
+				scriptTag.type = "text/javascript";
+				scriptTag.text = event.data.script;
+				doc.body.appendChild(scriptTag);
+				break;
+			case "from-content-setnavigatorwebdriver":
+				Object.defineProperty(navigator, 'webdriver', {
+					get: function () { return true },
+					enumerable: true,
+					configurable: true
+				});
+				break;
+			default:
+		}
 	}
 });
