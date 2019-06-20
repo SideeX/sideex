@@ -11,3 +11,6 @@ SideeX is released under the Apache 2.0 License. In SideeX, part of Selenium IDE
 
 # Report Issues
 Report your feedback or issues via GitHub Issues or sideex.org@gmail.com.
+
+# News
+SideeX 3 has been released, check it out here: https://sideex.io
