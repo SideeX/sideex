@@ -6,6 +6,9 @@ Selenium IDE is one of the most popular record-playback-style web application te
 # The History of SideeX - From Selenium IDE to SideeX
 [The glorious history of SideeX - from Selenium IDE to SideeX](https://hackmd.io/@sideex/history)
 
+# Download SideeX 2
+Download SideeX 2 from [chrome web store](https://chrome.google.com/webstore/detail/sideex-recorder-2/nefadabeoagfkgmkgegmjgdhegbllple?hl=en).
+
 # The Official Web Site
 http://sideex.org
 
