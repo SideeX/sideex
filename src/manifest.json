@@ -13,7 +13,6 @@
     "permissions": [
         "tabs",
         "activeTab",
-        "webRequest",
         "contextMenus",
         "downloads",
         "webNavigation",
