@@ -8,10 +8,13 @@ Selenium IDE is one of the most popular record-playback-style web application te
 
 
 # The History of SideeX - From Selenium IDE to SideeX
-[The glorious history of SideeX - from Selenium IDE to SideeX](https://hackmd.io/@sideex/history)
+See [the success story of SideeX](https://hackmd.io/@sideex/history)
 
-# Download SideeX 2
-Download SideeX 2 from [chrome web store](https://chrome.google.com/webstore/detail/sideex-recorder-2/nefadabeoagfkgmkgegmjgdhegbllple?hl=en).
+# Install SideeX 2
+1. [Download SideeX 2](http://sideex.org/FF/SideeX_2.3.4.zip)
+2. At the top right corner of Chrome, click *More tools* -> *Extensions*
+3. Toggle on Developer mode
+4. Drag and drop SideeX_2.x.x.zip to the Extensions page. You will see the SideeX logo on the toolbar.
 
 # The Official Web Site
 http://sideex.org
