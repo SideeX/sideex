@@ -164,6 +164,6 @@ browser.runtime.onConnect.addListener(function(m) {
 
 browser.runtime.onInstalled.addListener(function(details) {
     if (details.reason == "install" || details.reason == "update") {
-        browser.tabs.create({url: "http://sideex.org"});
+        browser.tabs.create({url: "https://github.com/SideeX/sideex"});
     }
 })
