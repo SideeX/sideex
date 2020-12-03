@@ -1,5 +1,5 @@
 # The Official Repository of SideeX 2 Web Testing Recorder
-In a word, SideeX (version 2) is an extended version of Selenium IDE with a number of expanded automation capabilities.
+SideeX (version 2) is an extended version of the old Selenium IDE (v2.9.1.1) with a number of expanded automation capabilities, and then was [adopted](https://github.com/SeleniumHQ/selenium-ide/tree/v0.1) back by Selenium as the base for developing the new Selenium IDE.
 
 Selenium IDE is one of the most popular record-playback-style web application testing tools. We really appreciate the effort of the Selenium Core and IDE contributors on developing the great and useful software. In this open source project, referred to as SideeX (version 2), we attempt to expand the existing Selenium IDE record-playback automation capabilities and provide a number of advanced improvements. SideeX runs as an extension for both Chrome and Firefox. It is available for free download and use.
 
