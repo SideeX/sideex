@@ -6,10 +6,11 @@ Selenium IDE is one of the most popular record-playback-style web application te
 <img src="https://i.imgur.com/NeXdvAG.png" width="600" />
 
 
-# Software Empowered by SideeX 2
+# Software Developed based on SideeX 2
 - [Selenium IDE](https://github.com/SeleniumHQ/selenium-ide/tree/v0.1)
 - [Katalon Recorder](https://github.com/katalon-studio/katalon-recorder)
 - [Qualys Browser Recorder](https://chrome.google.com/webstore/detail/qualys-browser-recorder/abnnemjpaacaimkkepphpkaiomnafldi)
+- [Autify Recorder](https://chrome.google.com/webstore/detail/autify-recorder/jggibfiodonlmkjbmlooehabjldddbgn)
 
 # The History of SideeX - From Selenium IDE to SideeX
 See [the success story of SideeX](https://hackmd.io/@sideex/history)
