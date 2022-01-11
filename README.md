@@ -16,10 +16,7 @@ Selenium IDE is one of the most popular record-playback-style web application te
 See [the success story of SideeX](https://hackmd.io/@sideex/history)
 
 # Install SideeX 2
-1. [Download SideeX 2](https://github.com/SideeX/sideex/blob/master/SideeX_2.3.4.zip)
-2. At the top right corner of Chrome, click *More tools* -> *Extensions*
-3. Toggle on Developer mode
-4. Drag and drop SideeX_2.x.x.zip to the Extensions page. You will see the SideeX logo on the toolbar.
+1. [Install SideeX 2](https://chrome.google.com/webstore/detail/sideex-smart-record-play/eigkjgnjpmpecoejmjpojbnfgieiodbo)
 
 # News
 * SideeX 2 has been included in Katalon Recorder 2.0.9 to drive the advanced record-playback automation features. (2017/11/25)
