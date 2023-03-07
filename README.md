@@ -16,7 +16,7 @@ Selenium IDE is one of the most popular record-playback-style web application te
 See [the success story of SideeX](https://hackmd.io/@sideex/history)
 
 # Install SideeX 2
-[Install SideeX 2](https://chrome.google.com/webstore/detail/sideex-smart-record-play/eigkjgnjpmpecoejmjpojbnfgieiodbo)
+Download SideeX_2.3.4.zip and install it as a Chrome/Edge extension manually.
 
 # News
 * SideeX 2 has been included in Katalon Recorder 2.0.9 to drive the advanced record-playback automation features. (2017/11/25)
@@ -131,8 +131,8 @@ SideeX is released under the Apache 2.0 License. In SideeX, part of Selenium IDE
 # SideeX 2 Javascript API
 [SideeX JavaScript API](https://github.com/SideeX/sideex-api) is a JS library running on a webpage for recording and playing web browsing behavior. It is the core library of SideeX 2. As opposed to acting as a browser web extension, the API can be directly embedded and used within a webpage via JavaScript.
 
-# The Next Generation: SideeX 3 
-SideeX 3 Official Website: https://sideex.io
+# SideeX 4
+The new generation SideeX 4 (renamed to Rapi 4): https://github.com/RapiTest/rapi
 
 # Contact Us
-Email: feedback@sideex.io
+Contact the project lead Prof. [Shin-Jie Lee](https://www.csie.ncku.edu.tw/en/members/3) via jielee@mail.ncku.edu.tw. 
