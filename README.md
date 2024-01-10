@@ -132,7 +132,7 @@ SideeX is released under the Apache 2.0 License. In SideeX, part of Selenium IDE
 [SideeX JavaScript API](https://github.com/SideeX/sideex-api) is a JS library running on a webpage for recording and playing web browsing behavior. It is the core library of SideeX 2. As opposed to acting as a browser web extension, the API can be directly embedded and used within a webpage via JavaScript.
 
 # SideeX 4
-The new generation SideeX 4 (renamed to Rapi 4): https://github.com/RapiTest/rapi
+The new generation SideeX 4 (renamed to Rapi 4): https://rapi.dev
 
 # Contact Us
 Contact the project lead Prof. [Shin-Jie Lee](https://www.csie.ncku.edu.tw/en/members/3) via jielee@mail.ncku.edu.tw. 
