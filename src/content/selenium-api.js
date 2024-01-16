@@ -348,6 +348,9 @@ function Selenium(browserbot) {
             }
         });
     }
+    window.postMessage({
+        direction: "from-content-setnavigatorwebdriver"
+    }, "*");
 }
 
 Selenium.DEFAULT_TIMEOUT = 30 * 1000;
